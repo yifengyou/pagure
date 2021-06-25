@@ -7,20 +7,24 @@ WSGIDaemonProcess pagure user=git group=git maximum-requests=1000 display-name=p
 # It is important that the doc server runs in a different apache process
 WSGIDaemonProcess paguredocs user=git group=git maximum-requests=1000 display-name=pagure processes=4 threads=4 inactivity-timeout=300
 
+LISTEN 192.168.32.139:80
 <VirtualHost *:80>
-  ServerName localhost.localdomain
-  Redirect permanent / https://localhost.localdomain/
+  ServerName 192.168.32.139
+  Redirect permanent / https://192.168.32.139:443/
 </VirtualHost>
 
 
-<VirtualHost *:80>
-  ServerName docs.localhost.localdomain
-  Redirect permanent / https://docs.localhost.localdomain/
+LISTEN 192.168.32.139:444
+LISTEN 192.168.32.139:8086
+<VirtualHost *:8086>
+  ServerName 192.168.32.139
+  Redirect permanent / https://192.168.32.139:444/
 </VirtualHost>
 
 
+LISTEN 192.168.32.139:443
 <VirtualHost *:443>
-  ServerName docs.localhost.localdomain
+  ServerName 192.168.32.139
 
   WSGIScriptAlias / /usr/share/pagure/doc_pagure.wsgi
 
@@ -48,8 +52,8 @@ WSGIDaemonProcess paguredocs user=git group=git maximum-requests=1000 display-na
 </VirtualHost>
 
 
-<VirtualHost *:443>
-  ServerName localhost.localdomain
+<VirtualHost *:444>
+  ServerName 192.168.32.139
 
   WSGIScriptAlias / /usr/share/pagure/pagure.wsgi
 
@@ -65,7 +69,7 @@ WSGIDaemonProcess paguredocs user=git group=git maximum-requests=1000 display-na
   Alias /releases /var/www/releases
 
   # Section used to support cloning git repo over http (https in this case)
-  SetEnv GIT_PROJECT_ROOT /path/to/git/repositories
+  SetEnv GIT_PROJECT_ROOT /srv/git/repositories/
 
   <Location />
    WSGIProcessGroup pagure
