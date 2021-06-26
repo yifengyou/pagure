@@ -1,0 +1,40 @@
+{% extends "master.html" %}
+
+{% block title %}Doc: SSH hostkeys/Fingerprints{% endblock %}
+{% set tag = "home" %}
+
+
+{% block content %}
+<div class="container">
+  <h2 class="m-t-3">SSH Hostkeys/Fingerprints</h2>
+
+{% if config.get('SSH_KEYS') %}
+
+  <p class="m-t-2">
+    SSH host keys and fingerprints can be use to ensure you are connecting to
+pagure's server and not someone else's.
+  </p>
+
+  <p>
+Here below are the SSH Hostkey and the Fingerprint of this current pagure
+instance:
+  </p>
+
+{% for cert in config.get('SSH_KEYS') %}
+  {% for type in config['SSH_KEYS'][cert] %}
+  <div class="card">
+    <div class="card-header">
+      <strong>{{ cert }} {{ type | title }}</strong>
+    </div>
+    <pre class="softwrap">{{ config['SSH_KEYS'][cert][type] }}</pre>
+  </div>
+  {% endfor %}
+{% endfor %}
+
+{% else %}
+<div class="alert alert-info m-t-3"><strong>No SSH keys have been specified in the configuration file.</strong>
+You should ask an admin to fill this information.</div>
+{% endif %}
+</div>
+
+{% endblock %}

@@ -1,0 +1,16 @@
+FROM pagure-base:latest
+LABEL maintainers="Patrick Uiterwijk <patrick@puiterwijk.org>, Andrew Engelbrecht <andrew@engelbrecht.io>"
+
+VOLUME ["/repos"]
+
+RUN mkdir /code
+WORKDIR /code
+
+ENTRYPOINT ["/usr/bin/celery-3", "-A", "pagure.lib.tasks", "worker", "--loglevel", "info"]
+
+# Code injection is last to make optimal use of caches
+VOLUME ["/code"]
+# Openshift: COPY / /code
+VOLUME ["/attachments"]
+# Ideally this would run as non-root, but that needs the /repos owned correctly
+ENV C_FORCE_ROOT true

@@ -1,0 +1,126 @@
+{% extends "master.html" %}
+
+{% block title %}User {{username}}{% endblock %}
+{% set tag = "users" %}
+{% from "_browseheader.html" import browse_header %}
+
+
+{% block header %}
+<link type="text/css" rel="stylesheet" nonce="{{ g.nonce }}" href="{{
+  url_for('static', filename='vendor/selectize/selectize.bootstrap3.css') }}?version={{ g.version}}"/>
+{% endblock %}
+
+
+{% from "_render_repo.html" import render_repos_as_card, render_activity_graph %}
+{% from "_projectstring.html" import projectstring, projecticon %}
+
+
+{% block content %}
+<div class="bg-light border border-top-0 pt-2">
+  <div class="container">
+    {{browse_header(select=tag)}}
+  </div>
+</div>
+<div class="p-t-2">
+  <div class="container">
+    <div class="media my-4">
+      {{ user.default_email | avatar(64, css_class="align-self-center mr-3") | safe }}
+      <div class="media-body align-self-center">
+        <h3 class="mb-0 font-weight-bold">{{ username }}</h3>
+        <div title="{{ user.created.strftime('%Y-%m-%d') }}">
+              {{user.fullname}} &bull; <span class="text-muted">Joined {{ user.created | humanize }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-8">
+        {{ render_activity_graph(username) }}
+        {{ render_repos_as_card(repos, repos_length, projectstring()+'s', 'repopage', repopage, total_page_repos) }}
+        {{ render_repos_as_card(forks, forks_length,'Forks', 'forkpage', forkpage, total_page_forks) }}
+      </div>
+      <div class="col-md-4">
+        <div class="card" id="group_list">
+            <div class="card-header">
+                Groups <span class="badge badge-secondary">{{ user.groups | length }}</span>
+            </div>
+            {% for group in user.groups %}
+              <div class="list-group">
+                <a class="list-group-item" href="{{ url_for(
+                    'ui_ns.view_group', group=group)}}">
+                  <div class=""><strong><span class="fa fa-users">
+                    </span> &nbsp;{{ group }}</strong>
+                  </div>
+                </a>
+              </div>
+            {% else %}
+            <div class="card-block">
+              <p>No group found</p>
+            </div>
+            {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block jscripts %}
+    {{ super() }}
+<script type="text/javascript" nonce="{{ g.nonce }}" src="{{
+  url_for('static', filename='vendor/selectize/selectize.min.js') }}?version={{ g.version}}"></script>
+
+<script type="text/javascript" nonce="{{ g.nonce }}">
+$(document).ready(function() {
+  $('.show_parts input[type="checkbox"]').change(function(){
+      $('#' + $(this).attr('name')).toggle();
+    });
+
+  $('#headerSearch').on('keypress keydown keyup', function(e) {
+    if (e.which == 13) {
+        e.preventDefault();
+        return false;
+    }
+  });
+  $('#term').selectize({
+    valueField: 'user',
+    labelField: 'user',
+    searchField: 'user',
+    onType: function(value){
+      if (value == ""){
+      this.close();
+      }
+    },
+    onChange: function(value){
+      if (value != ""){
+        $('#headerSearch').submit();
+      }
+    },
+    maxItems: 1,
+    create: false,
+    load: function(query, callback) {
+      if (!query.length) return callback();
+      $.getJSON(
+        "{{ url_for('api_ns.api_users') }}", {
+          pattern: query
+        },
+        function( data ) {
+          callback( data.users.map(function(x) { return { user: x }; }) );
+        }
+      );
+    },
+    render: {
+      option: function(item, escape) {
+        return '<div>' +
+          '<div class="projecticon-search pull-xs-left"><span class="fa fa-user"></span></div>'+
+          '<div class="title">' +
+            '<span class="name"><strong>' + escape(item.user) + '</strong></span>' +
+          '</div>' +
+          '<div class="description"><small>' + escape(item.user) + '</small></div>' +
+        '</div>';
+      }
+    },
+  });
+});
+</script>
+{% endblock %}

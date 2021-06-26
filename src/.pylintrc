@@ -1,0 +1,46 @@
+[TYPECHECK]
+
+# add,bind,close,commit,delete,flush,rollback are for SQLAlchemy's
+# scoped_session implementation, which uses __call__ to pass the call
+# to a backing instance. We always call instances of scoped_session
+# `session` or `SESSION`. Unfortunately due to
+# https://github.com/PyCQA/pylint/issues/1167 we cannot use regexes
+# like `(session|SESSION)\.add` here.
+
+# secure_filename is from werkzeug, which lazy loads functions from
+# submodules.
+
+# get_object,set_target,shorthand,target are for some kind of
+# shenanigans going on with flask and werkzeug proxying and pygit2.
+# We always call the object `head`, in this case, it seems.
+
+# GIT_REPOSITORY_INIT_SHARED_GROUP is for a constant we get from
+# pygit2; we could use:
+# pygit2.GIT_REPOSITORY_INIT_SHARED_GROUP
+# instead of:
+# pygit2.C.GIT_REPOSITORY_INIT_SHARED_GROUP
+# and avoid the pylint error, but per
+# https://github.com/libgit2/pygit2/issues/483
+# that only works since a commit in early 2015 which may be too new
+# to be safe.
+
+generated-members=pygit2\.C\.GIT_REPOSITORY_INIT_SHARED_GROUP,
+                  .*session\.add,
+                  .*SESSION\.add,
+                  .*session\.bind,
+                  .*SESSION\.bind,
+                  .*session\.close,
+                  .*SESSION\.close,
+                  .*session\.commit,
+                  .*SESSION\.commit,
+                  .*session\.delete,
+                  .*SESSION\.delete,
+                  .*session\.flush,
+                  .*SESSION\.flush,
+                  .*session\.rollback,
+                  .*SESSION\.rollback,
+                  .*head\.get_object,
+                  .*head\.set_target,
+                  .*head\.shorthand,
+                  .*head\.target,
+                  werkzeug\.secure_filename,

@@ -1,0 +1,23 @@
+{% extends "master.html" %}
+
+{% block title %}A fatal error occured :'({% endblock %}
+{% set tag = "error" %}
+
+
+{% block content %}
+<div class="container p-t-3">
+  <div class="row">
+    <div class="col-md-8">
+      <h2>Fatal Error (500)</h2>
+      <p>A fatal error has occurred, we're sorry :(</p>
+      {% if error and error.description %}
+      <p>With the message:</p>
+      <div class="card-block">
+      <p>{{ error.description }}</p>
+      <p><a href="/about">Contact us</a> to submit an issue or get help.</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

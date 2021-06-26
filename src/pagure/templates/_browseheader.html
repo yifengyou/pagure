@@ -1,0 +1,26 @@
+{% import "theme.html" as theme with context %}
+{% from "_projectstring.html" import projectstring, projecticon %}
+
+{% macro browse_header(select) -%}
+
+{{ theme.browseheader_message(select) if theme.browseheader_message is defined }}
+
+<ul class="nav nav-tabs nav-small border-bottom-0">
+  <li class="nav-item">
+    <a {% if select == 'projects' %}class="nav-link active" {%
+        else %}class="nav-link"{%
+        endif %} href="{{ url_for('ui_ns.browse_projects') }}">{{projectstring()}}</a>
+  </li>
+  <li class="nav-item">
+    <a {% if select == 'users' %}class="nav-link active" {%
+        else %}class="nav-link"{%
+        endif %} href="{{ url_for('ui_ns.view_users') }}">Users</a>
+  </li>
+  <li class="nav-item">
+    <a {% if select == 'groups' %}class="nav-link active" {%
+        else %}class="nav-link"{%
+        endif %} href="{{ url_for('ui_ns.group_lists') }}">Groups</a>
+  </li>
+</ul>
+{%- endmacro %}
+

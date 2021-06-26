@@ -1,0 +1,24 @@
+@import url("cloud.css");
+@import url("fonts.css");
+
+.pagure-logo span {
+    background: url("pagure.png") no-repeat scroll 50% 0 transparent;
+    display: block;
+    width: 134px;
+    height: 64px;
+    margin-bottom: 10px;
+  }
+
+h1.pagure-logo {
+    font-family: 'Comfortaa', sans-serif;
+    margin-top: -10px;
+    margin-bottom: 12px;
+}
+
+.strike { text-decoration: line-through; }
+
+div.sphinxsidebar #searchbox input[type="text"] {
+    border: 1px solid #777777;
+    margin-bottom: 0.4em;
+    border-radius: 0.25em;
+}

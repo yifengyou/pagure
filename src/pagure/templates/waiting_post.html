@@ -1,0 +1,85 @@
+{% extends "master.html" %}
+
+{% block title %}Waiting{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-7 mx-auto">
+      <div class="alert alert-info text-center mt-5">
+        <div class="mb-3">
+          <i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i>
+        </div>
+        <h3 class="font-weight-bold mb-3">
+          Waiting
+        </h3>
+        <form action="{{ form_action }}" method="POST" id="waitform">
+          <input type="hidden" name="taskid" value="{{ taskid }}">
+          {% for field in form_data %}
+            <input type="hidden" name="{{ field }}" value="{{ form_data[field] }}">
+          {% endfor %}
+          {{ csrf }}
+          <p>
+            We are waiting for your task to finish.
+            This page should be refreshed automatically, but if not click
+            <input type="submit" value="Here">.
+          </p>
+          <p id="status_p font-weight-bold" class="hidden">
+            Your task is currently <span id="status"></span>
+          </p>
+          <p id="slow" class="hidden">
+            This is taking longer than usual... Sorry for that.
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+
+{% block jscripts %}
+{{ super() }}
+<script type="text/javascript" nonce="{{ g.nonce }}">
+var _delay = 1;
+var _cnt = '{{ count }}';
+
+function check_task_status(){
+  console.log(_cnt);
+  var _url = '{{ url_for("ui_ns.wait_task", taskid=taskid) }}';
+  $.ajax({
+    url: _url ,
+    type: 'GET',
+    data: {
+      js: 1,
+      count: _cnt,
+    },
+    dataType: 'JSON',
+    success: function(res) {
+      _delay = res.count * 20;
+      if (_delay > 2000){
+        _delay = 2000;
+      }
+      _cnt = res.count;
+      if (_cnt > 30) {
+        $('#slow').show();
+        $('.alert.alert-info').toggleClass("alert-info alert-warning");
+      }
+      $('#status').text(res.status);
+      $('#status_p').show();
+      if (res.status != 'PENDING'){
+          $('#waitform').submit()
+      }
+      window.setTimeout(check_task_status, _delay);
+    },
+    error: function() {
+      $('#waitform').submit()
+    }
+  });
+}
+
+$(document).ready(function() {
+  window.setTimeout(check_task_status, _delay);
+});
+</script>
+{% endblock %}

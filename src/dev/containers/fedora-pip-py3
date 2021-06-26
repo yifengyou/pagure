@@ -1,0 +1,30 @@
+FROM quay.io/fedora/fedora:33-x86_64
+
+ARG repo=https://pagure.io/pagure.git
+ARG branch=master
+
+ENV REPO=$repo
+ENV BRANCH=$branch
+
+RUN dnf -y install \
+    python3-setuptools \
+    redhat-rpm-config \
+    python3-devel \
+    libgit2-devel \
+    python3-tox \
+    libffi-devel \
+    zeromq-devel \
+    gcc \
+    redis \
+    which \
+    git \
+    glibc-langpack-en
+
+RUN cd / \
+    && GIT_TRACE=1 GIT_CURL_VERBOSE=1 git clone -b $BRANCH $REPO \
+    && chmod +x /pagure/dev/containers/tox_py3.sh \
+    && sed -i -e 's|"alembic-3"|"alembic"|' /pagure/tests/test_alembic.py
+
+WORKDIR /pagure
+ENTRYPOINT ["/pagure/dev/containers/tox_py3.sh"]
+CMD []

@@ -1,0 +1,18 @@
+FROM pagure-base:latest
+LABEL maintainers="Patrick Uiterwijk <patrick@puiterwijk.org>, Andrew Engelbrecht <andrew@engelbrecht.io>"
+
+VOLUME ["/repos"]
+RUN mkdir /code
+WORKDIR /code
+
+COPY web-run /run.sh
+
+# Openshift: --no-debug
+ENTRYPOINT ["/usr/bin/bash", "/run.sh"]
+
+EXPOSE 5000
+
+# Code injection is last to make optimal use of caches
+VOLUME ["/code"]
+# Openshift: COPY / /code
+VOLUME ["/attachments"]

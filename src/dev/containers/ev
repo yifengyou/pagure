@@ -1,0 +1,13 @@
+FROM pagure-base:latest
+LABEL maintainers="Patrick Uiterwijk <patrick@puiterwijk.org>, Andrew Engelbrecht <andrew@engelbrecht.io>"
+
+VOLUME ["/repos"]
+
+RUN mkdir /code
+WORKDIR /code
+
+ENTRYPOINT ["/usr/bin/python3", "/code/pagure-ev/pagure_stream_server.py"]
+
+# Code injection is last to make optimal use of caches
+VOLUME ["/code"]
+# Openshift: COPY / /code

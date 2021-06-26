@@ -1,0 +1,67 @@
+{% extends "userprofile_master.html" %}
+
+{% block title %}Pull Requests for {{ username }}{% endblock %}
+
+{% from "_render_repo.html" import pagination_link %}
+{% from "_render_pullrequests.html" import render_pullrequest_row %}
+
+{% block userprofile_content %}
+<div class="pt-4 pb-5">
+  <div class="container">
+    <div class="d-flex align-items-center">
+      <h4 class="mb-0 font-weight-bold">
+          Pull Requests for {{ username | avatar(20) | safe }} {{ username }}
+      </h4>
+
+      <div class="ml-auto">
+          <span class="btn-group btn-group-sm issues-tagbar" role="group">
+              <a data-togglebutton="pr-type-filed" href="?type=filed&status={{ pr_status }}" id="toggle-open"
+                class="btn {{ 'btn-primary' if pr_type == 'filed' else 'btn-outline-primary' }} btn-sm">PR I filed</a>
+              <a data-togglebutton="pr-type-actionable" href="?type=actionable&status={{ pr_status }}" id="toggle-merged"
+                class="btn {{ 'btn-primary' if pr_type == 'actionable' else 'btn-outline-primary' }} btn-sm">PR I can act on</a>
+          </span>
+      </div>
+      <div class="ml-auto">
+          <span class="btn-group btn-group-sm issues-tagbar" role="group">
+              <a data-togglebutton="pr-status-open" href="?type={{ pr_type }}&status=open" id="toggle-open"
+                class="btn {{ 'btn-primary' if pr_status == 'open' else 'btn-outline-primary' }} btn-sm">Open</a>
+              <a data-togglebutton="pr-status-merged" href="?type={{ pr_type }}&status=merged" id="toggle-merged"
+                class="btn {{ 'btn-primary' if pr_status == 'merged' else 'btn-outline-primary' }} btn-sm">Merged</a>
+              <a data-togglebutton="pr-status-closed" href="?type={{ pr_type }}&status=cancelled" id="toggle-closed"
+                class="btn {{ 'btn-primary' if pr_status == 'cancelled' else 'btn-outline-primary' }} btn-sm">Cancelled</a>
+              <a data-togglebutton="pr-status-all" href="?type={{ pr_type }}&status=all"
+                class="btn {{ 'btn-primary' if pr_status == 'all' else 'btn-outline-primary' }} btn-sm">All</a>
+          </span>
+      </div>
+    </div>
+
+    <div class="d-flex mt-4 mb-2 align-items-center">
+        {% if pr_type == "filed" %}
+        <h5 class="font-weight-bold mb-0">Pull Requests Created</h5>
+        {% else %}
+        <h5 class="font-weight-bold mb-0">Pull Requests {{username}} can act on</h5>
+        {% endif %}
+        <span class="ml-auto btn btn-outline-secondary border-0 o-100 disabled font-weight-bold">
+          {{ requests_length }} PRs
+        </span>
+    </div>
+
+    {% for request in requests %}
+    {% set htmlclass = "pr-created pr-status pr-status-"+request.status|lower%}
+      {{render_pullrequest_row(request, request.project, username, class=htmlclass, showproject=True)}}
+    {% endfor %}
+
+    {% if total_pages > 1 %}
+    {{ pagination_link('page', page, total_pages) }}
+    {% endif %}
+
+  </div>
+</div>
+
+{% endblock %}
+
+{% block jscripts %}
+{{ super() }}
+<script type="text/javascript" nonce="{{ g.nonce }}" src="{{
+  url_for('static', filename='tags.js') }}?version={{ g.version}}"></script>
+{% endblock %}

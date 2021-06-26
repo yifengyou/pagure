@@ -1,0 +1,120 @@
+{% extends "repo_master.html" %}
+
+{% set tag = "groups" %}
+
+{% block header %}
+<link nonce="{{ g.nonce }}" rel="stylesheet" href="{{
+  url_for('static', filename='vendor/selectize/selectize.bootstrap3.css') }}?version={{ g.version}}"/>
+{% endblock %}
+
+{% block title %}Add group - {{
+    repo.namespace + '/' if repo.namespace }}{{ repo.name }}{% endblock %}
+
+
+{% block repo %}
+
+<div class="row col-sm-8 col-sm-offset-2">
+  <div class="card">
+    <div class="card-header" id="card-topic">
+      <strong>Add group to the {{repo.name}} project</strong>
+    </div>
+    <div class="card-block">
+      <form action="{{
+        url_for('ui_ns.add_group_project',
+            username=username, repo=repo.name, namespace=repo.namespace)
+        }}" method="post">
+
+      <fieldset class="form-group">
+        <label for="group"><strong>Group Name</strong></label>
+        <input class="form-control" name="group" id="group"
+          placeholder="Start typing to search groups" value=""/>
+        <select class="form-control" id="access" name="access">
+          {% for access in access_levels %}
+            <option value="{{ access }}" id="{{ access }}"> {{ access }} </option>
+          {% endfor %}
+        </select>
+        <input class="form-control" name="branches" id="branches" class="hidden"
+          placeholder="A comma separated list of branches" value=""/>
+      </fieldset>
+
+      <p class="buttons indent">
+        <input type="submit" class="btn btn-primary" id="add_update_button" value="Add">
+        <input type="button" value="Cancel" class="btn btn-secondary cancel_btn">
+        {{ form.csrf_token }}
+      </p>
+    </form>
+    {% include '_access_levels_descriptions.html' %}
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block jscripts %}
+{{ super() }}
+<script type="text/javascript" nonce="{{ g.nonce }}" src="{{
+    url_for('static', filename='vendor/selectize/selectize.min.js') }}?version={{ g.version}}"></script>
+
+<script type="text/javascript" nonce="{{ g.nonce }}">
+function set_up_group_list(url, query, callback) {
+  $.getJSON(
+      url, {
+      pattern: query.term
+    },
+    function( data ) {
+      callback( data.groups.map(function(x) { return { group: x }; }) );
+      if (data.pagination.next){
+        set_up_group_list(data.pagination.next, query, callback)
+      }
+    }
+  );
+}
+
+
+$( document ).ready(function() {
+  $("#branches").hide();
+
+  var group_to_update = "{{ group_to_update }}";
+  if (!group_to_update || group_to_update === "None") {
+    $('#group').selectize({
+        valueField: 'group',
+        labelField: 'group',
+        searchField: 'group',
+        maxItems: 1,
+        create: {{ (not config.get('ENABLE_GROUP_MNGT', False)) | lower }},
+        load: function(query, callback) {
+          if (!query.length){
+            return callback();
+          } else {
+            set_up_group_list("{{ url_for('api_ns.api_groups') }}", query, callback);
+          }
+        }
+    });
+  } else {
+    $("#group").attr("value", group_to_update);
+    $("#group").attr("readonly", true);
+    var group_access = "{{ group_access }}";
+    if (group_access !== "None") {
+      $("#" + "{{ group_access.access }}").attr("selected", "selected");
+    }
+    $("#branches").val("{{ group_access.branches or ''}}");
+    $("#card-topic").html("<strong>Update group access in {{repo.name}}</strong>");
+    $("#add_update_button").attr("value", "Update");
+  };
+
+  if ($("#access").val() == "collaborator") {
+    $("#branches").show();
+  };
+
+  $("#access").on("change", function() {
+    var _acc = $("#access");
+    if (_acc.val() == "collaborator") {
+        $("#branches").show();
+    } else {
+        $("#branches").hide();
+    }
+  });
+
+});
+</script>
+{% endblock %}

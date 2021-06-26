@@ -1,0 +1,178 @@
+{% macro repo_renderdiff(diff, diff_commits, pull_request, repo, username, namespace) -%}
+
+{% macro lineschanged(linesadded, linesremoved) -%}
+  <div class="btn-group">
+    {%if linesadded != 0 %}
+    <span class="btn btn-success btn-sm font-weight-bold disabled opacity-100">+{{linesadded}}</span>
+    {%endif%}
+    {%if linesremoved != 0%}
+    <span class="btn btn-danger btn-sm font-weight-bold disabled opacity-100">-{{linesremoved}}</span>
+    {%endif%}
+  </div>
+{%endmacro%}
+
+{% macro viewfilelink(filepath, patch_new_id) %}
+  {% if pull_request and not pull_request.remote %}
+      <a class="font-weight-bold ml-2" href="{{
+        url_for(
+            'ui_ns.view_file',
+            repo=pull_request.project_from.name,
+            username=pull_request.project_from.user.username
+                if pull_request.project_from.is_fork else None,
+            namespace=pull_request.project_from.namespace,
+            identifier=patch_new_id,
+            filename=filepath) }}"
+        title="View file as of {{ patch_new_id|short }}">{{
+          filepath | unicode }}</a>
+  {% elif not pull_request %}
+      <a class="font-weight-bold ml-2" href="{{
+        url_for(
+            'ui_ns.view_file',
+            repo=repo.name,
+            username=username,
+            namespace=repo.namespace,
+            identifier=patch_new_id,
+            filename=filepath) }}"
+        title="View file as of {{ patch_new_id|short }}">{{
+          filepath | unicode }}</a>
+  {% elif pull_request and pull_request.remote %}
+    {{ filepath | unicode }}
+  {% endif %}
+{% endmacro %}
+
+{% macro viewfilelinkbutton(filepath, patch_new_id, disabled=False) %}
+  {% if pull_request and not pull_request.remote %}
+    <a class="btn btn-outline-primary {{'disabled' if disabled}} btn-sm ml-2" href="{{
+      url_for(
+          'ui_ns.view_file',
+          repo=pull_request.project_from.name,
+          username=pull_request.project_from.user.username
+              if pull_request.project_from.is_fork else None,
+          namespace=pull_request.project_from.namespace,
+          identifier=patch_new_id,
+          filename=filepath) }}"
+      title="View file as of {{ patch_new_id|short }}">
+      <i class="fa fa-file-code-o fa-fw"></i>
+    </a>
+  {% elif not pull_request %}
+      <a class="btn btn-outline-primary {{'disabled' if disabled}} btn-sm ml-2" href="{{
+        url_for(
+            'ui_ns.view_file',
+            repo=repo.name,
+            username=username,
+            namespace=repo.namespace,
+            identifier=patch_new_id,
+            filename=filepath) }}"
+        title="View file as of {{ patch_new_id|short }}">
+        <i class="fa fa-file-code-o fa-fw"></i>
+      </a>
+  {% elif pull_request and pull_request.remote %}
+  {% endif %}
+{% endmacro %}
+
+{% macro changedlabel(thelabel, thecolor)%}
+  <div class="btn btn-outline-{{thecolor}} disabled opacity-100 border-0 font-weight-bold">
+    {{thelabel}}
+  </div>
+{% endmacro %}
+
+{% macro diffcollapsebtn(loop)%}
+  <a class="btn btn-sm btn-outline-primary diffhighlightcollapse ml-2 pointer"
+    data-toggle="collapse" data-target="#diffhighlight_{{loop.index}}">
+    <i class="fa fa-fw fa-caret-up"></i>
+  </a>
+{% endmacro %}
+
+{% if diff %}
+  {% for patch in diff %}
+    {% set patchstats = (patch | patch_stats) %}
+    <section class="commit_diff">
+      <div class="card mb-3" id="_{{loop.index}}">
+        <div class="card-header">
+          <div class="d-flex align-items-center">
+            {%- if patchstats["status"] == 'D' -%}
+              <div>
+                  {{ viewfilelink(patchstats["new_path"], patchstats["new_id"]) }}
+              </div>
+              <div class="d-flex align-items-center ml-auto">
+                {{ changedlabel("file removed", "danger")}}
+                {{ lineschanged(patchstats["lines_added"], patchstats["lines_removed"]) }}
+                {{ viewfilelinkbutton(patchstats["new_path"], patchstats["new_id"], disabled=True) }}
+                {{ diffcollapsebtn(loop) }}
+              </div>
+            {%-elif patchstats["status"] == 'A' -%}
+              <div>
+                  {{ viewfilelink(patchstats["new_path"], patchstats["new_id"]) }}
+              </div>
+              <div class="d-flex align-items-center ml-auto">
+                {{ changedlabel("file added", "success")}}
+                {{ lineschanged(patchstats["lines_added"], patchstats["lines_removed"]) }}
+                {{ viewfilelinkbutton(patchstats["new_path"], patchstats["new_id"]) }}
+                {{ diffcollapsebtn(loop) }}
+              </div>
+            {%-elif patchstats["status"] == 'M' -%}
+              <div>
+                  {{ viewfilelink(patchstats["new_path"], patchstats["new_id"]) }}
+              </div>
+              <div class="d-flex align-items-center ml-auto">
+                {{ changedlabel("file modified", "secondary")}}
+                {{ lineschanged(patchstats["lines_added"], patchstats["lines_removed"]) }}
+                {{ viewfilelinkbutton(patchstats["new_path"], patchstats["new_id"]) }}
+                {{ diffcollapsebtn(loop) }}
+              </div>
+            {%- else -%}
+              <div>
+                {{ viewfilelink(patchstats["new_path"], patchstats["new_id"]) }}<strike>{{patchstats["old_path"]}}</strike>
+              </div>
+              <div class="d-flex align-items-center ml-auto">
+                {{ changedlabel("file renamed", "info")}}
+                {{ lineschanged(patchstats["lines_added"], patchstats["lines_removed"]) }}
+                {{ viewfilelinkbutton(patchstats["new_path"], patchstats["new_id"]) }}
+                {{ diffcollapsebtn(loop) }}
+              </div>
+            {%- endif -%}
+          </div>
+        </div>
+      {% if patchstats["status"] == "R" and patchstats["lines_added"] == 0 and patchstats["lines_removed"] == 0%}
+        <div class="card-body collapse show" id="diffhighlight_{{loop.index}}">
+          <div class="text-muted text-center">file was moved with no change to the file</div>
+        </div>
+      {% elif patchstats["status"] == "A" and patchstats["lines_added"] == 0 %}
+        <div class="card-body collapse show" id="diffhighlight_{{loop.index}}">
+          <div class="text-muted text-xs-center">empty or binary file added</div>
+        </div>
+      {% else %}
+        {% if patchstats["status"] == "A" and patchstats["lines_added"] > 1000 %}
+          <div class="card-body collapse show" id="diffhighlight_{{loop.index}}">
+            <div class="text-muted text-center">
+                The added file is too large to be shown here, see it at:
+                {{ viewfilelink(patchstats["new_path"], patchstats["new_id"]) }}
+            </div>
+          </div>
+        {% elif patchstats["status"] == "D" and patchstats["lines_added"] > 1000 %}
+          <div class="card-body collapse show" id="diffhighlight_{{loop.index}}">
+            <div class="text-muted text-center">
+                The removed file is too large to be shown here, see it at:
+                {{ viewfilelink(patchstats["new_path"], patchstats["old_id"]) }}
+            </div>
+          </div>
+        {% else %}
+          <div class="card-body p-0 collapse show" id="diffhighlight_{{loop.index}}">
+          {% autoescape false %}
+              {{ patch | patch_to_diff | format_loc(
+                      filename=patchstats["new_path"],
+                      commit=patchstats["new_id"],
+                      prequest=pull_request,
+                      index=loop.index,
+                      tree_id=diff_commits[0].tree.id)}}
+          </div>
+          {% endautoescape %}
+        {% endif %}
+      {% endif %}
+
+      </div>
+      </section>
+      {% endfor %}
+  {% endif %}
+
+{%- endmacro %}

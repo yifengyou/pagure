@@ -1,0 +1,84 @@
+import groovy.json.JsonOutput
+
+def notifyPagurePR(repo, msg, status, phase, credentials = 'pagure-auth'){
+    def json = JsonOutput.toJson([name: 'pagure', url: env.JOB_NAME, build: [full_url: currentBuild.absoluteUrl, status: status, number: currentBuild.number, phase: phase]])
+    println json
+
+    withCredentials([string(credentialsId: credentials, variable: "PAGURE_PUSH_SECRET")]) {
+        /* We need to notify pagure that jenkins finished but then pagure will
+          wait for jenkins to be done, so if we wait for pagure's answer we're
+          basically stuck in a loop where both jenkins and pagure are waiting
+          for each other */
+        sh "timeout 1 curl -X POST -d \'$json\' https://pagure.io/api/0/ci/jenkins/$repo/\${PAGURE_PUSH_SECRET}/build-finished -H \"Content-Type: application/json\" | true"
+    }
+}
+
+def onmyduffynode(script){
+    ansiColor('xterm'){
+        timestamps{
+            sh 'ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -l root ${DUFFY_NODE}.ci.centos.org -t \"export REPO=${REPO}; export BRANCH=${BRANCH};\" "' + script + '"'
+        }
+    }
+}
+
+def syncfromduffynode(rsyncpath){
+    sh 'rsync -e "ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -l root " -Ha --include=' +  rsyncpath +  " ${DUFFY_NODE}.ci.centos.org:~/ ./"
+}
+
+node('pagure') {
+
+    properties([
+            parameters([
+                string(defaultValue: "", description: "", name: "REPO"),
+                string(defaultValue: "", description: "", name: "BRANCH"),
+                ])
+            ])
+
+    stage('Allocate Node'){
+        env.CICO_API_KEY = readFile("${env.HOME}/duffy.key").trim()
+        duffy_rtn=sh(
+            script: 'cico --debug node get -f value -c hostname -c comment',
+            returnStdout: true
+            ).trim().tokenize(' ')
+        env.DUFFY_NODE=duffy_rtn[0]
+        env.SSID=duffy_rtn[1]
+        env.BRANCH=params.BRANCH
+        env.REPO=params.REPO
+    }
+
+    try {
+        stage('Pre Setup Node'){
+            // Install EPEL
+            onmyduffynode 'yum -y install epel-release git'
+        }
+
+        stage('Notify PR'){
+            notifyPagurePR("pagure", "Tests running ", "BUILDING", "STARTED")
+        }
+
+        stage('Clone Test Suite') {
+            onmyduffynode "GIT_TRACE=1 GIT_CURL_VERBOSE=1 git clone --single-branch --depth 1 https://pagure.io/pagure.git"
+        }
+
+        stage('Run Test Suite') {
+            timeout(time: 6, unit: 'HOURS') {
+                onmyduffynode 'cd pagure && sh ./run_ci_tests_containers.sh'
+            }
+        }
+
+    } catch (e) {
+        currentBuild.result = "FAILURE"
+        throw e
+    } finally {
+
+        stage('Deallocate Node'){
+            sh 'cico node done ${SSID}'
+        }
+
+        stage('Notify PR'){
+            res = currentBuild.currentResult
+            notifyPagurePR("pagure", "Build " + res + "! ", res, "FINALIZED")
+        }
+
+    }
+}

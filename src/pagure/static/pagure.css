@@ -1,0 +1,557 @@
+html
+{
+  font-size:14px;
+}
+
+body{
+  background-color:transparent;
+}
+
+.container{
+  max-width: 1100px!important;
+}
+
+h1, .h1 {
+  font-size: 2rem;
+}
+
+h2, .h2 {
+  font-size: 1.75rem;
+}
+
+h3, .h3 {
+  font-size: 1.5rem;
+}
+
+h4, .h4 {
+  font-size: 1.25rem;
+}
+
+h5, .h5 {
+  font-size: 1rem;
+}
+
+h6, .h6 {
+  font-size: 1rem;
+}
+
+blockquote {
+  border-left: .25em solid #ccc;
+  padding-left: 0.5em;
+}
+
+blockquote p {
+  padding: 0 1em;
+  color: #6a737d;
+}
+
+.nowrap{
+  white-space: nowrap;
+}
+
+
+.notification-spacer .container{
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%,0);
+  z-index: 999;
+  max-width: 600px!important;
+}
+
+.notification-spacer .alert{
+  box-shadow:0 0 10px 2px rgba(0,0,0,0.1)
+}
+
+pre {
+  background-color: #f0f0f0;
+}
+
+.code_table {
+    background: #fff;
+    min-width: 100%;
+    display:block;
+    overflow-x: auto;
+}
+
+.code_table tr td{
+    padding: 0;
+}
+
+.code_table tr td pre{
+    padding: 0;
+    margin: 0;
+    /* prevent scrollbars appearing on each line when
+    zooming in some cases */
+    overflow: hidden;
+}
+
+.code_table tr .cell1{
+    width: 20px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    text-align:center;
+}
+
+.code_table tr .cell2{
+    padding-left:15px;
+}
+
+.code_table tr .cell1 a::before {
+    content: attr(data-line-number);
+    color:#91a1a1!important;
+    font-family: Hack;
+    padding-left:3px;
+    padding-right:3px;
+}
+
+.open_changed_file_icon_wrap {
+  /* Hidden until user hovers over it */
+  visibility: hidden;
+}
+
+.open_changed_file_icon {
+  /* some adjustments to make the icon look better */
+  font-size: 13px !important; /* default size turns out too small here */
+  top: 3px !important; /* work around a small vertical misalignment */
+}
+
+.open_changed_file_icon:hover {
+  cursor: pointer;
+}
+
+.stretch-table-column
+{
+    min-width:99%;
+}
+
+/*Set minimum height of the preview box and input
+  for the tabs when making a comment */
+#preview, .form-control#initial_comment
+{
+    min-height: 12rem;
+}
+
+#original_comment_box
+{
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+.bodycontent
+{
+min-height: 85vh;
+z-index:1;
+}
+
+
+#headerSearch .selectize-control.single .selectize-input::after,
+#userdash_searchform .selectize-control.single .selectize-input::after
+{
+  content: "\f002";
+  font-family: "FontAwesome";
+  border:none;
+  top:30%;
+  right:22px;
+  color:#aaa;
+}
+
+#headerSearch .selectize-control{
+  width:250px;
+  margin-top:3px;
+}
+
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  text-overflow: ellipsis;
+}
+
+.ellipsis-left
+{
+  direction:rtl;
+}
+
+.nav-tabs .nav-link {
+    padding: 0.5em 0.6em;
+}
+
+
+.pagination > li {
+    display: inline;
+}
+
+.prc {
+    min-width: 22px;
+    text-align: center;
+}
+
+.prc p {
+    padding:0!important;
+    margin:0!important;
+}
+
+.prc_img {
+    display: none;
+    cursor: pointer;
+}
+
+.highlighted-line,
+.highlighted-line td,
+.highlighted-line td pre,
+.highlighted-line td pre code {
+     background-color: #FFFABA;
+}
+
+
+/* Added */
+
+.commit_message_body
+{
+  font-family: "Open Sans";
+  background: transparent;
+  padding: 0;
+  font-size: 100%;
+}
+
+.card blockquote,
+.card pre
+{
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+a.notblue {
+    color: inherit;
+}
+
+#user_graph {
+    background-position: center center;
+    background-repeat: no-repeat;
+    min-height: 150px;
+}
+.content-loading {
+    background-image: url("images/spinner.gif");
+    background-position: center center;
+    background-repeat: no-repeat;
+    min-height: 30px;
+}
+
+.comment_body img {
+    max-width: 100%;
+    border: 5px solid #fff;
+    box-shadow: 0 0 5px #999;
+}
+
+pre.softwrap,
+.softwrap
+{
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+th[data-sort] {
+  cursor: pointer;
+}
+
+.readme dd{
+  margin-left:2em;
+}
+
+.hidden, .milestone_inactive, .expired_api_keys{
+  display: none;
+}
+
+.progress-bar {
+  line-height: 2em;
+}
+
+.code_table .cell_commit{
+  padding-left:0.5em;
+}
+
+
+#cal-heatmap {
+  padding:0.5em;
+  overflow:auto;
+}
+
+.attachment_list p,
+.prs_flag_list p {
+  margin-bottom: 0;
+}
+
+.nav-sidetabs{
+  height: 100%;
+  border-right: 1px solid #ddd;
+  padding-top: 1em;
+  min-height: 85vh;
+}
+
+.nav-tabs.nav-sidetabs .nav-link.active{
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  border-left: 1px solid #ddd;
+  border-right: 1px solid #fff;
+  box-shadow: 2px 0 0 0 white;
+}
+
+.nav-tabs.nav-sidetabs .nav-link:focus, .nav-tabs.nav-sidetabs .nav-link:hover{
+  background: #f5f5f5;
+  border: 1px solid white;
+}
+
+.nav-tabs.nav-sidetabs .nav-link.active:focus, .nav-tabs.nav-sidetabs .nav-link.active:hover{
+  background: #fff;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  border-left: 1px solid #ddd;
+}
+
+.tooltip-inner{
+  max-width: 400px;
+}
+
+.font-size-09{
+  font-size:0.9em;
+}
+
+.font-size-1{
+  font-size:1em;
+}
+
+.opacity-100{
+  opacity:1!important;
+}
+
+.autogenerated-comment p{
+  margin-bottom:0;
+}
+
+.diff2html-output .d2h-file-header{
+  display: none;
+}
+
+.diff2html-output .d2h-file-wrapper{
+  border: 0;
+  margin: 0;
+}
+
+.commit_diff .hljs.diff .hljs-addition,
+.commit_diff .hljs.patch .hljs-addition,
+.commit_diff .hljs.diff .hljs-deletion,
+.commit_diff .hljs.patch .hljs-deletion
+{
+  background: transparent!important;
+}
+
+.commit_diff .hljs.diff .hljs-meta,
+.commit_diff .hljs.patch .hljs-meta
+{
+  background: transparent!important;
+  color: rebeccapurple;
+}
+
+.hljs {
+  padding: 0!important;
+  background: #fff;
+}
+
+.line-height-1{
+  line-height: 1em;
+}
+
+
+.selectize-control:before{
+  -webkit-animation: fa-spin 2s infinite linear;
+  animation: fa-spin 2s infinite linear;
+  content: '\f1ce';
+  font-family: FontAwesome;
+  z-index: 2;
+  position: absolute;
+  display: block;
+  right: 34px;
+  top: 7px;
+  opacity: 0;
+}
+
+.selectize-control.loading:before{
+  opacity:0.4;
+}
+
+.font-0.9em {
+  font-size:0.9em;
+}
+
+.font-1em {
+ font-size: 1em;
+}
+
+.font-90p {
+  font-size: 90%;
+}
+
+.inline {
+  display: inline;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
+#PR-dropdown,
+#filters-dropdown,
+#merge-alert {
+  min-width:400px;
+}
+
+#source-dropdown,
+#sort-dropdown,
+#filters-list-dropdown,
+#archive_format_dropdown {
+  width:300px;
+}
+
+#maintainers_dropdown {
+  width:500px;
+}
+
+#issue_templates_dropdown {
+  position: absolute;
+  transform: translate3d(-110px, 31px, 0px);
+  top: 0px;
+  left: 0px;
+  will-change: transform;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.badge-tag {
+  width:100%;
+  display:block;
+}
+
+.width-40p {
+  width:40px;
+}
+
+.width-60p {
+  width:60px;
+}
+
+.width-150p {
+  width:150px;
+}
+
+.width-100per {
+  width:100%;
+}
+
+.height-22p {
+  height:22px;
+}
+
+.height-8p {
+  height:8px
+}
+
+.height-100per {
+  height: 100%
+}
+
+.text-align-right {
+  text-align:right;
+}
+
+.text-align-left {
+  text-align:left;
+}
+
+
+.center {
+    text-align:center;
+}
+
+.justify {
+    text-align:justify;
+}
+
+.new_commit {
+  position:absolute;
+  left:-2em;
+  top:0;
+  padding:5px;
+  padding-top:20px;
+  height:100%;
+  vertical-align:middle;
+}
+
+#docframe {
+  min-height:700px;
+  width:100%
+}
+
+.commit_hash {
+  font-size: 1em;
+  background: #ddd;
+}
+
+.commit_branch {
+  font-size: 1em;
+  background: #ababab;
+}
+
+.light_gray_bg {
+  background-color:#ccc;
+}
+
+.font-monospace {
+  font-family:monospace
+}
+
+.flex-1{
+  flex:1;
+}
+
+.markdown table {
+  display: block;
+  overflow: auto;
+  width: 100%;
+  margin-bottom: 14px;
+  background-color: #fff;
+}
+
+.markdown table tr {
+  border-top: 1px solid #c6cbd1;
+}
+
+.markdown table td, .markdown table th {
+  border: 1px solid #dfe2e5;
+  padding: 6px 13px;
+}
+
+.caret-span {
+  display: inline;
+  position: relative;
+}
+
+.api-doc .accordion {
+  padding-bottom: 13px;
+}
+
+.api-doc nav {
+  height: 100%;
+}
+
+.api-doc .nav-sidetabs {
+  border-bottom: 0;
+}
+
+.api-doc .card-body h2.title {
+  display: none;
+}
