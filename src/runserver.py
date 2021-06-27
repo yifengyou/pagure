@@ -56,7 +56,7 @@ parser.add_argument(
 )
 parser.add_argument(
     "--host",
-    default="0.0.0.0",
+    default="0.0.0.0", # 调整为0.0.0.0
     help="Hostname to listen on. When set to 0.0.0.0 the server is available "
     "externally. Defaults to 127.0.0.1 making the it only visible on localhost",
 )

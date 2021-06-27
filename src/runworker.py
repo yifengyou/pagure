@@ -53,6 +53,8 @@ if args.config:
         config = os.path.join(here, config)
     env["PAGURE_CONFIG"] = config
 
+# 解决高版本celery命令解析变更问题，调整顺序即可
+# cmd = [sys.executable, "-m", "celery", "-A", args.tasks, "worker"]
 cmd = [sys.executable, "-m", "celery",  "-A", args.tasks, "worker"]
 
 if args.queue:

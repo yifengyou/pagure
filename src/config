@@ -8,10 +8,12 @@ DB_URL = 'sqlite:////var/tmp/pagure_dev.sqlite'
 # Change the OpenID endpoint
 # FAS_OPENID_ENDPOINT = 'https://id.stg.fedoraproject.org'
 
-#APP_URL = '*'
+APP_URL = 'http://0.0.0.0:5000'
 EVENTSOURCE_SOURCE = 'http://0.0.0.0:8080'
 EVENTSOURCE_PORT = '8080'
-#DOC_APP_URL = '*'
+
+ENABLE_DOCS = True
+DOC_APP_URL = 'http://0.0.0.0:5001'
 
 # Avoid sending email when developing
 EMAIL_SEND = False

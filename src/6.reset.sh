@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if [ -f sqlite:////var/tmp/pagure_dev.sqlite ];then
-	rm -rf sqlite:////var/tmp/pagure_dev.sqlite
+if [ -f /var/tmp/pagure_dev.sqlite ];then
+	rm -rf /var/tmp/pagure_dev.sqlite
 	echo "clean sqlite:////var/tmp/pagure_dev.sqlite"
 fi
 
