@@ -3157,7 +3157,8 @@ def mirror_pull_project(session, project, debug=False):
         else:
             command = ["git", "push", "local", "--mirror"]
             environ = {}
-
+        print("Pushing command [%s]" % ' '.join(command))
+        print("Pushing environ [%s]" % ' '.join(environ))
         _log.debug("Running a git push to %s", project.fullname)
         env = os.environ.copy()
         env["GL_USER"] = "pagure"
