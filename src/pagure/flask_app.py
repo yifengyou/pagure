@@ -123,15 +123,15 @@ def create_app(config=None):
     # Import the application
 
     from pagure.api import API  # noqa: E402
-
+    # 注册API接口
     app.register_blueprint(API)
 
     from pagure.ui import UI_NS  # noqa: E402
-
+    # 注册UI前端接口
     app.register_blueprint(UI_NS)
 
     from pagure.internal import PV  # noqa: E402
-
+    # 注册
     app.register_blueprint(PV)
 
     # Import 3rd party blueprints
