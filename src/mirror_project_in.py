@@ -50,6 +50,12 @@ if __name__ == "__main__":
         description="Script to send email before the api token expires"
     )
     parser.add_argument(
+        "--config",
+        "-c",
+        dest="config",
+        help="Configuration file to use for pagure.",
+    )
+    parser.add_argument(
         "--check",
         dest="check",
         action="store_true",

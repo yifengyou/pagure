@@ -3,4 +3,6 @@
 * [读我](README.md)
 * [pagure介绍](docs/pagure介绍.md)
 * [pagure部署](docs/pagure部署.md)
+* [pagure源码分析](docs/pagure源码分析.md)
+    * [镜像站点流程](docs/pagure源码分析/镜像站点流程.md)
 
