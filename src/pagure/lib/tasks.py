@@ -51,7 +51,7 @@ elif pagure_config.get("BROKER_URL"):
 else:
     broker_url = "redis://%s" % pagure_config["REDIS_HOST"]
 
-_log.debug("broker_url: %s", broker_url)
+print("broker_url: %s", broker_url)
 
 conn = Celery("tasks", broker=broker_url, backend=broker_url)
 conn.conf.update(pagure_config["CELERY_CONFIG"])
