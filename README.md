@@ -20,9 +20,9 @@ Something I hope you know before go into the coding~
 
 ## 参考文档
 
-* <https://docs.pagure.org/pagure/index.html>
-* <https://pagure.io/pagure>
-
+* 官方文档：<https://docs.pagure.org/pagure/index.html>
+* 官方地址：<https://pagure.io/pagure>
+* GitHub加速地址：<https://hub.fastgit.org/yifengyou/learn-pagure.git>
 
 ## 经典图示
 
