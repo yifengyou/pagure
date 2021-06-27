@@ -156,6 +156,7 @@ def __get_tree_and_content(repo_obj, commit, path):
     tree = sorted(tree_obj, key=lambda x: x.filemode)
     return (tree, content, filename)
 
+@APP.route("/helloworld/")
 def view_helloworld():
     return jsonify({'helloworld': str(datetime.datetime.now())})
 
