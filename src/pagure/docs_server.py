@@ -10,6 +10,7 @@
 
 from __future__ import unicode_literals, absolute_import
 
+import datetime
 import logging
 import os
 
@@ -17,6 +18,7 @@ import flask
 import pygit2
 
 from binaryornot.helpers import is_binary_string
+from flask import jsonify
 from whitenoise import WhiteNoise
 
 import pagure.config
@@ -154,6 +156,8 @@ def __get_tree_and_content(repo_obj, commit, path):
     tree = sorted(tree_obj, key=lambda x: x.filemode)
     return (tree, content, filename)
 
+def view_helloworld():
+    return jsonify({'helloworld': str(datetime.datetime.now())})
 
 @APP.route("/<repo>/")
 @APP.route("/<namespace>.<repo>/")

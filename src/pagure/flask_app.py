@@ -59,10 +59,12 @@ if (
 if pagure_config.get("PAGURE_CI_SERVICES"):
     pagure.lib.query.set_pagure_ci(pagure_config["PAGURE_CI_SERVICES"])
 
-
+# 关键入口，创建应用
 def create_app(config=None):
     """ Create the flask application. """
     app = flask.Flask(__name__)
+    # pagure_config从 pagure.config 中调用 reload_config 加载配置文件
+    # 既 os.environ["PAGURE_CONFIG"] = config 中路径提供的配置
     app.config = pagure_config
 
     if config:
@@ -134,6 +136,7 @@ def create_app(config=None):
 
     # Import 3rd party blueprints
     plugin_config = flask.config.Config("")
+    # PAGURE_PLUGIN 已经淘汰
     if "PAGURE_PLUGIN" in os.environ:
         # Warn the user about deprecated variable (defaults to stderr)
         warnings.warn(
@@ -163,6 +166,7 @@ def create_app(config=None):
         logger.info("Loading blueprint: %s", blueprint.name)
         app.register_blueprint(blueprint)
 
+    # 修改pagure主题
     themename = pagure_config.get("THEME", "default")
     here = os.path.abspath(
         os.path.join(os.path.dirname(os.path.abspath(__file__)))
