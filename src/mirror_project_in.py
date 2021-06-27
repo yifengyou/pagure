@@ -35,6 +35,8 @@ def main(check=False, debug=False):
     for project in projects:
         if debug:
             print("Mirrorring %s" % project.fullname)
+            print("Mirrorring mirrored_from = [%s]" % project.mirrored_from)
+            print("Mirrorring mirrored_from_last_log = [%s]" % project.mirrored_from_last_log)
         try:
             pagure.lib.git.mirror_pull_project(session, project, debug=debug)
         except Exception as err:

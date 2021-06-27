@@ -11,3 +11,5 @@ if [ -d lcl ];then
 	mkdir -p lcl/{repos,remotes,attachments,releases}
 	echo "mkdir -p lcl/{repos,remotes,attachments,releases}"
 fi
+
+./2.createdb.sh
