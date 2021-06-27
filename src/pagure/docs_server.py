@@ -41,10 +41,12 @@ APP.wsgi_app = WhiteNoise(
 )
 
 # set up FAS
+# 加载配置
 APP.config = pagure.config.reload_config()
 
 SESSION = pagure.lib.model_base.create_session(APP.config["DB_URL"])
 
+# 如果启用调试，显示邮件头
 if not APP.debug:
     APP.logger.addHandler(
         pagure.mail_logging.get_mail_handler(
@@ -156,6 +158,7 @@ def __get_tree_and_content(repo_obj, commit, path):
     tree = sorted(tree_obj, key=lambda x: x.filemode)
     return (tree, content, filename)
 
+# 添加测试路由
 @APP.route("/helloworld/")
 def view_helloworld():
     return jsonify({'helloworld': str(datetime.datetime.now())})
