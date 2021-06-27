@@ -3085,9 +3085,9 @@ def mirror_pull_project(session, project, debug=False):
     lclrepopath = pagure.utils.get_repo_path(project)
 
     def _run_command(command, logs):
-        _log.info("Running the command: %s" % command)
+        _log.info("Running the command: %s" % ('git ' + command))
         if debug:
-            print("Running the command: %s" % command)
+            print("Running the command: %s" % ('git ' + command))
             print("  Running in: %s" % repopath)
         (stdout, stderr) = pagure.lib.git.read_git_lines(
             command, abspath=repopath, error=True
