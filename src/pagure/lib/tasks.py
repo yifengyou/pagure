@@ -51,7 +51,7 @@ elif pagure_config.get("BROKER_URL"):
 else:
     broker_url = "redis://%s" % pagure_config["REDIS_HOST"]
 
-print("broker_url: %s", broker_url)
+_log.info("broker_url: %s", broker_url)
 
 conn = Celery("tasks", broker=broker_url, backend=broker_url)
 conn.conf.update(pagure_config["CELERY_CONFIG"])
@@ -559,6 +559,8 @@ def pull_remote_repo(self, session, remote_git, branch_from):
     clonepath = pagure.utils.get_remote_repo_path(
         remote_git, branch_from, ignore_non_exist=True
     )
+
+    _log.info("pull from remote [%s] to [%s]" % (remote_git, clonepath))
 
     pagure.lib.repo.PagureRepo.clone(
         remote_git, clonepath, checkout_branch=branch_from
