@@ -64,28 +64,31 @@ SALT_EMAIL = '<secret key to be changed>'
 DISABLE_REMOTE_PR = False
 
 ### The URL at which the project is available.
-APP_URL = 'http://localhost.localdomain/'
+APP_URL = 'http://0.0.0.0:5000/'
 ### The URL at which the documentation of projects will be available
 ## This should be in a different domain to avoid XSS issues since we want
 ## to allow raw html to be displayed (different domain, ie not a sub-domain).
-DOC_APP_URL = 'http://docs.localhost.localdomain'
+DOC_APP_URL = 'http://0.0.0.0:5001'
 
 ### The URL to use to clone git repositories.
-GIT_URL_SSH = 'ssh://git@localhost.localdomain/'
-GIT_URL_GIT = 'git://localhost.localdomain/'
+GIT_URL_SSH = 'ssh://git@localhost/'
+GIT_URL_GIT = 'git://localhost/'
 
 ### Folder containing to the git repos
-GIT_FOLDER = os.path.join(
-    os.path.abspath(os.path.dirname(__file__)),
-    '..',
-    'repos'
-)
+#GIT_FOLDER = os.path.join(
+#    os.path.abspath(os.path.dirname(__file__)),
+#    '..',
+#    'repos'
+#)
+GIT_FOLDER = '/root/learn-pagure/repos'
 
-REPOSPANNER_PSEUDO_FOLDER = os.path.join(
-    os.path.abspath(os.path.dirname(__file__)),
-    '..',
-    'pseudo'
-)
+#REPOSPANNER_PSEUDO_FOLDER = os.path.join(
+#    os.path.abspath(os.path.dirname(__file__)),
+#    '..',
+#    'pseudo'
+#)
+REPOSPANNER_PSEUDO_FOLDER = '/root/learn-pagure/pesudorepos'
+
 
 ### Folder containing the clones for the remote pull-requests
 #REMOTE_GIT_FOLDER = os.path.join(
@@ -93,18 +96,18 @@ REPOSPANNER_PSEUDO_FOLDER = os.path.join(
 #    '..',
 #    'remotes'
 #)
-GIT_FOLDER = '/root/learn-pagure/repos'
 
 ### Whether to enable scanning for viruses in attachments
 VIRUS_SCAN_ATTACHMENTS = False
 
 
 ### Configuration file for gitolite
-GITOLITE_CONFIG = os.path.join(
-    os.path.abspath(os.path.dirname(__file__)),
-    '..',
-    'gitolite.conf'
-)
+#GITOLITE_CONFIG = os.path.join(
+#    os.path.abspath(os.path.dirname(__file__)),
+#    '..',
+#    'gitolite.conf'
+#)
+GITOLITE_CONFIG = '/root/learn-pagure/repos/gitolite.conf'
 
 
 ### Home folder of the gitolite user
