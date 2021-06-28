@@ -645,8 +645,10 @@ def get_repo_path(repo):
     """Return the path of the git repository corresponding to the provided
     Repository object from the DB.
     """
+    # 调用ORM中project类中public方法
     repopath = repo.repopath("main")
     if not os.path.exists(repopath):
+        print("Git repo not found at: [%s]" % repopath)
         _log.debug("Git repo not found at: %s", repopath)
         flask.abort(404, description="No git repo found")
 

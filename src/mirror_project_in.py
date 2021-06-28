@@ -37,6 +37,7 @@ def main(check=False, debug=False):
             print("Mirrorring %s" % project.fullname)
             print("Mirrorring mirrored_from = [%s]" % project.mirrored_from)
             print("Mirrorring mirrored_from_last_log = [%s]" % project.mirrored_from_last_log)
+            print("Mirrorring repospanner_region = [%s]" % project.repospanner_region)
         try:
             pagure.lib.git.mirror_pull_project(session, project, debug=debug)
         except Exception as err:
@@ -50,12 +51,6 @@ def main(check=False, debug=False):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Script to send email before the api token expires"
-    )
-    parser.add_argument(
-        "--config",
-        "-c",
-        dest="config",
-        help="Configuration file to use for pagure.",
     )
     parser.add_argument(
         "--check",

@@ -619,6 +619,7 @@ class Project(BASE):
         maindir = None
         if repotype == "main":
             maindir = pagure_config["GIT_FOLDER"]
+            maindir = "/root/learn-pagure/repos"
         elif repotype == "docs":
             maindir = pagure_config["DOCS_FOLDER"]
         elif repotype == "tickets":
@@ -627,6 +628,7 @@ class Project(BASE):
             maindir = pagure_config["REQUESTS_FOLDER"]
         else:
             return ValueError("Repotype %s is invalid" % repotype)
+        print("maindir = [%s]" % maindir)
         if maindir is None:
             if repotype == "main":
                 raise Exception("No maindir for main repos?")

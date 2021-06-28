@@ -3082,6 +3082,7 @@ def mirror_pull_project(session, project, debug=False):
         _log.info("No remote found, ignoring")
         return
     repopath = tempfile.mkdtemp(prefix="pagure-mirror_in-")
+    print("mkdir tmp folder : [%s]" % repopath)
     lclrepopath = pagure.utils.get_repo_path(project)
 
     def _run_command(command, logs):
