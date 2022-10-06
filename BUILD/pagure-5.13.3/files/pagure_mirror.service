@@ -1,0 +1,24 @@
+# This is a systemd's service file for the mirroring service, if you change
+# the default value of the CI_CELERY_QUEUE configuration key, do not
+# forget to edit it in the ExecStart line below
+# 
+# This service handles the queue of git hooks that are used to PUSH new commits
+# to an external mirror repository. Hooks are set from the projects settings.
+# For mirroring external repositories into pagure, see pagure_mirror_project_in.service.
+
+
+[Unit]
+Description=Pagure service mirroring projects outside of pagure that asked for it
+After=redis.target
+Documentation=https://pagure.io/pagure
+
+[Service]
+ExecStart=/usr/bin/celery worker -A pagure.lib.tasks_mirror --loglevel=info -Q pagure_mirror
+Environment="PAGURE_CONFIG=/etc/pagure/pagure.cfg"
+Type=simple
+User=mirror
+Group=mirror
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,371 @@
+
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Theming Guide &#8212; pagure  documentation</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/site.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/site.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+
+    
+    
+     
+        <script src="../_static/jquery.cookie.js"></script>
+    
+
+    
+     
+        <script src="../_static/cloud.base.js"></script>
+    
+
+    
+     
+        <script src="../_static/cloud.js"></script>
+    
+
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Upgrade a database" href="upgrade_db.html" />
+    <link rel="prev" title="Customize the PR page" href="pr_custom_page.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head><body>
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="upgrade_db.html" title="Upgrade a database"
+             accesskey="N">next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="pr_custom_page.html" title="Customize the PR page"
+             accesskey="P">previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">pagure  documentation</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Usage</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Theming Guide</a></li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="theming-guide">
+<h1>Theming Guide<a class="headerlink" href="#theming-guide" title="Permalink to this headline">¶</a></h1>
+<p>Pagure is built on Flask, and uses Jinja2 for templates. Pagure also
+includes the ability to apply different themes that control the look
+and feel of your pagure instance, or add or remove elements from the
+interface.</p>
+<div class="section" id="setting-a-theme">
+<h2>Setting a theme<a class="headerlink" href="#setting-a-theme" title="Permalink to this headline">¶</a></h2>
+<p>The theme is set in the Pagure configuration file. The theme name is defined by
+the name of the directory in the /themes/ folder that contains the theme. For
+example to enable the theme that is used on Pagure.io, add the following line
+to your Pagure configuration:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">THEME</span> <span class="o">=</span> <span class="s2">&quot;pagureio&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="theme-contents">
+<h2>Theme contents<a class="headerlink" href="#theme-contents" title="Permalink to this headline">¶</a></h2>
+<p>A theme requires two directories (<cite>templates</cite> and <cite>static</cite>) in the directory
+that contains the theme. The only other required file is theme.html which
+is placed in the templates directory</p>
+<div class="section" id="templates">
+<h3>templates/<a class="headerlink" href="#templates" title="Permalink to this headline">¶</a></h3>
+<p>The <cite>templates</cite> directory is where pagure will look for the <cite>theme.html</cite>
+template. Additionally, if you wish to override any template in Pagure,
+place it in the theme templates/ directory, and pagure will use that
+template rather than the standard one.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Take care when overriding templates, as any changes to Pagure
+upstream will need to be backported to your theme template override.</p>
+</div>
+</div>
+<div class="section" id="static">
+<h3>static/<a class="headerlink" href="#static" title="Permalink to this headline">¶</a></h3>
+<p>The <cite>static</cite> directory contains all the static elements for the theme,
+including additional a favicon, images, Javascript, and CSS files. To
+reference a file in the theme static directory use the jinja2 tag
+<cite>{{ url_for(‘theme.static’, filename=’filename’)}}</cite>. For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">link</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;{{ url_for(&#39;theme.static&#39;, filename=&#39;theme.css&#39;) }}&quot;</span>
+      <span class="n">rel</span><span class="o">=</span><span class="s2">&quot;stylesheet&quot;</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;text/css&quot;</span> <span class="o">/&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="templates-theme-html">
+<h3>templates/theme.html<a class="headerlink" href="#templates-theme-html" title="Permalink to this headline">¶</a></h3>
+<p>The theme.html file defines a subset of items in the Pagure interface that
+are commonly changed when creating a new theme. Theming is a new feature in
+Pagure, so this set is currently small, but please file issues or PRs against
+pagure with ideas of new items to include.</p>
+<p>The current items configurable in theme.html are:</p>
+<div class="section" id="masthead-class-variable">
+<h4><cite>masthead_class</cite> variable<a class="headerlink" href="#masthead-class-variable" title="Permalink to this headline">¶</a></h4>
+<p>A string of additional CSS class(es) to be added to the navbar element.
+This navbar element is the topbar in Pagure. For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="o">%</span> <span class="nb">set</span> <span class="n">masthead_class</span> <span class="o">=</span> <span class="s2">&quot;navbar-dark bg-dark&quot;</span> <span class="o">%</span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="masthead-navbar-items-macro">
+<h4><cite>masthead_navbar_items()</cite> macro<a class="headerlink" href="#masthead-navbar-items-macro" title="Permalink to this headline">¶</a></h4>
+<p>A Jinja macro that allows themes to inject custom items in the Pagure navigation
+bar. Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="o">%</span> <span class="n">macro</span> <span class="n">masthead_navbar_items</span><span class="p">()</span> <span class="o">%</span><span class="p">}</span>
+    <span class="o">&lt;</span><span class="n">li</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;nav-item ml-3&quot;</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">a</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;nav-link font-weight-bold&quot;</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;...&quot;</span><span class="o">&gt;</span>
+            <span class="n">Foobar</span>
+        <span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
+<span class="p">{</span><span class="o">%</span> <span class="n">endmacro</span> <span class="o">%</span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="site-title-variable">
+<h4><cite>site_title</cite> variable<a class="headerlink" href="#site-title-variable" title="Permalink to this headline">¶</a></h4>
+<p>A string containing the text to append at the end of the html title
+on every page on the site. Usage:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="o">%</span> <span class="nb">set</span> <span class="n">site_title</span> <span class="o">=</span> <span class="s2">&quot;Pagure&quot;</span> <span class="o">%</span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="projectstring-bool-plural-macro">
+<h4><cite>projectstring(Bool:plural)</cite> macro<a class="headerlink" href="#projectstring-bool-plural-macro" title="Permalink to this headline">¶</a></h4>
+<p>A macro that returns a string used to refer to Projects in Pagure
+The plural parameter informs if the string to be returned is the
+plural form.
+This macro is optional.
+Usage:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="o">%</span> <span class="n">macro</span> <span class="n">projectstring</span><span class="p">(</span><span class="n">plural</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-%</span><span class="p">}</span>
+    <span class="p">{</span><span class="o">%</span> <span class="k">if</span> <span class="n">plural</span> <span class="o">%</span><span class="p">}</span>
+        <span class="n">Repositories</span>
+    <span class="p">{</span><span class="o">%</span> <span class="k">else</span> <span class="o">%</span><span class="p">}</span>
+        <span class="n">Repository</span>
+    <span class="p">{</span><span class="o">%</span> <span class="n">endif</span> <span class="o">%</span><span class="p">}</span>
+<span class="p">{</span><span class="o">%</span> <span class="n">endmacro</span> <span class="o">-%</span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="projecticon-variable">
+<h4><cite>projecticon</cite> variable<a class="headerlink" href="#projecticon-variable" title="Permalink to this headline">¶</a></h4>
+<p>A string containing the name of the fontawesome icon to use for
+Projects. This variable is optional. Usage:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="o">%</span> <span class="nb">set</span> <span class="n">projecticon</span> <span class="o">=</span> <span class="s2">&quot;Package&quot;</span> <span class="o">%</span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="head-imports-macro">
+<h4><cite>head_imports()</cite> macro<a class="headerlink" href="#head-imports-macro" title="Permalink to this headline">¶</a></h4>
+<p>A Jinja macro that defines the additional items in the html head to
+be imported. The base templates do not include the bootstrap CSS, so
+this needs to be included in this macro in your theme. Additionally,
+include your favicon here, and a link to any additional CSS files your
+theme uses. Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="o">%</span> <span class="n">macro</span> <span class="n">head_imports</span><span class="p">()</span> <span class="o">%</span><span class="p">}</span>
+    <span class="o">&lt;</span><span class="n">link</span> <span class="n">rel</span><span class="o">=</span><span class="s2">&quot;shortcut icon&quot;</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;image/vnd.microsoft.icon&quot;</span>
+          <span class="n">href</span><span class="o">=</span><span class="s2">&quot;{{ url_for(&#39;theme.static&#39;, filename=&#39;favicon.ico&#39;)}}&quot;</span><span class="o">/&gt;</span>
+    <span class="o">&lt;</span><span class="n">link</span> <span class="n">rel</span><span class="o">=</span><span class="s2">&quot;stylesheet&quot;</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;{{ url_for(&#39;theme.static&#39;, filename=&#39;bootstrap/bootstrap.min.css&#39;)}}&quot;</span> <span class="o">/&gt;</span>
+    <span class="o">&lt;</span><span class="n">link</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;{{ url_for(&#39;theme.static&#39;, filename=&#39;theme.css&#39;) }}&quot;</span> <span class="n">rel</span><span class="o">=</span><span class="s2">&quot;stylesheet&quot;</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;text/css&quot;</span> <span class="o">/&gt;</span>
+<span class="p">{</span><span class="o">%</span> <span class="n">endmacro</span> <span class="o">%</span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="js-imports-macro">
+<h4><cite>js_imports()</cite> macro<a class="headerlink" href="#js-imports-macro" title="Permalink to this headline">¶</a></h4>
+<p>A Jinja macro that defines the additional javascript files to
+be imported. The base templates do not include the bootstrap JS, so
+this needs to be included in this macro in your theme. Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="o">%</span> <span class="n">macro</span> <span class="n">js_imports</span><span class="p">()</span> <span class="o">%</span><span class="p">}</span>
+    <span class="o">&lt;</span><span class="n">script</span> <span class="n">src</span><span class="o">=</span><span class="s2">&quot;{{ url_for(&#39;theme.static&#39;, filename=&#39;bootstrap/bootstrap.bundle.min.js&#39;)}}&quot;</span><span class="o">&gt;&lt;/</span><span class="n">script</span><span class="o">&gt;</span>
+<span class="p">{</span><span class="o">%</span> <span class="n">endmacro</span> <span class="o">%</span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="browseheader-message-select-macro">
+<h4><cite>browseheader_message(select)</cite> macro<a class="headerlink" href="#browseheader-message-select-macro" title="Permalink to this headline">¶</a></h4>
+<p>An optional Jinja macro that defines the welcome message that is shown
+above the tabs on the Browse Pages (Projects, Users, and Groups). The
+select parameter is a string with the name of the page being shown
+Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="o">%</span> <span class="n">macro</span> <span class="n">browseheader_message</span><span class="p">(</span><span class="n">select</span><span class="p">)</span> <span class="o">%</span><span class="p">}</span>
+    <span class="p">{</span><span class="o">%</span> <span class="k">if</span> <span class="n">select</span> <span class="o">==</span> <span class="s1">&#39;projects&#39;</span> <span class="o">%</span><span class="p">}</span>
+    <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;row justify-content-around&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;col-md-8&quot;</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;jumbotron bg-transparent m-0 py-4 text-center&quot;</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">h1</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;display-5&quot;</span><span class="o">&gt;</span><span class="n">Welcome</span> <span class="n">to</span> <span class="n">my</span> <span class="n">Pagure</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">p</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;lead&quot;</span><span class="o">&gt;</span><span class="n">Pagure</span> <span class="ow">is</span> <span class="n">an</span> <span class="n">Open</span> <span class="n">Source</span> <span class="n">software</span> <span class="n">code</span> <span class="n">hosting</span> <span class="n">system</span><span class="o">.&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+        <span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+    <span class="p">{</span><span class="o">%</span> <span class="n">endif</span> <span class="o">%</span><span class="p">}</span>
+<span class="p">{</span><span class="o">%</span> <span class="n">endmacro</span> <span class="o">%</span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="footer-macro">
+<h4><cite>footer()</cite> macro<a class="headerlink" href="#footer-macro" title="Permalink to this headline">¶</a></h4>
+<p>A Jinja macro that defines the footer of the Pagure site. Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="o">%</span> <span class="n">macro</span> <span class="n">footer</span><span class="p">()</span> <span class="o">%</span><span class="p">}</span>
+    <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;footer py-3 bg-light border-top text-center&quot;</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;container&quot;</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">p</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;text-muted credit&quot;</span><span class="o">&gt;</span>
+        <span class="n">Powered</span> <span class="n">by</span>
+        <span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;https://pagure.io/pagure&quot;</span><span class="o">&gt;</span><span class="n">Pagure</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
+        <span class="p">{{</span> <span class="n">g</span><span class="o">.</span><span class="n">version</span> <span class="p">}}</span>
+            <span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;{{ url_for(&#39;ui_ns.ssh_hostkey&#39;) }}&quot;</span><span class="o">&gt;</span><span class="n">SSH</span> <span class="n">Hostkey</span><span class="o">/</span><span class="n">Fingerprint</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span> <span class="o">|</span> <span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;https://docs.pagure.org/pagure/usage/index.html&quot;</span><span class="o">&gt;</span><span class="n">Documentation</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+        <span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+<span class="p">{</span><span class="o">%</span> <span class="n">endmacro</span> <span class="o">%</span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="about-page-macro">
+<h4><cite>about_page()</cite> macro<a class="headerlink" href="#about-page-macro" title="Permalink to this headline">¶</a></h4>
+<p>A Jinja macro that defines the content of the About page (available at /about). You may want to replace the links to contact links for your own instance. Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="o">%</span> <span class="n">macro</span> <span class="n">about_page</span><span class="p">()</span> <span class="o">%</span><span class="p">}</span>
+    <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;container mt-5&quot;</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">About</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">This</span> <span class="ow">is</span> <span class="n">an</span> <span class="n">instance</span> <span class="n">of</span> <span class="n">Pagure</span><span class="p">,</span> <span class="n">a</span> <span class="n">git</span> <span class="n">forge</span><span class="o">.&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">If</span> <span class="n">you</span> <span class="n">experience</span> <span class="n">a</span> <span class="n">bug</span> <span class="ow">or</span> <span class="n">security</span> <span class="n">concern</span><span class="p">,</span> <span class="n">please</span> <span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;https://pagure.io/pagure/issues&quot;</span><span class="o">&gt;</span><span class="n">submit</span> <span class="n">an</span> <span class="n">issue</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;.&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">You</span> <span class="n">may</span> <span class="n">also</span> <span class="n">post</span> <span class="n">questions</span> <span class="n">to</span> <span class="n">the</span> <span class="n">Pagure</span> <span class="n">Development</span> <span class="nb">list</span> <span class="n">by</span> <span class="n">emailing</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;mailto:pagure-devel@lists.pagure.io&quot;</span><span class="o">&gt;</span><span class="n">pagure</span><span class="o">-</span><span class="n">devel</span><span class="nd">@lists</span><span class="o">.</span><span class="n">pagure</span><span class="o">.</span><span class="n">io</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span> <span class="ow">or</span> <span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;https://lists.pagure.io/admin/lists/pagure-devel.lists.pagure.io/&quot;</span><span class="o">&gt;</span><span class="n">subscribe</span> <span class="n">to</span> <span class="n">the</span> <span class="nb">list</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;.&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;https://lists.pagure.io/admin/lists/pagure-announce.lists.pagure.io/&quot;</span><span class="o">&gt;</span><span class="n">Subscribe</span> <span class="n">to</span> <span class="n">announcements</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span> <span class="n">about</span> <span class="n">Pagure</span><span class="o">.&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+<span class="p">{</span><span class="o">%</span> <span class="n">endmacro</span> <span class="o">%</span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><h1 class='pagure-logo'><span></span>Pagure</h1><div class="sphinx-toc sphinxlocaltoc">
+    <h3><a href="../index.html">Page contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Theming Guide</a><ul>
+<li><a class="reference internal" href="#setting-a-theme">Setting a theme</a></li>
+<li><a class="reference internal" href="#theme-contents">Theme contents</a><ul>
+<li><a class="reference internal" href="#templates">templates/</a></li>
+<li><a class="reference internal" href="#static">static/</a></li>
+<li><a class="reference internal" href="#templates-theme-html">templates/theme.html</a><ul>
+<li><a class="reference internal" href="#masthead-class-variable"><cite>masthead_class</cite> variable</a></li>
+<li><a class="reference internal" href="#masthead-navbar-items-macro"><cite>masthead_navbar_items()</cite> macro</a></li>
+<li><a class="reference internal" href="#site-title-variable"><cite>site_title</cite> variable</a></li>
+<li><a class="reference internal" href="#projectstring-bool-plural-macro"><cite>projectstring(Bool:plural)</cite> macro</a></li>
+<li><a class="reference internal" href="#projecticon-variable"><cite>projecticon</cite> variable</a></li>
+<li><a class="reference internal" href="#head-imports-macro"><cite>head_imports()</cite> macro</a></li>
+<li><a class="reference internal" href="#js-imports-macro"><cite>js_imports()</cite> macro</a></li>
+<li><a class="reference internal" href="#browseheader-message-select-macro"><cite>browseheader_message(select)</cite> macro</a></li>
+<li><a class="reference internal" href="#footer-macro"><cite>footer()</cite> macro</a></li>
+<li><a class="reference internal" href="#about-page-macro"><cite>about_page()</cite> macro</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div class="sphinxprev">
+    <h4>Previous page</h4>
+    <p class="topless"><a href="pr_custom_page.html"
+                          title="Previous page">&larr; Customize the PR page</a></p>
+  </div>
+  <div class="sphinxnext">
+    <h4>Next page</h4>
+    <p class="topless"><a href="upgrade_db.html"
+                          title="Next page">&rarr; Upgrade a database</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/usage/theming.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="upgrade_db.html" title="Upgrade a database"
+             >next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="pr_custom_page.html" title="Customize the PR page"
+             >previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">pagure  documentation</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Usage</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Theming Guide</a></li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015, Red Hat Inc, Pierre-Yves Chibon &lt;pingou@pingoured.fr&gt;.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+  </body>
+</html>

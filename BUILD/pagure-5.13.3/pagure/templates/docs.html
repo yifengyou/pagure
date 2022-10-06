@@ -1,0 +1,24 @@
+{% extends "repo_master.html" %}
+
+{% block title %}Docs - {{
+    repo.namespace + '/' if repo.namespace }}{{ repo.name }}{% endblock %}
+{% set tag = "home" %}
+
+
+{% block repo %}
+
+<iframe id="docframe" src="{{ config['DOC_APP_URL'] + url_for('ui_ns.view_repo',
+        repo=repo.namespace + '.' + repo.name if repo.namespace else repo.name,
+        username=username,
+        filename=filename) }}"
+    frameborder="0">
+  <p>Your browser does not support iframe, please visit
+  <a href="{{ config['DOC_APP_URL'] + url_for('ui_ns.view_repo',
+        repo=repo.namespace + '.' + repo.name if repo.namespace else repo.name,
+        username=username,
+        filename=filename)
+    }}">the documentation directly</a>
+  </p>
+</iframe>
+
+{% endblock %}

@@ -1,0 +1,237 @@
+
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Using web-hooks &#8212; pagure  documentation</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/site.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/site.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+
+    
+    
+     
+        <script src="../_static/jquery.cookie.js"></script>
+    
+
+    
+     
+        <script src="../_static/cloud.base.js"></script>
+    
+
+    
+     
+        <script src="../_static/cloud.js"></script>
+    
+
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Templates for ticket input" href="ticket_templates.html" />
+    <link rel="prev" title="Using the doc repository of your project" href="using_doc.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head><body>
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="ticket_templates.html" title="Templates for ticket input"
+             accesskey="N">next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="using_doc.html" title="Using the doc repository of your project"
+             accesskey="P">previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">pagure  documentation</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Usage</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Using web-hooks</a></li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="using-web-hooks">
+<h1>Using web-hooks<a class="headerlink" href="#using-web-hooks" title="Permalink to this headline">¶</a></h1>
+<p>Web-hooks are a notification system that could be compared to a callback.
+Basically, pagure will make a HTTP POST request to one or more third party
+server/application with information about what is or just happened.</p>
+<div class="section" id="activating-web-hooks-notifications">
+<h2>Activating web-hooks notifications<a class="headerlink" href="#activating-web-hooks-notifications" title="Permalink to this headline">¶</a></h2>
+<p>To set-up a web-hook, simply go to the settings page of your project and
+enter the URL to the server/endpoint that will receive the notifications.
+If you wish to enter multiple URLs, enter one per line.
+To stop all notifications, clear out that field.</p>
+<p>Pagure will send a notification to this/these URL(s) for every action made
+on this project: new issue, new pull-request, new comments, new commits…</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The notifications sent via web-hooks have the same payload as the
+notifications sent via <a class="reference external" href="https://fedmsg.readthedocs.io/en/latest/">fedmsg</a>.
+Therefore, the list of pagure topics as well as example messages can be
+found in the <a class="reference external" href="https://fedora-fedmsg.readthedocs.io/en/latest/topics.html#id550">fedmsg documentation about pagure</a></p>
+</div>
+</div>
+<div class="section" id="authenticating-the-notifications">
+<h2>Authenticating the notifications<a class="headerlink" href="#authenticating-the-notifications" title="Permalink to this headline">¶</a></h2>
+<p>There is, in the settings page, a web-hook key which is used by the
+server (here pagure) to sign the message sent and which you can use to
+ensure the notifications received are coming from the right source.</p>
+<p>Each POST request made contains some specific headers:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">X</span><span class="o">-</span><span class="n">Pagure</span>
+<span class="n">X</span><span class="o">-</span><span class="n">Pagure</span><span class="o">-</span><span class="n">Project</span>
+<span class="n">X</span><span class="o">-</span><span class="n">Pagure</span><span class="o">-</span><span class="n">Signature</span>
+<span class="n">X</span><span class="o">-</span><span class="n">Pagure</span><span class="o">-</span><span class="n">Signature</span><span class="o">-</span><span class="mi">256</span>
+<span class="n">X</span><span class="o">-</span><span class="n">Pagure</span><span class="o">-</span><span class="n">Topic</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">X-Pagure</span></code> contains URL of the pagure instance sending this notification.</p>
+<p><code class="docutils literal notranslate"><span class="pre">X-Pagure-Project</span></code> contains the name of the project on that pagure instance.</p>
+<p><code class="docutils literal notranslate"><span class="pre">X-Pagure-Signature</span></code> contains the signature of the message allowing to
+check that the message comes from pagure.</p>
+<p><code class="docutils literal notranslate"><span class="pre">X-Pagure-Signature-256</span></code> contains the SHA-256 signature of the message
+allowing to check that the message comes from pagure.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>These headers are present to allow you to verify that the webhook
+was actually sent by the correct Pagure instance. These are not
+included in the signed data.</p>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">X-Pagure-Topic</span></code> is a global header giving a clue about the type of action
+that just occurred. For example <code class="docutils literal notranslate"><span class="pre">issue.edit</span></code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The headers <code class="docutils literal notranslate"><span class="pre">X-Pagure</span></code>, <code class="docutils literal notranslate"><span class="pre">X-Pagure-Project</span></code> and <code class="docutils literal notranslate"><span class="pre">X-Pagure-Topic</span></code>
+are present for convenience only, they are not signed and therefore
+should not be trusted. Rely on the payload after checking the
+signature to make any decision.</p>
+</div>
+<p>Pagure relies on <code class="docutils literal notranslate"><span class="pre">hmac</span></code> to sign the content of its messages. If you want
+to validate the message, in python, you can do something like the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">hmac</span>
+<span class="kn">import</span> <span class="nn">hashlib</span>
+
+<span class="n">payload</span> <span class="o">=</span>  <span class="c1"># content you received in the POST request</span>
+<span class="n">headers</span> <span class="o">=</span>  <span class="c1"># headers of the POST request</span>
+<span class="n">project_web_hook_key</span> <span class="o">=</span>  <span class="c1"># private web-hook key of the project</span>
+
+<span class="n">hashhex</span> <span class="o">=</span> <span class="n">hmac</span><span class="o">.</span><span class="n">new</span><span class="p">(</span>
+    <span class="nb">str</span><span class="p">(</span><span class="n">project_web_hook_key</span><span class="p">),</span> <span class="n">payload</span><span class="p">,</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha1</span><span class="p">)</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="n">hashhex</span> <span class="o">!=</span> <span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;X-Pagure-Signature&#39;</span><span class="p">):</span>
+    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Message received with an invalid signature&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><h1 class='pagure-logo'><span></span>Pagure</h1><div class="sphinx-toc sphinxlocaltoc">
+    <h3><a href="../index.html">Page contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Using web-hooks</a><ul>
+<li><a class="reference internal" href="#activating-web-hooks-notifications">Activating web-hooks notifications</a></li>
+<li><a class="reference internal" href="#authenticating-the-notifications">Authenticating the notifications</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div class="sphinxprev">
+    <h4>Previous page</h4>
+    <p class="topless"><a href="using_doc.html"
+                          title="Previous page">&larr; Using the doc repository of your project</a></p>
+  </div>
+  <div class="sphinxnext">
+    <h4>Next page</h4>
+    <p class="topless"><a href="ticket_templates.html"
+                          title="Next page">&rarr; Templates for ticket input</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/usage/using_webhooks.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="ticket_templates.html" title="Templates for ticket input"
+             >next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="using_doc.html" title="Using the doc repository of your project"
+             >previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">pagure  documentation</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Usage</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Using web-hooks</a></li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015, Red Hat Inc, Pierre-Yves Chibon &lt;pingou@pingoured.fr&gt;.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+  </body>
+</html>

@@ -1,0 +1,239 @@
+
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>First Steps on pagure &#8212; pagure  documentation</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/site.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/site.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+
+    
+    
+     
+        <script src="../_static/jquery.cookie.js"></script>
+    
+
+    
+     
+        <script src="../_static/cloud.base.js"></script>
+    
+
+    
+     
+        <script src="../_static/cloud.js"></script>
+    
+
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Forks" href="forks.html" />
+    <link rel="prev" title="Usage" href="index.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head><body>
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="forks.html" title="Forks"
+             accesskey="N">next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="index.html" title="Usage"
+             accesskey="P">previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">pagure  documentation</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Usage</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">First Steps on pagure</a></li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="first-steps-on-pagure">
+<span id="first-steps"></span><h1>First Steps on pagure<a class="headerlink" href="#first-steps-on-pagure" title="Permalink to this headline">¶</a></h1>
+<p>When coming to pagure for the first time there are a few things one should
+do or check to ensure all works as desired.</p>
+<div class="section" id="login-to-pagure-or-create-your-account">
+<h2>Login to pagure or create your account<a class="headerlink" href="#login-to-pagure-or-create-your-account" title="Permalink to this headline">¶</a></h2>
+<p>Pagure has its own user account system.</p>
+<p>For instances of pagure such as the one at <a class="reference external" href="https://pagure.io">pagure.io</a>
+where the authentication is delegated to a third party (in the case of
+pagure.io, the Fedora Account System) via OpenID, the local user account
+is created upon login.</p>
+<p>This means, you cannot be added to a group or a project before you login for
+the first time as the system will simply not know you.</p>
+<p>If you run your own pagure instance which uses the local authentication
+system, then you will find on the login page an option to create a new
+account.</p>
+</div>
+<div class="section" id="upload-your-ssh-key">
+<span id="id1"></span><h2>Upload your SSH key<a class="headerlink" href="#upload-your-ssh-key" title="Permalink to this headline">¶</a></h2>
+<p>Pagure uses gitolite to manage who has read/write access to which git
+repository via <a class="reference external" href="https://en.wikipedia.org/wiki/Secure_Shell">ssh</a>.</p>
+<p>An ssh key is composed of two parts:</p>
+<ul class="simple">
+<li><p>a private key, which you must keep to yourself and never share with anyone.</p></li>
+<li><p>a public key, which is public and therefore can be shared with anyone.</p></li>
+</ul>
+<p>If you have never generated a ssh key, you can do so by running:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ssh</span><span class="o">-</span><span class="n">keygen</span>
+</pre></div>
+</div>
+<p>or alternatively on GNOME using the application <code class="docutils literal notranslate"><span class="pre">seahorse</span></code>.</p>
+<p>This will create two files in <code class="docutils literal notranslate"><span class="pre">~/.ssh/</span></code> (<code class="docutils literal notranslate"><span class="pre">~</span></code> is the symbol for your home
+folder).</p>
+<p>These two files will be named (for example) <code class="docutils literal notranslate"><span class="pre">id_rsa</span></code> and <code class="docutils literal notranslate"><span class="pre">id_rsa.pub</span></code>.
+The first one is the private key that must never be shared. The second is
+the public key that can be uploaded on pagure to give you ssh access.</p>
+<p>To upload your public key onto pagure:</p>
+<p>1. Login into pagure and click on the user icon on
+the top right corner, there, select <code class="docutils literal notranslate"><span class="pre">My</span> <span class="pre">settings</span></code>.</p>
+<a class="reference external image-reference" href="../_images/pagure_my_settings.png"><img alt="../_images/pagure_my_settings.png" src="../_images/pagure_my_settings.png" /></a>
+<p>2. In the authentication section of your user settings copy the content of your
+<code class="docutils literal notranslate"><span class="pre">id_rsa.pub</span></code> file in the Public SSH key text box and save your ssh key settings.</p>
+<a class="reference external image-reference" href="../_images/pagure_add_ssh_key.png"><img alt="../_images/pagure_add_ssh_key.png" src="../_images/pagure_add_ssh_key.png" /></a>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Pagure supports multiple ssh keys per user. To add more than one ssh key
+to your user account just add your new ssh key in your authentication
+settings (one key per row), this way you will be able to push commits
+to your repository from a different computer.</p>
+</div>
+</div>
+<div class="section" id="configure-the-default-email-address">
+<h2>Configure the default email address<a class="headerlink" href="#configure-the-default-email-address" title="Permalink to this headline">¶</a></h2>
+<p>If the pagure instance you use is using local user authentication, you can
+choose whichever email address you prefer to use during account creation.
+But in the case (like pagure.io) where the pagure instance relies
+on an external authentication service, the email address provided by this
+service may be different from the one you prefer.</p>
+<p>The settings page of your account (see above for how to access the page)
+allows you to add multiple email addresses and set one as default.</p>
+<p>Your default email address is the address that will be used to send you
+notifications and also as the email address in the git commit if you merge
+a pull-request with a merge commit.</p>
+<p>For online editing, when doing the commit, you will be presented with the
+list of valid email addresses associated with your account and you will be
+able to choose which one you wish to use.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>All email addresses will need to be confirmed to be activated, this
+is done via a link sent by email to the address. If you do not
+receive this link, don’t forget to check your spam folder!</p>
+</div>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><h1 class='pagure-logo'><span></span>Pagure</h1><div class="sphinx-toc sphinxlocaltoc">
+    <h3><a href="../index.html">Page contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">First Steps on pagure</a><ul>
+<li><a class="reference internal" href="#login-to-pagure-or-create-your-account">Login to pagure or create your account</a></li>
+<li><a class="reference internal" href="#upload-your-ssh-key">Upload your SSH key</a></li>
+<li><a class="reference internal" href="#configure-the-default-email-address">Configure the default email address</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div class="sphinxprev">
+    <h4>Previous page</h4>
+    <p class="topless"><a href="index.html"
+                          title="Previous page">&larr; Usage</a></p>
+  </div>
+  <div class="sphinxnext">
+    <h4>Next page</h4>
+    <p class="topless"><a href="forks.html"
+                          title="Next page">&rarr; Forks</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/usage/first_steps.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="forks.html" title="Forks"
+             >next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="index.html" title="Usage"
+             >previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">pagure  documentation</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Usage</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">First Steps on pagure</a></li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015, Red Hat Inc, Pierre-Yves Chibon &lt;pingou@pingoured.fr&gt;.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+  </body>
+</html>

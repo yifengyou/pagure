@@ -1,0 +1,56 @@
+{% extends "repo_master.html" %}
+
+{% block title %}Patch File - {{
+    repo.namespace + '/' if repo.namespace }}{{ repo.name }} {% endblock %}
+
+{% block header %}
+<link type="text/css" rel="stylesheet" nonce="{{ g.nonce }}" href="{{
+  url_for('static', filename='vendor/highlight.js/styles/github.css') }}?version={{ g.version}}"/>
+<link nonce="{{ g.nonce }}" rel="stylesheet" href="{{
+  url_for('static', filename='vendor/highlightjs-line-numbers/highlightjs-line-numbers.min.css') }}?version={{ g.version }}"/>
+<style nonce="{{ g.nonce }}">
+  .hljs {
+    background: #fff;
+  }
+</style>
+{% endblock %}
+
+{% block repo %}
+<ul class="nav nav-tabs nav-small border-bottom-0" role="tablist" id="pr-tabs">
+  <li class="nav-item pull-xs-right">
+    <a class="nav-link" href="{{ request.base_url + '?raw=1' }}">
+      <span class="hidden-sm-down">View Raw</span>
+    </a>
+  </li>
+</ul>
+<div class="card-header">
+  <strong>{{ patchfile }}</strong>
+</div>
+<div class="card card-block">
+  <div class="card-body p-0">
+    <pre class="syntaxhighlightblock"><code>{{ diff }}</code></pre>
+  </div>
+</div>
+<p>
+  <a href="{{ request.base_url + '?raw=1' }}">View Raw</a>
+</p>
+{% endblock %}
+
+{% block jscripts %}
+  {{ super() }}
+<script type="text/javascript" nonce="{{ g.nonce }}" src="{{
+  url_for('static', filename='vendor/highlight.js/highlight.pack.js') }}?version={{ g.version}}"></script>
+<script type="text/javascript" nonce="{{ g.nonce }}" src="{{
+  url_for('static', filename='vendor/highlightjs-line-numbers/highlightjs-line-numbers.min.js') }}?version={{ g.version}}"></script>
+<script type="text/javascript" nonce="{{ g.nonce }}" src="{{
+  url_for('static', filename='vendor/highlight.js/spec.js') }}?version={{ g.version}}"></script>
+
+<script type="text/javascript" nonce="{{ g.nonce }}">
+  $(document).ready(function() {
+  $('pre.syntaxhighlightblock code').each(function(i, block) {
+    hljs.highlightBlock(block);
+    hljs.lineNumbersBlock(block);
+  })
+});
+</script>
+{% endblock %}

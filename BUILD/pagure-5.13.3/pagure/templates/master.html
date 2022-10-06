@@ -1,0 +1,186 @@
+{% import "theme.html" as theme with context %}
+{% from "_projectstring.html" import projectstring, projecticon %}
+
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>{% block title %}{% endblock %} - {{ theme.site_title }}</title>
+    {{ theme.head_imports() }}
+    <link type="text/css" rel="stylesheet" nonce="{{ g.nonce }}" href="{{
+      url_for('static', filename='vendor/font-awesome/font-awesome.css') }}?version={{ g.version}}"/>
+    <link type="text/css" rel="stylesheet" nonce="{{ g.nonce }}" href="{{
+      url_for('static', filename='pagure.css') }}?version={{ g.version}}"/>
+    {% block header %}{% endblock %}
+  </head>
+  <body id="{{ tag }}">
+    {{theme.sitewide_message() if theme.sitewide_message is defined}}
+    <!-- start masthead -->
+    <nav class="navbar {{theme.masthead_class}} navbar-expand">
+      <div class="container">
+        <a href="{{ url_for('ui_ns.index') }}" class="navbar-brand">
+        <img height="40" src="{{ url_for('theme.static', filename='pagure-logo.png') }}?version={{ g.version}}"
+             alt="pagure Logo" id="pagureLogo"/>
+        </a>
+        <ul class="navbar-nav ml-auto">
+
+          {# These two lines allow a theme or a blueprint to inject custom
+           # buttons in the navigation bar.
+           #}
+          {{theme.masthead_navbar_items() if theme.masthead_navbar_items is defined}}
+          {% block masthead_navbar_items %}{% endblock %}
+
+          {% if not nologin %}
+          {% if g.fas_user %}
+          <li class="nav-item ml-3">
+            <a class="nav-link font-weight-bold" href="{{ url_for('ui_ns.browse_projects') }}">
+            Browse
+            </a>
+          </li>
+          {% if (config.get('ENABLE_NEW_PROJECTS', True) and config.get('ENABLE_UI_NEW_PROJECTS', True))
+          or config.get('ENABLE_GROUP_MNGT', False)  %}
+          <li class="nav-item dropdown ml-3">
+            <a class="nav-link dropdown-toggle font-weight-bold"
+              data-toggle="dropdown"
+              href="#"
+              role="button" aria-haspopup="true"
+              aria-expanded="false">
+            Create
+            </a>
+            <div class="dropdown-menu dropdown-menu-right">
+              {% if config.get('ENABLE_NEW_PROJECTS', True) and config.get('ENABLE_UI_NEW_PROJECTS', True) %}
+              <a class="dropdown-item" href="{{ url_for('ui_ns.new_project') }}">
+              <span class="fa {{projecticon()}}"></span> &nbsp;New {{projectstring()}}
+              </a>
+              {% endif %}
+              {% if config.get('ENABLE_GROUP_MNGT', False)  %}
+              <a class="dropdown-item" href="{{ url_for('ui_ns.add_group') }}">
+              <span class="fa fa-users"></span> &nbsp;New Group
+              </a>
+              {% endif %}
+            </div>
+          </li>
+          {% endif %}
+          <li class="nav-item dropdown ml-3">
+            <a class="nav-link dropdown-toggle" data-toggle="dropdown"
+              href="#" role="button" aria-haspopup="true" aria-expanded="false">
+            {{ g.fas_user.username | avatar(24) | safe }}
+            </a>
+            <div class="dropdown-menu dropdown-menu-right">
+              <div class="dropdown-header">
+                <strong>{{ g.fas_user.username }}</strong>
+              </div>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="{{
+                url_for('ui_ns.view_user', username=g.fas_user.username)
+                }}">My Public Profile</a>
+              <a class="dropdown-item" href="{{
+                url_for('ui_ns.user_settings')
+                }}">My Settings</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="{{
+                url_for('ui_ns.userprofile_starred', username=g.fas_user.username)
+                }}">My Starred Projects</a>
+              {% if config.get('ENABLE_TICKETS', True) %}
+              <a class="dropdown-item" href="{{
+                url_for('ui_ns.view_user_issues', username=g.fas_user.username)
+                }}">My Issues</a>
+              {% endif %}
+              <a class="dropdown-item" href="{{
+                url_for('ui_ns.view_user_requests', username=g.fas_user.username)
+                }}">My Pull Requests</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="{{ url_for('auth_logout')
+                }}?next={{ request.url }}">Log Out</a>
+            </div>
+          </li>
+          {% else %}
+          <li class="nav-item">
+            <a class="btn btn-primary" href="{{
+              url_for('auth_login') }}?next={{request.url
+              }}">Log In</a>
+          </li>
+          {% endif %}
+          {% endif %}
+        </ul>
+      </div>
+    </nav>
+    <!-- close masthead-->
+
+    <div class="bodycontent">
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                <div class="notification-spacer bg-light">
+                <div class="container pt-2">
+                    <div class="alert alert-info border border-secondary bg-white alert-dismissible" role="alert">
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        <span class="sr-only">Close</span>
+                      </button>
+                    {% for category, message in messages %}
+                      {% if category == 'error' %}
+                        <div class="text-danger font-weight-bold"><i class="fa fa-fw fa-question-circle"></i> {{ message }}</div>
+                      {% else %}
+                        <div class="text-info font-weight-bold"><i class="fa fa-fw fa-info-circle"></i> {{ message }}</div>
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                </div>
+                </div>
+                {% endif %}
+            {% endwith %}
+            {% if new_user %}
+              <div class="notification-spacer bg-light">
+                <div class="container pt-2">
+                    <div class="alert alert-info alert-dismissible" role="alert">
+                      <button type="button" class="close" data-dismiss="alert"
+                          aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        <span class="sr-only">Close</span>
+                      </button>
+                      <h4 class="modal-title" id="welcome_title">
+                        Welcome to {{ config['INSTANCE_NAME'] }}, {{ g.fas_user.username }}!
+                      </h4>
+                      <div class="modal-body">
+                        <p>
+                          We are glad to welcome you to pagure.
+                        </p>
+                        <p>
+                          In order to get started with pagure, to set-up
+                          your preferred email address or your ssh key,
+                          you may want to read the
+                          <a href="https://docs.pagure.org/pagure/usage/first_steps.html">
+                          First steps in Pagure</a> documentation.
+                        </p>
+                        <p>
+                          You may also find some more information on how to use pagure
+                          in the <a href="https://docs.pagure.org/pagure/usage.html">
+                          usage section of the documentation</a>.
+                        </p>
+                      </div>
+                    </div>
+                </div>
+              </div>
+            {% endif %}
+
+            {% block content %}{% endblock %}
+    </div>
+
+    {{theme.footer()}}
+
+    {% block jscripts %}
+    <script type="text/javascript" nonce="{{ g.nonce }}" src="{{
+      url_for('static', filename='vendor/jquery/jquery.min.js') }}?version={{ g.version}}"></script>
+
+    {{theme.js_imports()}}
+    <script type="text/javascript" nonce="{{ g.nonce }}">
+      $('[data-toggle="tooltip"]').tooltip({placement : 'bottom'});
+      $(".cancel_btn").click(function() {
+        history.back();
+      });
+    </script>
+    {% endblock %}
+
+</body>
+</html>

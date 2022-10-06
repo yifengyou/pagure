@@ -1,0 +1,193 @@
+
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Understanding Read Only Mode of projects &#8212; pagure  documentation</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/site.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/site.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+
+    
+    
+     
+        <script src="../_static/jquery.cookie.js"></script>
+    
+
+    
+     
+        <script src="../_static/cloud.base.js"></script>
+    
+
+    
+     
+        <script src="../_static/cloud.js"></script>
+    
+
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="HTTP PUSH" href="http_push.html" />
+    <link rel="prev" title="Forks" href="forks.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head><body>
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="http_push.html" title="HTTP PUSH"
+             accesskey="N">next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="forks.html" title="Forks"
+             accesskey="P">previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">pagure  documentation</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Usage</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Understanding Read Only Mode of projects</a></li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="understanding-read-only-mode-of-projects">
+<h1>Understanding Read Only Mode of projects<a class="headerlink" href="#understanding-read-only-mode-of-projects" title="Permalink to this headline">¶</a></h1>
+<p>If a project is in Read Only Mode, the users of the project may not be
+able to modify the git repository of the project. Let’s say you forked
+a project, then the forked project goes into a read only mode. You won’t
+be able to modify the git repository of the forked project in that mode.
+After the read only mode is gone, you can begin to use the git repository
+again. Let’s say you decide to add another user to your fork, this time
+the project will go in read only mode again but, you still will be able
+to use the git repository while the new user will have to wait for read
+only mode to get over. This is also true when you remove a user from your
+project. The removed user can still access the project’s git repository,
+given that he had at least commit access, until the read only mode is over.</p>
+<p>In Pagure, we use gitolite for Access Control Lists when using SSH.
+Modifying gitolite may be a time taking task (depending on number of projects
+hosted on the pagure instance) that’s why Pagure does it outside of HTTP
+Request-Response Cycle.</p>
+<p>Whenever you fork a project or add/remove a new user/group to project,
+gitolite needs to be refreshed in order to put those changes in effect
+for ssh based git usage.</p>
+<div class="section" id="actions-that-put-the-project-in-read-only-mode">
+<h2>Actions that put the project in read only mode<a class="headerlink" href="#actions-that-put-the-project-in-read-only-mode" title="Permalink to this headline">¶</a></h2>
+<p>All the actions that needs gitolite to be compiled, will bring the
+project in read only mode.</p>
+<ul class="simple">
+<li><p>Creating/Forking a project. (only the fork will be in read only mode)</p></li>
+<li><p>Adding/Removing a user/group from a project.</p></li>
+</ul>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><h1 class='pagure-logo'><span></span>Pagure</h1><div class="sphinx-toc sphinxlocaltoc">
+    <h3><a href="../index.html">Page contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Understanding Read Only Mode of projects</a><ul>
+<li><a class="reference internal" href="#actions-that-put-the-project-in-read-only-mode">Actions that put the project in read only mode</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div class="sphinxprev">
+    <h4>Previous page</h4>
+    <p class="topless"><a href="forks.html"
+                          title="Previous page">&larr; Forks</a></p>
+  </div>
+  <div class="sphinxnext">
+    <h4>Next page</h4>
+    <p class="topless"><a href="http_push.html"
+                          title="Next page">&rarr; HTTP PUSH</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/usage/read_only.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="http_push.html" title="HTTP PUSH"
+             >next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="forks.html" title="Forks"
+             >previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">pagure  documentation</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Usage</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Understanding Read Only Mode of projects</a></li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015, Red Hat Inc, Pierre-Yves Chibon &lt;pingou@pingoured.fr&gt;.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+  </body>
+</html>

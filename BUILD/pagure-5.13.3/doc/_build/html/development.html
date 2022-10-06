@@ -1,0 +1,434 @@
+
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Development &#8212; pagure  documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/site.css" type="text/css" />
+    <link rel="stylesheet" href="_static/site.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+
+    
+    
+     
+        <script src="_static/jquery.cookie.js"></script>
+    
+
+    
+     
+        <script src="_static/cloud.base.js"></script>
+    
+
+    
+     
+        <script src="_static/cloud.js"></script>
+    
+
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Contributing" href="contributing.html" />
+    <link rel="prev" title="Customize the gitolite configuration" href="custom_gitolite_conf.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head><body>
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="contributing.html" title="Contributing"
+             accesskey="N">next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="custom_gitolite_conf.html" title="Customize the gitolite configuration"
+             accesskey="P">previous</a> &nbsp; &nbsp;</li>
+    <li><a href="index.html">pagure  documentation</a> &#187;</li>
+
+        <li class="nav-item nav-item-this"><a href="">Development</a></li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="development">
+<h1>Development<a class="headerlink" href="#development" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="get-the-sources">
+<h2>Get the sources<a class="headerlink" href="#get-the-sources" title="Permalink to this headline">¶</a></h2>
+<p>Anonymous:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">pagure</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">pagure</span><span class="o">.</span><span class="n">git</span>
+</pre></div>
+</div>
+<p>Contributors:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">ssh</span><span class="p">:</span><span class="o">//</span><span class="n">git</span><span class="nd">@pagure</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">pagure</span><span class="o">.</span><span class="n">git</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="dependencies">
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
+<p>Install the build dependencies of pagure:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">dnf</span> <span class="n">install</span> <span class="n">git</span> <span class="n">python</span><span class="o">-</span><span class="n">virtualenv</span> <span class="n">libgit2</span><span class="o">-</span><span class="n">devel</span> \
+                 <span class="n">libjpeg</span><span class="o">-</span><span class="n">devel</span> <span class="n">gcc</span> <span class="n">libffi</span><span class="o">-</span><span class="n">devel</span> <span class="n">redhat</span><span class="o">-</span><span class="n">rpm</span><span class="o">-</span><span class="n">config</span>
+</pre></div>
+</div>
+<p>The python dependencies of pagure are listed in the file <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code>
+at the top level of the sources.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">virtualenv</span> <span class="n">pagure_env</span>
+<span class="n">source</span> <span class="o">./</span><span class="n">pagure_env</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="n">pygit2</span><span class="o">==&lt;</span><span class="n">version</span> <span class="n">of</span> <span class="n">libgit2</span> <span class="n">found</span><span class="o">&gt;.*</span> <span class="c1"># e.g. 0.23.*</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>working in a <a class="reference external" href="http://www.virtualenv.org/en/latest/">virtualenv</a>
+is tricky due to the dependency on <a class="reference external" href="http://www.pygit2.org/">pygit2</a>
+and thus on <a class="reference external" href="https://libgit2.github.com/">libgit2</a>
+but the pygit2 <a class="reference external" href="http://www.pygit2.org/install.html#libgit2-within-a-virtual-environment">documentation has a solution for this</a>.</p>
+</div>
+</div>
+<div class="section" id="how-to-run-pagure">
+<h2>How to run pagure<a class="headerlink" href="#how-to-run-pagure" title="Permalink to this headline">¶</a></h2>
+<p>There are several options when it comes to a development environment. Vagrant
+will provide you with a virtual machine which you can develop on, you can use
+a container to run pagure or you can install it directly on your host machine.
+The README has detailed instructions for the different options.</p>
+</div>
+<div class="section" id="run-pagure-for-development">
+<h2>Run pagure for development<a class="headerlink" href="#run-pagure-for-development" title="Permalink to this headline">¶</a></h2>
+<p>Adjust the configuration file (secret key, database URL, admin group…)
+See <a class="reference internal" href="configuration.html"><span class="doc">Configuration</span></a> for more detailed information about the
+configuration.</p>
+<p>Create the database scheme:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">createdb</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<p>Create the folder that will receive the different git repositories:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mkdir</span> <span class="p">{</span><span class="n">repos</span><span class="p">,</span><span class="n">docs</span><span class="p">,</span><span class="n">forks</span><span class="p">,</span><span class="n">tickets</span><span class="p">,</span><span class="n">requests</span><span class="p">,</span><span class="n">remotes</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>Run the server:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">runserver</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<p>If you want to change some configuration key you can create a file, place
+the configuration change in it and use it with</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">runserver</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">c</span> <span class="o">&lt;</span><span class="n">config_file</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>For example, create the file <code class="docutils literal notranslate"><span class="pre">config</span></code> with in it:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">timedelta</span>
+<span class="c1"># Makes the admin session longer</span>
+<span class="n">ADMIN_SESSION_LIFETIME</span> <span class="o">=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">20000000</span><span class="p">)</span>
+
+<span class="c1"># Use a postgresql database instead of sqlite</span>
+<span class="n">DB_URL</span> <span class="o">=</span> <span class="s1">&#39;postgresql://user:pass@localhost/pagure&#39;</span>
+<span class="c1"># Change the OpenID endpoint</span>
+<span class="n">FAS_OPENID_ENDPOINT</span> <span class="o">=</span> <span class="s1">&#39;https://id.stg.fedoraproject.org&#39;</span>
+
+<span class="n">APP_URL</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span>
+<span class="n">EVENTSOURCE_SOURCE</span> <span class="o">=</span> <span class="s1">&#39;http://localhost:8080&#39;</span>
+<span class="n">EVENTSOURCE_PORT</span> <span class="o">=</span> <span class="s1">&#39;8080&#39;</span>
+<span class="n">DOC_APP_URL</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span>
+
+<span class="c1"># Avoid sending email when developing</span>
+<span class="n">EMAIL_SEND</span> <span class="o">=</span> <span class="kc">False</span>
+</pre></div>
+</div>
+<p>and run the server with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">runserver</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">c</span> <span class="n">config</span>
+</pre></div>
+</div>
+<p>To get some profiling information you can also run it as:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">runserver</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">profile</span>
+</pre></div>
+</div>
+<p>You should be able to access the server at <a class="reference external" href="http://localhost:5000">http://localhost:5000</a></p>
+<p>Every time you save a file, the project will be automatically restarted
+so you can see your change immediately.</p>
+</div>
+<div class="section" id="create-a-pull-request-for-testing">
+<h2>Create a pull-request for testing<a class="headerlink" href="#create-a-pull-request-for-testing" title="Permalink to this headline">¶</a></h2>
+<p>When working on pagure, it is pretty often that one wanted to work on a
+feature or a bug related to pull-requests needs to create one.</p>
+<p>Making a pull-request for development purposes isn’t hard, if you remember
+that since you’re running a local instance, the git repos created in your
+pagure instance are also local.</p>
+<p>So here are in a few steps that one could perform to create a pull-request in a
+local pagure instance.</p>
+<ul>
+<li><p>Create a project on your pagure instance, let’s say it will be called <code class="docutils literal notranslate"><span class="pre">test</span></code></p></li>
+<li><p>Create a folder <code class="docutils literal notranslate"><span class="pre">clones</span></code> somewhere in your system (you probably do not
+want it in the <code class="docutils literal notranslate"><span class="pre">repos</span></code> folder created above, next to it is fine though):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mkdir</span> <span class="n">clones</span>
+</pre></div>
+</div>
+</li>
+<li><p>Clone the repo of the <code class="docutils literal notranslate"><span class="pre">test</span></code> project into this <code class="docutils literal notranslate"><span class="pre">clones</span></code> folder and move into it:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">clones</span>
+<span class="n">git</span> <span class="n">clone</span> <span class="o">~/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">pagure</span><span class="o">/</span><span class="n">repos</span><span class="o">/</span><span class="n">test</span><span class="o">.</span><span class="n">git</span>
+<span class="n">cd</span> <span class="n">test</span>
+</pre></div>
+</div>
+</li>
+<li><p>Add and commit some files:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">echo</span> <span class="s2">&quot;*~&quot;</span> <span class="o">&gt;</span> <span class="o">.</span><span class="n">gitignore</span>
+<span class="n">git</span> <span class="n">add</span> <span class="o">.</span><span class="n">gitignore</span>
+<span class="n">git</span> <span class="n">commit</span> <span class="o">-</span><span class="n">m</span> <span class="s2">&quot;Add a .gitignore file&quot;</span>
+<span class="n">echo</span> <span class="s2">&quot;BSD&quot;</span> <span class="o">&gt;</span> <span class="n">LICENSE</span>
+<span class="n">git</span> <span class="n">add</span> <span class="n">LICENSE</span>
+<span class="n">git</span> <span class="n">commit</span> <span class="o">-</span><span class="n">m</span> <span class="s2">&quot;Add a LICENSE file&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p>Push these changes:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">push</span> <span class="o">-</span><span class="n">u</span> <span class="n">origin</span> <span class="n">master</span>
+</pre></div>
+</div>
+</li>
+<li><p>Create a new branch and add a commit in it:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">branch</span> <span class="n">new_branch</span>
+<span class="n">git</span> <span class="n">checkout</span> <span class="n">new_branch</span>
+<span class="n">touch</span> <span class="n">test</span>
+<span class="n">git</span> <span class="n">add</span> <span class="n">test</span>
+<span class="n">git</span> <span class="n">commit</span> <span class="o">-</span><span class="n">m</span> <span class="s2">&quot;Add file: test&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p>Push this new branch:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">push</span> <span class="o">-</span><span class="n">u</span> <span class="n">origin</span> <span class="n">new_branch</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<p>Then go back to your pagure instance running in your web-browser, check the
+<code class="docutils literal notranslate"><span class="pre">test</span></code> project. You should see two branches: <code class="docutils literal notranslate"><span class="pre">master</span></code> and <code class="docutils literal notranslate"><span class="pre">new_branch</span></code>.
+From there you should be able to open a new pull-request, either from the
+front page or via the <code class="docutils literal notranslate"><span class="pre">File</span> <span class="pre">Pull</span> <span class="pre">Request</span></code> button in the <code class="docutils literal notranslate"><span class="pre">Pull</span> <span class="pre">Requests</span></code>
+page.</p>
+</div>
+<div class="section" id="coding-standards">
+<h2>Coding standards<a class="headerlink" href="#coding-standards" title="Permalink to this headline">¶</a></h2>
+<p>We are trying to make the code <a class="reference external" href="http://www.python.org/dev/peps/pep-0008/">PEP8-compliant</a>.  There is a <a class="reference external" href="http://pypi.python.org/pypi/flake8">flake8 tool</a> that can automatically check
+your source.</p>
+<p>We run the source code through <a class="reference external" href="https://pypi.python.org/pypi/black">black</a>
+as part of the tests, so you may have to do some adjustments or run it
+yourself (which is simple: <code class="docutils literal notranslate"><span class="pre">black</span> <span class="pre">/path/to/pagure</span></code>).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>flake8 and black are available in Fedora:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dnf</span> <span class="n">install</span> <span class="n">python3</span><span class="o">-</span><span class="n">flake8</span> <span class="n">python3</span><span class="o">-</span><span class="n">black</span>
+</pre></div>
+</div>
+<p>or</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">yum</span> <span class="n">install</span> <span class="n">python3</span><span class="o">-</span><span class="n">flake8</span> <span class="n">python3</span><span class="o">-</span><span class="n">black</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="send-patch">
+<h2>Send patch<a class="headerlink" href="#send-patch" title="Permalink to this headline">¶</a></h2>
+<p>The easiest way to work on pagure is to make your own branch in git, make
+your changes to this branch, commit whenever you want, rebase on master,
+whenever you need and when you are done, send the patch either by email,
+via the trac or a pull-request (using git or github).</p>
+<p>The workflow would therefore be something like:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">branch</span> <span class="o">&lt;</span><span class="n">my_shiny_feature</span><span class="o">&gt;</span>
+<span class="n">git</span> <span class="n">checkout</span> <span class="o">&lt;</span><span class="n">my_shiny_feature</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">work</span><span class="o">&gt;</span>
+<span class="n">git</span> <span class="n">commit</span> <span class="n">file1</span> <span class="n">file2</span>
+<span class="o">&lt;</span><span class="n">more</span> <span class="n">work</span><span class="o">&gt;</span>
+<span class="n">git</span> <span class="n">commit</span> <span class="n">file3</span> <span class="n">file4</span>
+<span class="n">git</span> <span class="n">checkout</span> <span class="n">master</span>
+<span class="n">git</span> <span class="n">pull</span>
+<span class="n">git</span> <span class="n">checkout</span> <span class="o">&lt;</span><span class="n">my_shiny_feature</span><span class="o">&gt;</span>
+<span class="n">git</span> <span class="n">rebase</span> <span class="n">master</span>
+<span class="n">git</span> <span class="nb">format</span><span class="o">-</span><span class="n">patch</span> <span class="o">-</span><span class="mi">2</span>
+</pre></div>
+</div>
+<p>This will create two patch files that you can send by email to submit in a ticket
+on pagure, by email or after forking the project on pagure by submitting a
+pull-request (in which case the last step above <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">format-patch</span> <span class="pre">-2</span></code> is not
+needed.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Though not required, it’s a good idea to begin the commit message
+with a single short (less than 50 character) line summarizing the
+change, followed by a blank line and then a more thorough description.
+The text up to the first blank line in a commit message is treated
+as the commit title, and that title is used throughout Git.
+For example, git-format-patch turns a commit into email, and it
+uses the title on the Subject line and the rest of the commit in
+the body.
+Pagure uses lines that contain only ‘Fixes #number’ as references
+to issues. If for example a commit message of a pagure patch has
+a line ‘Fixes #3547’ and a pullrequest (PR) gets created in pagure,
+this PR will be linked to from <code class="docutils literal notranslate"><span class="pre">https://pagure.io/pagure/issue/3547</span></code></p>
+</div>
+</div>
+<div class="section" id="unit-tests">
+<h2>Unit-tests<a class="headerlink" href="#unit-tests" title="Permalink to this headline">¶</a></h2>
+<p>Pagure has a number of unit-tests.</p>
+<p>We aim at having a full (100%) coverage of the whole code (including the
+Flask application) and of course a smart coverage as in we want to check
+that the functions work the way we want but also that they fail when we
+expect it and the way we expect it.</p>
+<p>Tests checking that function are failing when/how we want are as important
+as tests checking they work the way they are intended to.</p>
+<p>So here are a few steps that one could perform to run unit-tests in a
+local pagure instance.</p>
+<ul>
+<li><p>Install the dependencies:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">requirements</span><span class="o">-</span><span class="n">testing</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+</div>
+</li>
+<li><p>Run it:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tox</span> <span class="o">./</span><span class="n">test</span><span class="o">/</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<p>If you want to run a single interpreter, cou can use:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tox</span> <span class="o">-</span><span class="n">e</span> <span class="n">py38</span> <span class="o">./</span><span class="n">test</span><span class="o">/</span>
+</pre></div>
+</div>
+<p>Each unit-tests files (located under <code class="docutils literal notranslate"><span class="pre">tests/</span></code>) can be called
+by alone, allowing easier debugging of the tests. For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pytest</span><span class="o">-</span><span class="mi">3</span> <span class="n">tests</span><span class="o">/</span><span class="n">test_pagure_lib</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In order to have coverage information you might have to install
+<code class="docutils literal notranslate"><span class="pre">python-coverage</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dnf</span> <span class="n">install</span> <span class="n">python3</span><span class="o">-</span><span class="n">pytest</span><span class="o">-</span><span class="n">cov</span>
+</pre></div>
+</div>
+</div>
+<p>To run the unit-tests, there is also a container available with all the dependencies needed.
+Use the following command to run the tests</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ ./dev/run-tests-container.py
+</pre></div>
+</div>
+<p>This command will build a fedora based container and execute the test suite.
+You can also limit the tests to unit-test files or single tests similar to the
+options described above. You need set the environment variables REPO and BRANCH
+if the tests are not yet available in the upstream pagure master branch.</p>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><h1 class='pagure-logo'><span></span>Pagure</h1><div class="sphinx-toc sphinxlocaltoc">
+    <h3><a href="index.html">Page contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Development</a><ul>
+<li><a class="reference internal" href="#get-the-sources">Get the sources</a></li>
+<li><a class="reference internal" href="#dependencies">Dependencies</a></li>
+<li><a class="reference internal" href="#how-to-run-pagure">How to run pagure</a></li>
+<li><a class="reference internal" href="#run-pagure-for-development">Run pagure for development</a></li>
+<li><a class="reference internal" href="#create-a-pull-request-for-testing">Create a pull-request for testing</a></li>
+<li><a class="reference internal" href="#coding-standards">Coding standards</a></li>
+<li><a class="reference internal" href="#send-patch">Send patch</a></li>
+<li><a class="reference internal" href="#unit-tests">Unit-tests</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div class="sphinxprev">
+    <h4>Previous page</h4>
+    <p class="topless"><a href="custom_gitolite_conf.html"
+                          title="Previous page">&larr; Customize the gitolite configuration</a></p>
+  </div>
+  <div class="sphinxnext">
+    <h4>Next page</h4>
+    <p class="topless"><a href="contributing.html"
+                          title="Next page">&rarr; Contributing</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/development.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="contributing.html" title="Contributing"
+             >next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="custom_gitolite_conf.html" title="Customize the gitolite configuration"
+             >previous</a> &nbsp; &nbsp;</li>
+    <li><a href="index.html">pagure  documentation</a> &#187;</li>
+
+        <li class="nav-item nav-item-this"><a href="">Development</a></li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015, Red Hat Inc, Pierre-Yves Chibon &lt;pingou@pingoured.fr&gt;.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+  </body>
+</html>

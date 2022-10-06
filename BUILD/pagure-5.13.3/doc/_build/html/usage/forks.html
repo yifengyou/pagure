@@ -1,0 +1,226 @@
+
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Forks &#8212; pagure  documentation</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/site.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/site.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+
+    
+    
+     
+        <script src="../_static/jquery.cookie.js"></script>
+    
+
+    
+     
+        <script src="../_static/cloud.base.js"></script>
+    
+
+    
+     
+        <script src="../_static/cloud.js"></script>
+    
+
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Understanding Read Only Mode of projects" href="read_only.html" />
+    <link rel="prev" title="First Steps on pagure" href="first_steps.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head><body>
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="read_only.html" title="Understanding Read Only Mode of projects"
+             accesskey="N">next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="first_steps.html" title="First Steps on pagure"
+             accesskey="P">previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">pagure  documentation</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Usage</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Forks</a></li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="forks">
+<span id="id1"></span><h1>Forks<a class="headerlink" href="#forks" title="Permalink to this headline">¶</a></h1>
+<p>A fork in Pagure is a copy of a repository. When contributing to a project on
+Pagure, the first step is to fork it. This gives you a place to make changes
+to the project and, if you so wish, contribute back to the original project.
+If you’re not already familiar with Git’s distributed workflow,
+<a class="reference external" href="https://git-scm.com/book/en/v2/Distributed-Git-Distributed-Workflows">the Pro Git book has an excellent introduction</a>.</p>
+<p>You can see a list of projects you’ve forked on your home page.</p>
+<div class="section" id="create-a-fork-on-pagure">
+<span id="create-fork"></span><h2>Create a Fork on Pagure<a class="headerlink" href="#create-a-fork-on-pagure" title="Permalink to this headline">¶</a></h2>
+<p>To fork a project, simply navigate to the project on Pagure and click
+the fork button. You will then be redirected to your new fork.</p>
+</div>
+<div class="section" id="configure-your-local-git-repository">
+<span id="configure-local-git"></span><h2>Configure your Local Git Repository<a class="headerlink" href="#configure-your-local-git-repository" title="Permalink to this headline">¶</a></h2>
+<p>Now that you have forked the project on Pagure, you’re ready to configure a
+local copy of the repository so you can get to work. First, clone the
+repository. The URL for the repository is on the right-hand side of the
+project overview page. For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git clone ssh://git@pagure.io/forks/jcline/pagure.git
+$ cd pagure
+</pre></div>
+</div>
+<p>After cloning your fork locally, it’s a good idea to add the upstream
+repository as a <a class="reference external" href="https://git-scm.com/docs/git-remote">git remote</a>. For
+example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git remote add -f upstream ssh://git@pagure.io/pagure.git
+</pre></div>
+</div>
+<p>This lets you pull in changes that the upstream repository makes after you
+forked. Consult Git’s documentation for more details.</p>
+</div>
+<div class="section" id="pushing-changes">
+<h2>Pushing Changes<a class="headerlink" href="#pushing-changes" title="Permalink to this headline">¶</a></h2>
+<p>After you <a class="reference internal" href="#configure-local-git"><span class="std std-ref">Configure your Local Git Repository</span></a> you’re ready to make your changes and
+contribute them upstream. First, start a new branch:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git checkout -b my-feature-or-bugfix
+</pre></div>
+</div>
+<p>It’s a good idea to give the branch a descriptive name so you can find it later.
+Next, make your changes. Once you’re satisfied, add the changes to Git’s staging
+area and commit the changes:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git add -A  # add all changes
+$ git commit -s # prepare changes for upload
+</pre></div>
+</div>
+<p>Your text editor of choice will open and you can write your commit message.
+If you have not done so already <a class="reference internal" href="first_steps.html#upload-your-ssh-key"><span class="std std-ref">Upload your SSH key</span></a> now.
+Afterwards, you are ready to push your changes to your remote fork:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git push -u origin my-feature-or-bugfix # upload changes
+</pre></div>
+</div>
+<p>In case you cloned the repo via HTTP, for example using a command like <cite>git
+clone https://…</cite>, the push will fail. Pagure.io does not support pushing
+over HTTP. An easy workaround is to use:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git push -u origin my-feature-or-bugfix ssh://git@pagure.io/forks/jcline/pagure.git
+</pre></div>
+</div>
+<p>You are now ready to <a class="reference internal" href="pull_requests.html#open-pull-request"><span class="std std-ref">Open a Pull Request</span></a>.</p>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><h1 class='pagure-logo'><span></span>Pagure</h1><div class="sphinx-toc sphinxlocaltoc">
+    <h3><a href="../index.html">Page contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Forks</a><ul>
+<li><a class="reference internal" href="#create-a-fork-on-pagure">Create a Fork on Pagure</a></li>
+<li><a class="reference internal" href="#configure-your-local-git-repository">Configure your Local Git Repository</a></li>
+<li><a class="reference internal" href="#pushing-changes">Pushing Changes</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div class="sphinxprev">
+    <h4>Previous page</h4>
+    <p class="topless"><a href="first_steps.html"
+                          title="Previous page">&larr; First Steps on pagure</a></p>
+  </div>
+  <div class="sphinxnext">
+    <h4>Next page</h4>
+    <p class="topless"><a href="read_only.html"
+                          title="Next page">&rarr; Understanding Read Only Mode of projects</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/usage/forks.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="read_only.html" title="Understanding Read Only Mode of projects"
+             >next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="first_steps.html" title="First Steps on pagure"
+             >previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">pagure  documentation</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Usage</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Forks</a></li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015, Red Hat Inc, Pierre-Yves Chibon &lt;pingou@pingoured.fr&gt;.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+  </body>
+</html>

@@ -1,0 +1,234 @@
+
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Templates for ticket input &#8212; pagure  documentation</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/site.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/site.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+
+    
+    
+     
+        <script src="../_static/jquery.cookie.js"></script>
+    
+
+    
+     
+        <script src="../_static/cloud.base.js"></script>
+    
+
+    
+     
+        <script src="../_static/cloud.js"></script>
+    
+
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Customize the PR page" href="pr_custom_page.html" />
+    <link rel="prev" title="Using web-hooks" href="using_webhooks.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head><body>
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="pr_custom_page.html" title="Customize the PR page"
+             accesskey="N">next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="using_webhooks.html" title="Using web-hooks"
+             accesskey="P">previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">pagure  documentation</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Usage</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Templates for ticket input</a></li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="templates-for-ticket-input">
+<h1>Templates for ticket input<a class="headerlink" href="#templates-for-ticket-input" title="Permalink to this headline">¶</a></h1>
+<p>Pagure offers the possibility to add templates for ticket’s input. These
+templates do not enforce anything, users will have the possibility to simply
+ignore it, or even to not follow it, but it also helps structuring the
+ticket opened against a project and highlighting the information that are
+often requested/needed.</p>
+<p>The templates are provided in the git repository containing the meta-data
+for the tickets.
+They must be placed under a <code class="docutils literal notranslate"><span class="pre">templates</span></code> folder in this git repository,
+end with <code class="docutils literal notranslate"><span class="pre">.md</span></code> and as the extension suggests can be formatted as markdown.</p>
+<p>If you create a template <code class="docutils literal notranslate"><span class="pre">templates/default.md</span></code>, it will be shown by
+default when someone ask to create a new ticket.</p>
+<div class="section" id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<p>For a project named <code class="docutils literal notranslate"><span class="pre">test</span></code> on <code class="docutils literal notranslate"><span class="pre">pagure.io</span></code>.</p>
+<ul class="simple">
+<li><p>First, clone the ticket git repo <a class="footnote-reference brackets" href="#f1" id="id1">1</a> and move into it</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">ssh</span><span class="p">:</span><span class="o">//</span><span class="n">git</span><span class="nd">@pagure</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">tickets</span><span class="o">/</span><span class="n">test</span><span class="o">.</span><span class="n">git</span>
+<span class="n">cd</span> <span class="n">test</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Create the templates folder</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mkdir</span> <span class="n">templates</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Create a default template</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vim</span> <span class="n">templates</span><span class="o">/</span><span class="n">default</span><span class="o">.</span><span class="n">md</span>
+</pre></div>
+</div>
+<p>And place in this file the following content:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">##### Issue</span>
+
+<span class="c1">##### Steps to reproduce</span>
+<span class="mf">1.</span>
+<span class="mf">2.</span>
+<span class="mf">3.</span>
+
+<span class="c1">##### Actual results</span>
+
+<span class="c1">##### Expected results</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Commit and push the changes to the git repo</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">add</span> <span class="n">templates</span>
+<span class="n">git</span> <span class="n">commit</span> <span class="o">-</span><span class="n">m</span> <span class="s2">&quot;Add a default template for tickets&quot;</span>
+<span class="n">git</span> <span class="n">push</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>And this is how it will look like</p></li>
+</ul>
+<a class="reference external image-reference" href="../_images/pagure_ticket_template.png"><img alt="../_images/pagure_ticket_template.png" src="../_images/pagure_ticket_template.png" /></a>
+<dl class="footnote brackets">
+<dt class="label" id="f1"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dd><p>The URLs to the different git repositories can be found on the
+main page of the project, on the right-side menu, under the section
+<code class="docutils literal notranslate"><span class="pre">Source</span> <span class="pre">GIT</span> <span class="pre">URLs</span></code>. Click on <code class="docutils literal notranslate"><span class="pre">more</span></code> to see them if you are logged
+in and have access to the repository (the ticket and request git
+repositories require a <cite>commit</cite> access or higher).</p>
+</dd>
+</dl>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><h1 class='pagure-logo'><span></span>Pagure</h1><div class="sphinx-toc sphinxlocaltoc">
+    <h3><a href="../index.html">Page contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Templates for ticket input</a><ul>
+<li><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div class="sphinxprev">
+    <h4>Previous page</h4>
+    <p class="topless"><a href="using_webhooks.html"
+                          title="Previous page">&larr; Using web-hooks</a></p>
+  </div>
+  <div class="sphinxnext">
+    <h4>Next page</h4>
+    <p class="topless"><a href="pr_custom_page.html"
+                          title="Next page">&rarr; Customize the PR page</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/usage/ticket_templates.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="pr_custom_page.html" title="Customize the PR page"
+             >next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="using_webhooks.html" title="Using web-hooks"
+             >previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">pagure  documentation</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Usage</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Templates for ticket input</a></li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015, Red Hat Inc, Pierre-Yves Chibon &lt;pingou@pingoured.fr&gt;.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+  </body>
+</html>

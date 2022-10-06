@@ -1,0 +1,151 @@
+{% extends "repo_master.html" %}
+
+{% block title %}Releases - {{
+    repo.namespace + '/' if repo.namespace }}{{ repo.name }}{% endblock %}
+{% set tag = "home" %}
+
+{% block repo %}
+<div class="row">
+  <div class="col-2">
+      {% block overviewtabs %}{{ super() }}{% endblock %}
+  </div>
+  <div class="col-10">
+<h3 class="font-weight-bold">
+  Releases <span class="badge badge-secondary">{{tags|length}}</span>
+{% if config.get('UPLOAD_FOLDER_PATH') and config.get('UPLOAD_FOLDER_URL') %}
+  {% if g.repo_admin %}
+    <a class="float-right" href="{{ url_for('ui_ns.new_release',
+            repo=repo.name,
+            username=username,
+            namespace=repo.namespace) }}"
+        method="get" class="icon">
+    <button class="btn btn-primary" type="submit" title="Upload a tarball">
+      <span class="icon icon-plus blue"></span>
+      Upload a new release
+    </button>
+    </a>
+  {% endif %}
+{% endif %}
+</h3>
+
+{% if config.get('UPLOAD_FOLDER_PATH') and config.get('UPLOAD_FOLDER_URL') %}
+<p>
+  If the developers have uploaded one or more tarball(s), you will be able to
+  find them in the <a href="{{ config['UPLOAD_FOLDER_URL'] + repo.fullname }}">
+    release folder.
+  </a>
+</p>
+{% if pagure_checksum %}
+<p>
+  The <a href="{{ config['UPLOAD_FOLDER_URL'] + repo.fullname }}/CHECKSUMS">CHECKSUMS</a>
+  file contains the checksums (SHA256 and SHA512) of the files uploaded to
+  pagure.
+</p>
+<p>
+  To use this file, simply download it next to the tarball you downloaded and
+  run <pre>sha512sum -c CHECKSUMS</pre>
+</p>
+{% endif %}
+{% endif %}
+
+<section class="tag_list">
+  {% if tags %}
+  <div class="list-group">
+    {% for tag in tags %}
+        <div class="list-group-item">
+        <div class="row align-items-center">
+          <div class="col">
+            {% if tag['objecttype'] == "tag" and tag['object'].message.strip() %}
+              <div>
+                    <a href="{{ url_for('ui_ns.view_tree',
+                    repo=repo.name,
+                    username=username,
+                    namespace=repo.namespace,
+                    identifier=tag['object'].oid) }}"
+                    class="font-weight-bold">
+                    <i class="fa fa-fw fa-tags text-muted"></i> {{tag['tagname']}}
+                    </a>
+              </div>
+              <div>{{ tag['head_msg'] }} &bull; {{tag['date'] | humanize_tooltip | safe}}</div>
+            {% else %}
+              <div><strong><i class="fa fa-fw fa-tags text-muted"></i> {{tag['tagname']}}</strong></div>
+              <div>{{tag['date'] | humanize_tooltip | safe}}</div>
+            {% endif %}
+          </div>
+          <div class="col-xs-auto pr-2">
+            <a href="{{ url_for('ui_ns.view_commit',
+                    repo=repo.name,
+                    username=username,
+                    namespace=repo.namespace,
+                    commitid=tag['object'].oid) }}"
+               class="btn btn-outline-secondary disabled">
+              <code class="font-weight-bold">{{ tag['object'].oid | short }}</code>
+            </a>
+            <div class="btn-group">
+              <a class="btn btn-outline-primary"
+                 href="{{ url_for('ui_ns.view_tree',
+                       repo=repo.name,
+                       username=username,
+                       namespace=repo.namespace,
+                       identifier=tag['object'].oid) }}"
+                title="view code tree for this release">
+                <i class="fa fa-fw fa-file-code-o"></i>
+              </a>
+            </div>
+
+            <div class="btn-group">
+              <a href="#"
+                  class="btn dropdown-toggle btn-outline-primary"
+                  data-toggle="dropdown" id="download-button">
+                <span class="fa fa-save"></span>
+              </a>
+              <div class="dropdown-menu dropdown-menu-right">
+                <div class="m-3" id="archive_format_dropdown">
+                  <li>
+                    <ul>
+                      <a href="{{
+                        url_for('ui_ns.get_project_archive_zip',
+                         repo=repo.name,
+                         username=username,
+                         namespace=repo.namespace,
+                         ref=tag['tagname'],
+                         name='%s-%s' % (repo.name, tag['tagname']))
+                      }}" target="_blank" rel="noopener noreferrer">
+                      {{repo.name}}-{{ tag['tagname'] }}.zip
+                      </a>
+                    </ul>
+                    <ul>
+                      <a href="{{
+                        url_for('ui_ns.get_project_archive_tar_gz',
+                         repo=repo.name,
+                         username=username,
+                         namespace=repo.namespace,
+                         ref=tag['tagname'],
+                         name='%s-%s' % (repo.name, tag['tagname']))
+                      }}" target="_blank" rel="noopener noreferrer">
+                      {{repo.name}}-{{ tag['tagname'] }}.tar.gz
+                      </a>
+                    </ul>
+                  </li>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        {% if tag['body_msg'] %}
+        <div class="softwrap">
+{{ tag['body_msg'] }}</div>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p>
+    This project has not been tagged.
+  </p>
+  {% endif %}
+</section>
+</div>
+</div>
+{% endblock %}

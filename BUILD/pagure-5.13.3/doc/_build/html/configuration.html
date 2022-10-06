@@ -1,0 +1,2200 @@
+
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Configuration &#8212; pagure  documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/site.css" type="text/css" />
+    <link rel="stylesheet" href="_static/site.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+
+    
+    
+     
+        <script src="_static/jquery.cookie.js"></script>
+    
+
+    
+     
+        <script src="_static/cloud.base.js"></script>
+    
+
+    
+     
+        <script src="_static/cloud.js"></script>
+    
+
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Plugins" href="plugins.html" />
+    <link rel="prev" title="Cron Jobs" href="install_crons.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head><body>
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="plugins.html" title="Plugins"
+             accesskey="N">next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="install_crons.html" title="Cron Jobs"
+             accesskey="P">previous</a> &nbsp; &nbsp;</li>
+    <li><a href="index.html">pagure  documentation</a> &#187;</li>
+
+        <li class="nav-item nav-item-this"><a href="">Configuration</a></li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="configuration">
+<h1>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h1>
+<p>Pagure offers a wide varieties of options that must or can be used to
+adjust its behavior.</p>
+<p>All of these options can be edited or added to your configuration file.
+If you have installed pagure, this configuration file is likely located in
+<code class="docutils literal notranslate"><span class="pre">/etc/pagure/pagure.cfg</span></code>. Otherwise, it will depend on your
+setup/deployment.</p>
+<div class="section" id="must-options">
+<h2>Must options<a class="headerlink" href="#must-options" title="Permalink to this headline">¶</a></h2>
+<p>Here are the options you must set up in order to get pagure running.</p>
+<div class="section" id="secret-key">
+<h3>SECRET_KEY<a class="headerlink" href="#secret-key" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key is used by flask to create the session. It should be kept secret
+and set as a long and random string.</p>
+</div>
+<div class="section" id="salt-email">
+<h3>SALT_EMAIL<a class="headerlink" href="#salt-email" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key is used to ensure that when sending
+notifications to different users, each one of them has a different, unique
+and unfakeable <code class="docutils literal notranslate"><span class="pre">Reply-To</span></code> header. This header is then used by the milter to find
+out if the response received is a real one or a fake/invalid one.</p>
+</div>
+<div class="section" id="db-url">
+<h3>DB_URL<a class="headerlink" href="#db-url" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key indicates to the framework how and where to connect to the database
+server. Pagure uses <a class="reference external" href="http://www.sqlalchemy.org/">SQLAchemy</a> to connect
+to a wide range of database server including MySQL, PostgreSQL, and SQLite.</p>
+<p>Examples values:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">DB_URL</span> <span class="o">=</span> <span class="s1">&#39;mysql://user:pass@host/db_name&#39;</span>
+<span class="n">DB_URL</span> <span class="o">=</span> <span class="s1">&#39;postgres://user:pass@host/db_name&#39;</span>
+<span class="n">DB_URL</span> <span class="o">=</span> <span class="s1">&#39;sqlite:////var/tmp/pagure_dev.sqlite&#39;</span>
+</pre></div>
+</div>
+<p>Defaults to <code class="docutils literal notranslate"><span class="pre">sqlite:////var/tmp/pagure_dev.sqlite</span></code></p>
+</div>
+<div class="section" id="app-url">
+<h3>APP_URL<a class="headerlink" href="#app-url" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key indicates the URL at which this pagure instance will be made available.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">http://localhost.localdomain/</span></code></p>
+</div>
+<div class="section" id="email-error">
+<h3>EMAIL_ERROR<a class="headerlink" href="#email-error" title="Permalink to this headline">¶</a></h3>
+<p>Pagure sends email when it catches an unexpected error (which saves you from
+having to monitor the logs regularly; but if you like, the error is still
+present in the logs).
+This configuration key allows you to specify to which email address to send
+these error reports.</p>
+</div>
+<div class="section" id="git-url-ssh">
+<h3>GIT_URL_SSH<a class="headerlink" href="#git-url-ssh" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key provides the information to the user on how to clone
+the git repos hosted on pagure via <a class="reference external" href="https://en.wikipedia.org/wiki/Secure_Shell">SSH</a>.</p>
+<p>The URL should end with a slash <code class="docutils literal notranslate"><span class="pre">/</span></code>.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">'ssh://git&#64;llocalhost.localdomain/'</span></code></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you are using a custom setup for your deployment where every
+user has an account on the machine you may want to tweak this URL
+to include the username. If that is the case, you can use
+<code class="docutils literal notranslate"><span class="pre">{username}</span></code> in the URL and it will be expanded to the username
+of the user viewing the page when rendered.
+For example: <code class="docutils literal notranslate"><span class="pre">'ssh://{username}&#64;pagure.org/'</span></code></p>
+</div>
+</div>
+<div class="section" id="git-url-git">
+<h3>GIT_URL_GIT<a class="headerlink" href="#git-url-git" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key provides the information to the user on how to clone
+the git repos hosted on pagure anonymously. This access can be granted via
+the <code class="docutils literal notranslate"><span class="pre">git://</span></code> or <code class="docutils literal notranslate"><span class="pre">http(s)://</span></code> protocols.</p>
+<p>The URL should end with a slash <code class="docutils literal notranslate"><span class="pre">/</span></code>.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">'git://localhost.localdomain/'</span></code></p>
+</div>
+<div class="section" id="broker-url">
+<h3>BROKER_URL<a class="headerlink" href="#broker-url" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key is used to point celery to the broker to use. This
+is the broker that is used to communicate between the web application and
+its workers.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">'redis://%s'</span> <span class="pre">%</span> <span class="pre">APP.config['REDIS_HOST']</span></code></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>See the <a class="reference internal" href="#redis-section"><span class="std std-ref">Redis options</span></a> for the <code class="docutils literal notranslate"><span class="pre">REDIS_HOST</span></code> configuration
+key</p>
+</div>
+</div>
+</div>
+<div class="section" id="repo-directories">
+<h2>Repo Directories<a class="headerlink" href="#repo-directories" title="Permalink to this headline">¶</a></h2>
+<p>Each project in pagure has 2 to 4 git repositories, depending on configuration
+of the Pagure instance (see below):</p>
+<ul class="simple">
+<li><p>the main repo for the code</p></li>
+<li><p>the doc repo showed in the doc server (optional)</p></li>
+<li><p>the ticket repo storing the metadata of the tickets (optional)</p></li>
+<li><p>the request repo storing the metadata of the pull-requests</p></li>
+</ul>
+<p>There are then another 3 folders: one for specifying the locations of the forks, one
+for the remote git repo used for the remotes pull-requests (ie: those coming from
+a project not hosted on this instance of pagure), and one for user-uploaded tarballs.</p>
+<div class="section" id="git-folder">
+<h3>GIT_FOLDER<a class="headerlink" href="#git-folder" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key points to the folder where the git repos are stored.
+For every project, two to four repos are created:</p>
+<ul class="simple">
+<li><p>a repo with source code of the project</p></li>
+<li><p>a repo with documentation of the project
+(if <code class="docutils literal notranslate"><span class="pre">ENABLE_DOCS</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code>)</p></li>
+<li><p>a repo with metadata of tickets opened against the project
+(if <code class="docutils literal notranslate"><span class="pre">ENABLE_TICKETS</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code>)</p></li>
+<li><p>a repo with metadata of pull requests opened against the project</p></li>
+</ul>
+<p>Note that gitolite config value <code class="docutils literal notranslate"><span class="pre">GL_REPO_BASE</span></code> (if using gitolite 3)
+or <code class="docutils literal notranslate"><span class="pre">$REPO_BASE</span></code> (if using gitolite 2) <strong>must</strong> have exactly the same
+value as <code class="docutils literal notranslate"><span class="pre">GIT_FOLDER</span></code>.</p>
+</div>
+<div class="section" id="remote-git-folder">
+<h3>REMOTE_GIT_FOLDER<a class="headerlink" href="#remote-git-folder" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key points to the folder where the remote git repos (ie:
+not hosted on pagure) that someone used to open a pull-request against a
+project hosted on pagure are stored.</p>
+</div>
+<div class="section" id="upload-folder-path">
+<h3>UPLOAD_FOLDER_PATH<a class="headerlink" href="#upload-folder-path" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key points to the folder where user-uploaded tarballs
+are stored and served from.</p>
+</div>
+<div class="section" id="attachments-folder">
+<h3>ATTACHMENTS_FOLDER<a class="headerlink" href="#attachments-folder" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key points to the folder where attachments can be cached
+for easier access by the web-server (allowing to not interact with the git
+repo having it to serve it).</p>
+</div>
+<div class="section" id="upload-folder-url">
+<h3>UPLOAD_FOLDER_URL<a class="headerlink" href="#upload-folder-url" title="Permalink to this headline">¶</a></h3>
+<p>Full URL to where the uploads are available. It is highly recommended for
+security reasons that this URL lives on a different domain than the main
+application (an entirely different domain, not just a sub-domain).</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">/releases/</span></code>, unsafe for production!</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>both <cite>UPLOAD_FOLDER_PATH</cite> and <cite>UPLOAD_FOLDER_URL</cite> must be
+specified for the upload release feature to work</p>
+</div>
+</div>
+<div class="section" id="session-cookie-secure">
+<h3>SESSION_COOKIE_SECURE<a class="headerlink" href="#session-cookie-secure" title="Permalink to this headline">¶</a></h3>
+<p>When this is set to True, the session cookie will only be returned to the
+server via ssl (https). If you connect to the server via plain http, the
+cookie will not be sent. This prevents sniffing of the cookie contents.
+This may be set to False when testing your application but should always
+be set to True in production.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">False</span></code> for development, must be <code class="docutils literal notranslate"><span class="pre">True</span></code> in production with
+https.</p>
+</div>
+<div class="section" id="session-type">
+<h3>SESSION_TYPE<a class="headerlink" href="#session-type" title="Permalink to this headline">¶</a></h3>
+<p>Enables the <a class="reference external" href="https://pythonhosted.org/Flask-Session/">flask-session</a>
+extension if set to a value other than <code class="docutils literal notranslate"><span class="pre">None</span></code>. The <code class="docutils literal notranslate"><span class="pre">flask-session</span></code>
+package needs to be installed and proper
+<a class="reference external" href="https://pythonhosted.org/Flask-Session/#configuration">configuration</a>
+needs to be included in the Pagure config file.</p>
+<p>This is useful when the Pagure server needs to be scaled up to multiple
+instances, which requires the flask session keys to be shared between those.
+Flask-session allows you to use Redis, Memcached, relational database
+or MongoDB for storing shared session keys.</p>
+</div>
+<div class="section" id="from-email">
+<h3>FROM_EMAIL<a class="headerlink" href="#from-email" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key specifies the email address used by this pagure instance
+when sending emails (notifications).</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">pagure&#64;localhost.localdomain</span></code></p>
+</div>
+<div class="section" id="domain-email-notifications">
+<h3>DOMAIN_EMAIL_NOTIFICATIONS<a class="headerlink" href="#domain-email-notifications" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key specifies the domain used by this pagure instance
+when sending emails (notifications). More precisely, it is used
+when building the <code class="docutils literal notranslate"><span class="pre">msg-id</span></code> header of the emails sent.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">localhost.localdomain</span></code></p>
+</div>
+<div class="section" id="virus-scan-attachments">
+<h3>VIRUS_SCAN_ATTACHMENTS<a class="headerlink" href="#virus-scan-attachments" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key configures whether attachments are scanned for viruses on
+upload. For more information, see the install.rst guide.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+<div class="section" id="git-auth-backend">
+<h4>GIT_AUTH_BACKEND<a class="headerlink" href="#git-auth-backend" title="Permalink to this headline">¶</a></h4>
+<p>This configuration key allows specifying which git auth backend to use.</p>
+<p>Git auth backends can either be static (like gitolite), where a file is
+generated when something changed and then used on login, or dynamic,
+where the actual ACLs are checked in a git hook before being applied.</p>
+<p>By default pagure provides the following backends:</p>
+<ul class="simple">
+<li><p><cite>test_auth</cite>: simple debugging backend printing and returning the string <code class="docutils literal notranslate"><span class="pre">Called</span> <span class="pre">GitAuthTestHelper.generate_acls()</span></code></p></li>
+<li><p><cite>gitolite2</cite>: allows deploying pagure on the top of gitolite 2</p></li>
+<li><p><cite>gitolite3</cite>: allows deploying pagure on the top of gitolite 3</p></li>
+<li><p><cite>pagure</cite>: Pagure git auth implementation (using keyhelper.py and aclchecker.py) that is used via sshd AuthorizedKeysCommand</p></li>
+<li><p><cite>pagure_authorized_keys</cite>: Pagure git auth implementation that writes to authorized_keys file</p></li>
+</ul>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">gitolite3</span></code></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The option GITOLITE_BACKEND is the legacy name, and for backwards compatibility reasons will override this setting</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>These options can be expended, cf <a class="reference internal" href="custom_gitolite_conf.html#custom-gitolite"><span class="std std-ref">Customize the gitolite configuration</span></a>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="configure-pagure-auth">
+<h2>Configure Pagure Auth<a class="headerlink" href="#configure-pagure-auth" title="Permalink to this headline">¶</a></h2>
+<p>Pagure offers a simple, but extensible internal authentication mechanism
+for Git repositories. It relies on <a class="reference external" href="https://en.wikipedia.org/wiki/Secure_Shell">SSH</a>
+for authentication. In other words, SSH lets you in and Pagure checks if
+you are allowed to do what you are trying to do once you are inside.</p>
+<p>This authentication mechanism uses <code class="docutils literal notranslate"><span class="pre">keyhelper.py</span></code> and <code class="docutils literal notranslate"><span class="pre">aclchecker.py</span></code> to
+check the Pagure database for user registered SSH keys to do the authentication.</p>
+<p>The integrated authentication mechanism has two modes of operation: one
+where it is configured as the <code class="docutils literal notranslate"><span class="pre">AuthorizedKeysCommand</span></code> for the SSH user (preferred)
+and one where it is configured to manage the <code class="docutils literal notranslate"><span class="pre">authorized_keys</span></code> file for
+the SSH user.</p>
+<p>In the preferred mode, when you attempt to do an action with a remote Git repo
+over SSH (e.g. <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">ssh://git&#64;localhost.localdomain/repository.git</span></code>),
+the SSH server will ask Pagure to validate the SSH user key. This has the
+advantage of performance (no racey and slow file I/O) but has the disadvantage
+of requiring changes to the system’s <code class="docutils literal notranslate"><span class="pre">sshd_config</span></code> file to use it.</p>
+<p>To use this variant, set the following in <code class="docutils literal notranslate"><span class="pre">pagure.cfg</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">GIT_AUTH_BACKEND</span> <span class="o">=</span> <span class="s2">&quot;pagure&quot;</span>
+
+<span class="n">HTTP_REPO_ACCESS_GITOLITE</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="n">SSH_KEYS_USERNAME_EXPECT</span> <span class="o">=</span> <span class="s2">&quot;git&quot;</span>
+
+<span class="n">SSH_COMMAND_NON_REPOSPANNER</span> <span class="o">=</span> <span class="p">([</span>
+    <span class="s2">&quot;/usr/bin/</span><span class="si">%(cmd)s</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;/srv/git/repositories/</span><span class="si">%(reponame)s</span><span class="s2">&quot;</span><span class="p">,</span>
+<span class="p">],</span> <span class="p">{</span><span class="s2">&quot;GL_USER&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">%(username)s</span><span class="s2">&quot;</span><span class="p">})</span>
+</pre></div>
+</div>
+<p>Setting the following in <code class="docutils literal notranslate"><span class="pre">/etc/ssh/sshd_config</span></code> is also required:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Match</span> <span class="n">User</span> <span class="n">git</span>
+    <span class="n">AuthorizedKeysCommand</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">libexec</span><span class="o">/</span><span class="n">pagure</span><span class="o">/</span><span class="n">keyhelper</span><span class="o">.</span><span class="n">py</span> <span class="s2">&quot;</span><span class="si">%u</span><span class="s2">&quot;</span> <span class="s2">&quot;%h&quot;</span> <span class="s2">&quot;%t&quot;</span> <span class="s2">&quot;</span><span class="si">%f</span><span class="s2">&quot;</span>
+    <span class="n">AuthorizedKeysCommandUser</span> <span class="n">git</span>
+</pre></div>
+</div>
+<p>If you do not have the ability to modify the sshd configuration to set up
+the <code class="docutils literal notranslate"><span class="pre">pagure</span></code> backend, then you need to use the <code class="docutils literal notranslate"><span class="pre">pagure_authorized_keys</span></code>
+alternative backend. This backend will write to the git user’s  <code class="docutils literal notranslate"><span class="pre">authorized_keys</span></code>
+file instead. This is slower than the preferred mode and also has the
+disadvantage of making it impossible to scale to multiple Pagure frontend
+instances on top of a shared Git storage without causing races and triggering
+inconsistencies. It also adds to the I/O contention on a heavily used system,
+but for most smaller setups with few users, the trade-off is not noticeable.</p>
+<p>To use this variant, enable the <code class="docutils literal notranslate"><span class="pre">pagure_authorized_keys_worker</span></code> service and
+set the following to <code class="docutils literal notranslate"><span class="pre">pagure.cfg</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">SSH_FOLDER</span> <span class="o">=</span> <span class="s2">&quot;/srv/git/.ssh&quot;</span>
+
+<span class="n">GIT_AUTH_BACKEND</span> <span class="o">=</span> <span class="s2">&quot;pagure_authorized_keys&quot;</span>
+
+<span class="n">HTTP_REPO_ACCESS_GITOLITE</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="n">SSH_COMMAND_NON_REPOSPANNER</span> <span class="o">=</span> <span class="p">([</span>
+    <span class="s2">&quot;/usr/bin/</span><span class="si">%(cmd)s</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;/srv/git/repositories/</span><span class="si">%(reponame)s</span><span class="s2">&quot;</span><span class="p">,</span>
+<span class="p">],</span> <span class="p">{</span><span class="s2">&quot;GL_USER&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">%(username)s</span><span class="s2">&quot;</span><span class="p">})</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="configure-gitolite">
+<h2>Configure Gitolite<a class="headerlink" href="#configure-gitolite" title="Permalink to this headline">¶</a></h2>
+<p>Pagure can use <a class="reference external" href="http://gitolite.com/">gitolite</a> as an authorization layer.
+Gitolite relies on <a class="reference external" href="https://en.wikipedia.org/wiki/Secure_Shell">SSH</a> for
+the authentication. In other words, SSH lets you in and gitolite checks if
+you are allowed to do what you are trying to do once you are inside.</p>
+<p>Pagure supports both gitolite 2 and gitolite 3 and the code generating
+the gitolite configuration can be customized for easier integration with
+other systems (cf <a class="reference internal" href="custom_gitolite_conf.html#custom-gitolite"><span class="std std-ref">Customize the gitolite configuration</span></a>).</p>
+<p>Using Gitolite also requires setting the following in <code class="docutils literal notranslate"><span class="pre">pagure.cfg</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">HTTP_REPO_ACCESS_GITOLITE</span> <span class="o">=</span> <span class="s2">&quot;/usr/share/gitolite3/gitolite-shell&quot;</span>
+
+<span class="n">SSH_COMMAND_NON_REPOSPANNER</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="p">[</span>
+        <span class="s2">&quot;/usr/share/gitolite3/gitolite-shell&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;</span><span class="si">%(username)s</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;</span><span class="si">%(cmd)s</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;</span><span class="si">%(reponame)s</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="p">],</span>
+    <span class="p">{},</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>This ensures that the Gitolite environment is used for interacting with
+Git repositories. Further customizations are listed below.</p>
+<div class="section" id="gitolite-2-and-3">
+<h3><strong>gitolite 2 and 3</strong><a class="headerlink" href="#gitolite-2-and-3" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="gitolite-home">
+<h4>GITOLITE_HOME<a class="headerlink" href="#gitolite-home" title="Permalink to this headline">¶</a></h4>
+<p>This configuration key points to the home directory of the user under which
+gitolite is ran.</p>
+</div>
+<div class="section" id="gitolite-keydir">
+<h4>GITOLITE_KEYDIR<a class="headerlink" href="#gitolite-keydir" title="Permalink to this headline">¶</a></h4>
+<p>This configuration key points to the folder where gitolite stores and accesses
+the public SSH keys of all the user have access to the server.</p>
+<p>Since pagure is the user interface, it is pagure that writes down the files
+in this directory, effectively setting up the users to be able to use gitolite.</p>
+</div>
+<div class="section" id="gitolite-config">
+<h4>GITOLITE_CONFIG<a class="headerlink" href="#gitolite-config" title="Permalink to this headline">¶</a></h4>
+<p>This configuration key points to the gitolite.conf file where pagure writes
+the gitolite repository access configuration.</p>
+</div>
+<div class="section" id="gitolite-celery-queue">
+<h4>GITOLITE_CELERY_QUEUE<a class="headerlink" href="#gitolite-celery-queue" title="Permalink to this headline">¶</a></h4>
+<p>This configuration is useful for large pagure deployment where recompiling
+the gitolite config file can take a long time. By default the compilation
+of gitolite’s configuration file is done by the pagure_worker, which spawns
+by default 4 concurrent workers. If it takes a while to recompile the
+gitolite configuration file, these workers may be stepping on each others’
+toes.
+In this situation, this configuration key allows you to direct the messages
+asking for the gitolite configuration file to be compiled to a different
+queue which can then be handled by a different service/worker.</p>
+<p>Pagure provides a <code class="docutils literal notranslate"><span class="pre">pagure_gitolite_worker.service</span></code> systemd service file
+pre-configured to handles these messages if this configuration key is set
+to <code class="docutils literal notranslate"><span class="pre">gitolite_queue</span></code>.</p>
+</div>
+</div>
+<div class="section" id="gitolite-2-only">
+<h3><strong>gitolite 2 only</strong><a class="headerlink" href="#gitolite-2-only" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="gl-rc">
+<h4>GL_RC<a class="headerlink" href="#gl-rc" title="Permalink to this headline">¶</a></h4>
+<p>This configuration key points to the file <code class="docutils literal notranslate"><span class="pre">gitolite.rc</span></code> used by gitolite
+to record who has access to what (ie: who has access to which repo/branch).</p>
+</div>
+<div class="section" id="gl-bindir">
+<h4>GL_BINDIR<a class="headerlink" href="#gl-bindir" title="Permalink to this headline">¶</a></h4>
+<p>This configuration key indicates the folder in which the gitolite tools can
+be found. It can be as simple as <code class="docutils literal notranslate"><span class="pre">/usr/bin/</span></code> if the tools have been installed
+using a package manager or something like <code class="docutils literal notranslate"><span class="pre">/opt/bin/</span></code> for a more custom
+install.</p>
+</div>
+</div>
+<div class="section" id="gitolite-3-only">
+<h3><strong>gitolite 3 only</strong><a class="headerlink" href="#gitolite-3-only" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="gitolite-has-compile-1">
+<h4>GITOLITE_HAS_COMPILE_1<a class="headerlink" href="#gitolite-has-compile-1" title="Permalink to this headline">¶</a></h4>
+<p>By setting this configuration key to <code class="docutils literal notranslate"><span class="pre">True</span></code>, you can turn on using the
+gitolite <code class="docutils literal notranslate"><span class="pre">compile-1</span></code> binary. This speeds up gitolite task when it recompiles
+configuration after new project is created. In order to use this, you need to
+have the <code class="docutils literal notranslate"><span class="pre">compile-1</span></code> gitolite command.</p>
+<p>There are two ways to have it,</p>
+<ol class="arabic simple">
+<li><p>You distribution already has the file installed for you and you can then
+just use it.</p></li>
+<li><p>You need to download and install it yourself. We are describing what
+needs to be done for this here below.</p></li>
+</ol>
+<p>Installing the <code class="docutils literal notranslate"><span class="pre">compile-1</span></code> command:</p>
+<ul class="simple">
+<li><p>You also have to make sure that your distribution of gitolite contains
+<a class="reference external" href="https://github.com/sitaramc/gitolite/commit/c4b6521a4b82e639f6ed776abad79c">patch</a>
+which makes gitolite respect <code class="docutils literal notranslate"><span class="pre">ALLOW_ORPHAN_GL_CONF</span></code> configuration variable,
+if this patch isn’t already present, you will have to make the change yourself.</p></li>
+<li><p>In your <code class="docutils literal notranslate"><span class="pre">gitolite.rc</span></code> set <code class="docutils literal notranslate"><span class="pre">ALLOW_ORPHAN_GL_CONF</span></code> to <code class="docutils literal notranslate"><span class="pre">1</span></code> (you may
+have to add it yourself).</p></li>
+<li><p>Still in your <code class="docutils literal notranslate"><span class="pre">gitolite.rc</span></code> file, uncomment <code class="docutils literal notranslate"><span class="pre">LOCAL_CODE</span></code> file and set
+it to a full path of a directory that you choose (for example
+<code class="docutils literal notranslate"><span class="pre">/usr/local/share/gitolite3</span></code>).</p></li>
+<li><p>Create a subdirectory <code class="docutils literal notranslate"><span class="pre">commands</span></code> under the path you picked for <code class="docutils literal notranslate"><span class="pre">LOCAL_CODE</span></code>
+(in our example, you will need to do: <code class="docutils literal notranslate"><span class="pre">mkdir</span> <span class="pre">-p</span> <span class="pre">/usr/local/share/gitolite3/commands</span></code>)</p></li>
+<li><p>Finally, install the <code class="docutils literal notranslate"><span class="pre">compile-1</span></code> command in this <code class="docutils literal notranslate"><span class="pre">commands</span></code> subdirectory
+If your installation doesn’t ship this file, you can <a class="reference external" href="https://github.com/sitaramc/gitolite/blob/master/contrib/commands/compile-1">download it</a>.
+(Ensure the file is executable, otherwise gitolite will not find it)</p></li>
+</ul>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</div>
+</div>
+</div>
+<div class="section" id="eventsource-options">
+<h2>EventSource options<a class="headerlink" href="#eventsource-options" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="eventsource-source">
+<h3>EVENTSOURCE_SOURCE<a class="headerlink" href="#eventsource-source" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key indicates the URL at which the EventSource server is
+available. If not defined, pagure will behave as if there are no EventSource
+server running.</p>
+</div>
+<div class="section" id="eventsource-port">
+<h3>EVENTSOURCE_PORT<a class="headerlink" href="#eventsource-port" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key indicates the port at which the EventSource server is
+running.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The EventSource server requires a redis server (see <code class="docutils literal notranslate"><span class="pre">Redis</span> <span class="pre">options</span></code>
+below)</p>
+</div>
+</div>
+</div>
+<div class="section" id="web-hooks-notifications">
+<h2>Web-hooks notifications<a class="headerlink" href="#web-hooks-notifications" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="webhook">
+<h3>WEBHOOK<a class="headerlink" href="#webhook" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key allows turning on or off web-hooks notifications for
+this pagure instance.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The Web-hooks server requires a redis server (see <code class="docutils literal notranslate"><span class="pre">Redis</span> <span class="pre">options</span></code>
+below)</p>
+</div>
+</div>
+</div>
+<div class="section" id="redis-options">
+<span id="redis-section"></span><h2>Redis options<a class="headerlink" href="#redis-options" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="redis-host">
+<h3>REDIS_HOST<a class="headerlink" href="#redis-host" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key indicates the host at which the <a class="reference external" href="http://redis.io/">redis</a>
+server is running.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">0.0.0.0</span></code>.</p>
+</div>
+<div class="section" id="redis-port">
+<h3>REDIS_PORT<a class="headerlink" href="#redis-port" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key indicates the port at which the redis server can be
+contacted.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">6379</span></code>.</p>
+</div>
+<div class="section" id="redis-db">
+<h3>REDIS_DB<a class="headerlink" href="#redis-db" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key indicates the name of the redis database to use for
+communicating with the EventSource server.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p>
+</div>
+</div>
+<div class="section" id="authentication-options">
+<h2>Authentication options<a class="headerlink" href="#authentication-options" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="admin-group">
+<h3>ADMIN_GROUP<a class="headerlink" href="#admin-group" title="Permalink to this headline">¶</a></h3>
+<p>List of groups, either local or remote (if the openid server used supports the
+group extension), that are the site admins. These admins can regenerate the
+gitolite configuration, the ssh key files, and the hook-token for every project
+as well as manage users and groups.</p>
+</div>
+<div class="section" id="pagure-admin-users">
+<h3>PAGURE_ADMIN_USERS<a class="headerlink" href="#pagure-admin-users" title="Permalink to this headline">¶</a></h3>
+<p>List of local users that are the site admins. These admins have the same rights as
+the users in the admin groups listed above as well as admin rights to
+all projects hosted on this pagure instance.</p>
+</div>
+</div>
+<div class="section" id="celery-queue-options">
+<h2>Celery Queue options<a class="headerlink" href="#celery-queue-options" title="Permalink to this headline">¶</a></h2>
+<p>In order to help prioritize between tasks having a direct impact on the user
+experience and tasks needed to be run on the background but not directly
+impacting the users, we have split the generic tasks triggered by the web
+application into three possible queues: Fast, Medium, Slow.
+If none of these options are set, a single queue will be used for all tasks.</p>
+<div class="section" id="fast-celery-queue">
+<h3>FAST_CELERY_QUEUE<a class="headerlink" href="#fast-celery-queue" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key can be used to specify a dedicated queue for tasks that
+are triggered by the web frontend and need to be processed quickly for the
+best user experience.</p>
+<p>This will be used for tasks such as creating a new project, forking or
+merging a pull-request.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</div>
+<div class="section" id="medium-celery-queue">
+<h3>MEDIUM_CELERY_QUEUE<a class="headerlink" href="#medium-celery-queue" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key can be used to specify a dedicated queue for tasks that
+are triggered by the web frontend and need to be processed but aren’t critical
+for the best user experience.</p>
+<p>This will be used for tasks such as updating a file in a git repository.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</div>
+<div class="section" id="slow-celery-queue">
+<h3>SLOW_CELERY_QUEUE<a class="headerlink" href="#slow-celery-queue" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key can be used to specify a dedicated queue for tasks that
+are triggered by the web frontend, are slow and do not impact the user
+experience in the user interface.</p>
+<p>This will be used for tasks such as updating the ticket git repo based on
+the content posted in the user interface.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</div>
+</div>
+<div class="section" id="stomp-options">
+<h2>Stomp Options<a class="headerlink" href="#stomp-options" title="Permalink to this headline">¶</a></h2>
+<p>Pagure integration with Stomp allows you to emit messages to any
+stomp-compliant message bus.</p>
+<div class="section" id="stomp-notifications">
+<h3>STOMP_NOTIFICATIONS<a class="headerlink" href="#stomp-notifications" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key can be used to turn on or off notifications via
+<a class="reference external" href="https://stomp.github.io/">stomp protocol</a>. All other stomp-related
+settings don’t need to be present if this is set to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</div>
+<div class="section" id="stomp-brokers">
+<h3>STOMP_BROKERS<a class="headerlink" href="#stomp-brokers" title="Permalink to this headline">¶</a></h3>
+<p>List of 2-tuples with broker domain names and ports. For example
+<code class="docutils literal notranslate"><span class="pre">[('primary.msg.bus.com',</span> <span class="pre">6543),</span> <span class="pre">('backup.msg.bus.com`,</span> <span class="pre">6543)]</span></code>.</p>
+</div>
+<div class="section" id="stomp-hierarchy">
+<h3>STOMP_HIERARCHY<a class="headerlink" href="#stomp-hierarchy" title="Permalink to this headline">¶</a></h3>
+<p>Base name of the hierarchy to emit messages to. For example
+<code class="docutils literal notranslate"><span class="pre">/queue/some.hierarchy.</span></code>. Note that this <strong>must</strong> end with
+a dot. Pagure will append queue names such as <code class="docutils literal notranslate"><span class="pre">project.new</span></code>
+to this value, resulting in queue names being e.g.
+<code class="docutils literal notranslate"><span class="pre">/queue/some.hierarchy.project.new</span></code>.</p>
+</div>
+<div class="section" id="stomp-ssl">
+<h3>STOMP_SSL<a class="headerlink" href="#stomp-ssl" title="Permalink to this headline">¶</a></h3>
+<p>Whether or not to use SSL when connecting to message brokers.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</div>
+<div class="section" id="stomp-key-file">
+<h3>STOMP_KEY_FILE<a class="headerlink" href="#stomp-key-file" title="Permalink to this headline">¶</a></h3>
+<p>Absolute path to key file for SSL connection. Only required if
+<code class="docutils literal notranslate"><span class="pre">STOMP_SSL</span></code> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</div>
+<div class="section" id="stomp-cert-file">
+<h3>STOMP_CERT_FILE<a class="headerlink" href="#stomp-cert-file" title="Permalink to this headline">¶</a></h3>
+<p>Absolute path to certificate file for SSL connection. Only required if
+<code class="docutils literal notranslate"><span class="pre">STOMP_SSL</span></code> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</div>
+<div class="section" id="stomp-creds-password">
+<h3>STOMP_CREDS_PASSWORD<a class="headerlink" href="#stomp-creds-password" title="Permalink to this headline">¶</a></h3>
+<p>Password for decoding <code class="docutils literal notranslate"><span class="pre">STOMP_CERT_FILE</span></code> and <code class="docutils literal notranslate"><span class="pre">STOMP_KEY_FILE</span></code>. Only
+required if <code class="docutils literal notranslate"><span class="pre">STOMP_SSL</span></code> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code> and credentials files are
+password-encoded.</p>
+</div>
+<div class="section" id="always-stomp-on-commits">
+<h3>ALWAYS_STOMP_ON_COMMITS<a class="headerlink" href="#always-stomp-on-commits" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key can be used to enforce <a class="reference external" href="https://stomp.github.io/">stomp</a>
+notifications on commits made on all projects in a pagure instance.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</div>
+</div>
+<div class="section" id="api-token-acls">
+<h2>API token ACLs<a class="headerlink" href="#api-token-acls" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="acls">
+<h3>ACLS<a class="headerlink" href="#acls" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key lists all the ACLs that can be associated with an API
+token with a short description of what the ACL allows one to do.
+This key it not really meant to be changed unless you really know what you
+are doing.</p>
+</div>
+<div class="section" id="user-acls">
+<h3>USER_ACLS<a class="headerlink" href="#user-acls" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key can be used to list which of the ACLs listed in <code class="docutils literal notranslate"><span class="pre">ACLS</span></code>
+can be associated with an API token of a project in the (web) user interface.</p>
+<p>Use this configuration key in combination with <code class="docutils literal notranslate"><span class="pre">ADMIN_API_ACLS</span></code> to disable
+certain ACLs for users while allowing admins to generate keys with them.</p>
+<dl class="simple">
+<dt>Defaults to: <code class="docutils literal notranslate"><span class="pre">[key</span> <span class="pre">for</span> <span class="pre">key</span> <span class="pre">in</span> <span class="pre">ACLS.keys()</span> <span class="pre">if</span> <span class="pre">key</span> <span class="pre">!=</span> <span class="pre">'generate_acls_project']</span></code></dt><dd><p>(ie: all the ACLs in <code class="docutils literal notranslate"><span class="pre">ACLS</span></code> except for <code class="docutils literal notranslate"><span class="pre">generate_acls_project</span></code>)</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="admin-api-acls">
+<h3>ADMIN_API_ACLS<a class="headerlink" href="#admin-api-acls" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key can be used to list which of the ACLs listed in <code class="docutils literal notranslate"><span class="pre">ACLS</span></code>
+can be generated by the <code class="docutils literal notranslate"><span class="pre">pagure-admin</span></code> CLI tool by admins.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">['issue_comment',</span> <span class="pre">'issue_create',</span> <span class="pre">'issue_change_status',</span> <span class="pre">'pull_request_flag',</span> <span class="pre">'pull_request_comment',</span> <span class="pre">'pull_request_merge',</span> <span class="pre">'generate_acls_project',</span> <span class="pre">'commit_flag',</span> <span class="pre">'create_branch']</span></code></p>
+</div>
+<div class="section" id="cross-project-acls">
+<h3>CROSS_PROJECT_ACLS<a class="headerlink" href="#cross-project-acls" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key can be used to list which of the ACLs listed in <code class="docutils literal notranslate"><span class="pre">ACLS</span></code>
+can be associated with a project-less API token in the (web) user interface.
+These project-less API tokens can be generated in the user’s settings page
+and allows action in multiple projects instead of being restricted to a
+specific one.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">['create_project',</span> <span class="pre">'fork_project',</span> <span class="pre">'modify_project']</span></code></p>
+</div>
+</div>
+<div class="section" id="optional-options">
+<h2>Optional options<a class="headerlink" href="#optional-options" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="theming">
+<h3>Theming<a class="headerlink" href="#theming" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="theme">
+<h4>THEME<a class="headerlink" href="#theme" title="Permalink to this headline">¶</a></h4>
+<p>This configuration key allows you to specify the theme to be used. The
+string specified is the name of the theme directory in <code class="docutils literal notranslate"><span class="pre">pagure/themes/</span></code></p>
+<p>For more information about theming see the <a class="reference internal" href="usage/theming.html"><span class="doc">Theming Guide</span></a></p>
+<p>Default options:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">chameleon</span></code>  The OpenSUSE theme for pagure</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">default</span></code>  The default theme for pagure</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pagureio</span></code>  The theme used at <a class="reference external" href="https://pagure.io">https://pagure.io</a></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">srcfpo</span></code>  The theme used at <a class="reference external" href="https://src.fedoraproject.org">https://src.fedoraproject.org</a></p></li>
+</ul>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">default</span></code></p>
+</div>
+</div>
+<div class="section" id="git-repository-templates">
+<h3>Git repository templates<a class="headerlink" href="#git-repository-templates" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="project-template-path">
+<h4>PROJECT_TEMPLATE_PATH<a class="headerlink" href="#project-template-path" title="Permalink to this headline">¶</a></h4>
+<p>This configuration key allows you to specify the path to a git repository
+to use as a template when creating new repository for new projects.
+This template will not be used for forks nor any of the git repository but
+the one used for the sources (ie: it will not be used for the tickets,
+requests or docs repositories).</p>
+</div>
+<div class="section" id="fork-template-path">
+<h4>FORK_TEMPLATE_PATH<a class="headerlink" href="#fork-template-path" title="Permalink to this headline">¶</a></h4>
+<p>This configuration key allows you to specify the path to a git repository
+to use as a template when creating new repository for new forks.
+This template will not be used for any of the git repository but
+the one used for the sources of forks (ie: it will not be used for the
+tickets, requests or docs repositories).</p>
+</div>
+</div>
+<div class="section" id="ssh-keys">
+<h3>SSH_KEYS<a class="headerlink" href="#ssh-keys" title="Permalink to this headline">¶</a></h3>
+<p>It is a good practice to publish the fingerprint and public SSH key of a
+server you provide access to.
+Pagure offers the possibility to expose this information based on the values
+set in the configuration file, in the <code class="docutils literal notranslate"><span class="pre">SSH_KEYS</span></code> configuration key.</p>
+<p>See the <a class="reference external" href="https://pagure.io/ssh_info">SSH hostkeys/Fingerprints page on pagure.io</a>.</p>
+<p>Where <cite>&lt;foo&gt;</cite> and <cite>&lt;bar&gt;</cite> must be replaced by your values.</p>
+</div>
+<div class="section" id="csp-headers">
+<h3>CSP_HEADERS<a class="headerlink" href="#csp-headers" title="Permalink to this headline">¶</a></h3>
+<p>Content Security Policy (CSP) is a computer security standard introduced to
+prevent cross-site scripting (XSS), clickjacking and other code injection
+attacks resulting from execution of malicious content in the trusted web page
+context</p>
+<p>Source: <a class="reference external" href="https://en.wikipedia.org/wiki/Content_Security_Policy">https://en.wikipedia.org/wiki/Content_Security_Policy</a></p>
+<p>Defaults to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CSP_HEADERS</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">&quot;default-src &#39;self&#39; https:; &quot;</span>
+    <span class="s2">&quot;script-src &#39;self&#39; &#39;nonce-</span><span class="si">{nonce}</span><span class="s2">&#39;; &quot;</span>
+    <span class="s2">&quot;style-src &#39;self&#39; &#39;nonce-</span><span class="si">{nonce}</span><span class="s2">&#39;&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Where <code class="docutils literal notranslate"><span class="pre">{nonce}</span></code> is dynamically set by pagure.</p>
+</div>
+<div class="section" id="logging-git-hooks">
+<h3>LOGGING_GIT_HOOKS<a class="headerlink" href="#logging-git-hooks" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key allows to have a different logging configuration for the
+web application and the git hooks.</p>
+<p>If un-specified (default), the logging configuration used by the git hooks will
+be the same as the one for the web application (i.e.: defined in <code class="docutils literal notranslate"><span class="pre">LOGGING</span></code> here
+below).</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</div>
+<div class="section" id="logging">
+<h3>LOGGING<a class="headerlink" href="#logging" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key allows you to set up the logging of the application.
+It relies on the standard <a class="reference external" href="https://docs.python.org/2/library/logging.html">python logging module</a>.</p>
+<p>The default value is:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">LOGGING</span> <span class="o">=</span> <span class="p">{</span>
+     <span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+     <span class="s2">&quot;disable_existing_loggers&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+     <span class="s2">&quot;formatters&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="s2">&quot;standard&quot;</span><span class="p">:</span> <span class="p">{</span>
+             <span class="s2">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">%(asctime)s</span><span class="s2"> [</span><span class="si">%(levelname)s</span><span class="s2">] </span><span class="si">%(name)s</span><span class="s2">: </span><span class="si">%(message)s</span><span class="s2">&quot;</span>
+         <span class="p">},</span>
+         <span class="s2">&quot;email_format&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;format&quot;</span><span class="p">:</span> <span class="n">MSG_FORMAT</span><span class="p">},</span>
+     <span class="p">},</span>
+     <span class="s2">&quot;filters&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;myfilter&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;()&quot;</span><span class="p">:</span> <span class="n">ContextInjector</span><span class="p">}},</span>
+     <span class="s2">&quot;handlers&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="s2">&quot;console&quot;</span><span class="p">:</span> <span class="p">{</span>
+             <span class="s2">&quot;formatter&quot;</span><span class="p">:</span> <span class="s2">&quot;standard&quot;</span><span class="p">,</span>
+             <span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;logging.StreamHandler&quot;</span><span class="p">,</span>
+             <span class="s2">&quot;stream&quot;</span><span class="p">:</span> <span class="s2">&quot;ext://sys.stdout&quot;</span><span class="p">,</span>
+         <span class="p">},</span>
+         <span class="s2">&quot;auth_handler&quot;</span><span class="p">:</span> <span class="p">{</span>
+             <span class="s2">&quot;formatter&quot;</span><span class="p">:</span> <span class="s2">&quot;standard&quot;</span><span class="p">,</span>
+             <span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;logging.StreamHandler&quot;</span><span class="p">,</span>
+             <span class="s2">&quot;stream&quot;</span><span class="p">:</span> <span class="s2">&quot;ext://sys.stdout&quot;</span><span class="p">,</span>
+         <span class="p">},</span>
+         <span class="s2">&quot;email&quot;</span><span class="p">:</span> <span class="p">{</span>
+             <span class="s2">&quot;level&quot;</span><span class="p">:</span> <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span>
+             <span class="s2">&quot;formatter&quot;</span><span class="p">:</span> <span class="s2">&quot;email_format&quot;</span><span class="p">,</span>
+             <span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;logging.handlers.SMTPHandler&quot;</span><span class="p">,</span>
+             <span class="s2">&quot;mailhost&quot;</span><span class="p">:</span> <span class="s2">&quot;localhost&quot;</span><span class="p">,</span>
+             <span class="s2">&quot;fromaddr&quot;</span><span class="p">:</span> <span class="s2">&quot;pagure@localhost&quot;</span><span class="p">,</span>
+             <span class="s2">&quot;toaddrs&quot;</span><span class="p">:</span> <span class="s2">&quot;root@localhost&quot;</span><span class="p">,</span>
+             <span class="s2">&quot;subject&quot;</span><span class="p">:</span> <span class="s2">&quot;ERROR on pagure&quot;</span><span class="p">,</span>
+             <span class="s2">&quot;filters&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;myfilter&quot;</span><span class="p">],</span>
+         <span class="p">},</span>
+     <span class="p">},</span>
+     <span class="c1"># The root logger configuration; this is a catch-all configuration</span>
+     <span class="c1"># that applies to all log messages not handled by a different logger</span>
+     <span class="s2">&quot;root&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;level&quot;</span><span class="p">:</span> <span class="s2">&quot;INFO&quot;</span><span class="p">,</span> <span class="s2">&quot;handlers&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;console&quot;</span><span class="p">]},</span>
+     <span class="s2">&quot;loggers&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="s2">&quot;pagure&quot;</span><span class="p">:</span> <span class="p">{</span>
+             <span class="s2">&quot;handlers&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;console&quot;</span><span class="p">],</span>
+             <span class="s2">&quot;level&quot;</span><span class="p">:</span> <span class="s2">&quot;DEBUG&quot;</span><span class="p">,</span>
+             <span class="s2">&quot;propagate&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+         <span class="p">},</span>
+         <span class="s2">&quot;pagure_auth&quot;</span><span class="p">:</span> <span class="p">{</span>
+             <span class="s2">&quot;handlers&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;auth_handler&quot;</span><span class="p">],</span>
+             <span class="s2">&quot;level&quot;</span><span class="p">:</span> <span class="s2">&quot;DEBUG&quot;</span><span class="p">,</span>
+             <span class="s2">&quot;propagate&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+         <span class="p">},</span>
+         <span class="s2">&quot;flask&quot;</span><span class="p">:</span> <span class="p">{</span>
+             <span class="s2">&quot;handlers&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;console&quot;</span><span class="p">],</span>
+             <span class="s2">&quot;level&quot;</span><span class="p">:</span> <span class="s2">&quot;INFO&quot;</span><span class="p">,</span>
+             <span class="s2">&quot;propagate&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+         <span class="p">},</span>
+         <span class="s2">&quot;sqlalchemy&quot;</span><span class="p">:</span> <span class="p">{</span>
+             <span class="s2">&quot;handlers&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;console&quot;</span><span class="p">],</span>
+             <span class="s2">&quot;level&quot;</span><span class="p">:</span> <span class="s2">&quot;WARN&quot;</span><span class="p">,</span>
+             <span class="s2">&quot;propagate&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+         <span class="p">},</span>
+         <span class="s2">&quot;binaryornot&quot;</span><span class="p">:</span> <span class="p">{</span>
+             <span class="s2">&quot;handlers&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;console&quot;</span><span class="p">],</span>
+             <span class="s2">&quot;level&quot;</span><span class="p">:</span> <span class="s2">&quot;WARN&quot;</span><span class="p">,</span>
+             <span class="s2">&quot;propagate&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+         <span class="p">},</span>
+         <span class="s2">&quot;MARKDOWN&quot;</span><span class="p">:</span> <span class="p">{</span>
+             <span class="s2">&quot;handlers&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;console&quot;</span><span class="p">],</span>
+             <span class="s2">&quot;level&quot;</span><span class="p">:</span> <span class="s2">&quot;WARN&quot;</span><span class="p">,</span>
+             <span class="s2">&quot;propagate&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+         <span class="p">},</span>
+         <span class="s2">&quot;PIL&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;handlers&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;console&quot;</span><span class="p">],</span> <span class="s2">&quot;level&quot;</span><span class="p">:</span> <span class="s2">&quot;WARN&quot;</span><span class="p">,</span> <span class="s2">&quot;propagate&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+         <span class="s2">&quot;chardet&quot;</span><span class="p">:</span> <span class="p">{</span>
+             <span class="s2">&quot;handlers&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;console&quot;</span><span class="p">],</span>
+             <span class="s2">&quot;level&quot;</span><span class="p">:</span> <span class="s2">&quot;WARN&quot;</span><span class="p">,</span>
+             <span class="s2">&quot;propagate&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+         <span class="p">},</span>
+         <span class="s2">&quot;pagure.lib.encoding_utils&quot;</span><span class="p">:</span> <span class="p">{</span>
+             <span class="s2">&quot;handlers&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;console&quot;</span><span class="p">],</span>
+             <span class="s2">&quot;level&quot;</span><span class="p">:</span> <span class="s2">&quot;WARN&quot;</span><span class="p">,</span>
+             <span class="s2">&quot;propagate&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+         <span class="p">},</span>
+     <span class="p">},</span>
+ <span class="p">}</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>as you can see there is an <code class="docutils literal notranslate"><span class="pre">email</span></code> handler defined. It’s not used
+anywhere by default but you can use it to get report of errors by email
+and thus monitor your pagure instance.
+To do this the easiest is to set, on the <code class="docutils literal notranslate"><span class="pre">root</span></code> logger:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;handlers&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;console&#39;</span><span class="p">,</span> <span class="s1">&#39;email&#39;</span><span class="p">],</span>
+</pre></div>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">pagure_auth</span></code> logger is a special one logging all activities
+regarding read/write access to git repositories. It will be a pretty
+important log for auditing if needed.
+You can separate this log into its own file if you like by using the
+following handler:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;auth_handler&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s2">&quot;formatter&quot;</span><span class="p">:</span> <span class="s2">&quot;standard&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;logging.handlers.TimedRotatingFileHandler&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;filename&quot;</span><span class="p">:</span> <span class="s2">&quot;/var/log/pagure/pagure_auth.log&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;backupCount&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+    <span class="s2">&quot;when&quot;</span><span class="p">:</span> <span class="s2">&quot;midnight&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;utc&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+<span class="p">},</span>
+</pre></div>
+</div>
+<p>This snippet will automatically make the logs rotate at midnight each day,
+keep the logs for 10 days and use UTC as timezone for the logs. Depending on
+how your pagure instance is set-up, you may have to tweak the filesystem
+permissions on the folder and file so the rotation works properly.</p>
+</div>
+</div>
+<div class="section" id="item-per-page">
+<h3>ITEM_PER_PAGE<a class="headerlink" href="#item-per-page" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key allows you to configure the length of a page by
+setting the number of items on the page. Items can be commits, users, groups,
+or projects for example.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">50</span></code>.</p>
+</div>
+<div class="section" id="pr-target-matching-branch">
+<h3>PR_TARGET_MATCHING_BRANCH<a class="headerlink" href="#pr-target-matching-branch" title="Permalink to this headline">¶</a></h3>
+<p>If set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, the default target branch for all pull requests in UI
+is the branch that is longest substring of the branch that the pull request
+is created from. For example, a <code class="docutils literal notranslate"><span class="pre">mybranch</span></code> branch in original repo will
+be the default target of a pull request from branch <code class="docutils literal notranslate"><span class="pre">mybranch-feature-1</span></code>
+in a fork when opening a new pull request. If this is set to <code class="docutils literal notranslate"><span class="pre">False</span></code>,
+the default branch of the repo will be the default target of all pull requests.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</div>
+<div class="section" id="ssh-access-groups">
+<h3>SSH_ACCESS_GROUPS<a class="headerlink" href="#ssh-access-groups" title="Permalink to this headline">¶</a></h3>
+<p>Some instances of pagure are deployed in such a way that only the members of
+certain groups are allowed to commit via ssh. This configuration key allows
+to specify which groups have commit access and thus let pagure hide the ssh
+URL from the drop-down “Clone” menu for all the person who are not in one of
+these groups.
+If this configuration key is not defined or left empty, it is assume that there
+is no such group restriction and everyone can commit via ssh (default behavior).</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">[]</span></code></p>
+</div>
+<div class="section" id="smtp-configuration">
+<h3>SMTP configuration<a class="headerlink" href="#smtp-configuration" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="smtp-server">
+<h4>SMTP_SERVER<a class="headerlink" href="#smtp-server" title="Permalink to this headline">¶</a></h4>
+<p>This configuration key specifies the SMTP server to use when
+sending emails.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">localhost</span></code>.</p>
+<p>See also the SMTP_STARTTLS section.</p>
+</div>
+<div class="section" id="smtp-port">
+<h4>SMTP_PORT<a class="headerlink" href="#smtp-port" title="Permalink to this headline">¶</a></h4>
+<p>This configuration key specifies the SMTP server port.</p>
+<p>SMTP by default uses TCP port 25. The protocol for mail submission is
+the same, but uses port 587.
+SMTP connections secured by SSL, known as SMTPS, default to port 465
+(nonstandard, but sometimes used for legacy reasons).</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">25</span></code></p>
+</div>
+<div class="section" id="smtp-ssl">
+<h4>SMTP_SSL<a class="headerlink" href="#smtp-ssl" title="Permalink to this headline">¶</a></h4>
+<p>This configuration key specifies whether the SMTP connections
+should be secured over SSL.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</div>
+<div class="section" id="smtp-starttls">
+<h4>SMTP_STARTTLS<a class="headerlink" href="#smtp-starttls" title="Permalink to this headline">¶</a></h4>
+<p>This configuration key specifies instructs pagure to starts connecting to
+the SMTP server via a <cite>starttls</cite> command.</p>
+<p>When enabling STARTTLS in conjunction with a local smtp server, you should
+replace <code class="docutils literal notranslate"><span class="pre">localhost</span></code> with a host name that is included in the server’s
+certificate. If the server only relays messages originating from <code class="docutils literal notranslate"><span class="pre">localhost</span></code>,
+then you should also ensure that the above host name resolves to the same
+tcp address as <code class="docutils literal notranslate"><span class="pre">localhost</span></code>, for instance by adding an appropriate record
+to <em>/etc/hosts</em>.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</div>
+<div class="section" id="smtp-keyfile">
+<h4>SMTP_KEYFILE<a class="headerlink" href="#smtp-keyfile" title="Permalink to this headline">¶</a></h4>
+<p>This configuration key allows to specify a key file to be used in the
+<cite>starttls</cite> command when connecting to the smtp server.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+</div>
+<div class="section" id="smtp-certfile">
+<h4>SMTP_CERTFILE<a class="headerlink" href="#smtp-certfile" title="Permalink to this headline">¶</a></h4>
+<p>This configuration key allows to specify a certificate file to be used in
+the <cite>starttls</cite> command when connecting to the smtp server.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+</div>
+<div class="section" id="smtp-username">
+<h4>SMTP_USERNAME<a class="headerlink" href="#smtp-username" title="Permalink to this headline">¶</a></h4>
+<p>This configuration key allows usage of SMTP with auth.</p>
+<p>Note: Specify SMTP_USERNAME and SMTP_PASSWORD for using SMTP auth</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+</div>
+<div class="section" id="smtp-password">
+<h4>SMTP_PASSWORD<a class="headerlink" href="#smtp-password" title="Permalink to this headline">¶</a></h4>
+<p>This configuration key allows usage of SMTP with auth.</p>
+<p>Note: Specify SMTP_USERNAME and SMTP_PASSWORD for using SMTP auth</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+</div>
+</div>
+<div class="section" id="short-length">
+<h3>SHORT_LENGTH<a class="headerlink" href="#short-length" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key specifies the length of the commit ids or
+file hex displayed in the user interface.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">6</span></code>.</p>
+</div>
+<div class="section" id="blacklisted-projects">
+<h3>BLACKLISTED_PROJECTS<a class="headerlink" href="#blacklisted-projects" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key specifies a list of project names that are forbidden.
+This list is used for example to avoid conflicts at the URL level between the
+static files located under <code class="docutils literal notranslate"><span class="pre">/static/</span></code> and a project that would be named
+<code class="docutils literal notranslate"><span class="pre">static</span></code> and thus be located at <code class="docutils literal notranslate"><span class="pre">/static</span></code>.</p>
+<p>Defaults to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
+    <span class="s1">&#39;static&#39;</span><span class="p">,</span> <span class="s1">&#39;pv&#39;</span><span class="p">,</span> <span class="s1">&#39;releases&#39;</span><span class="p">,</span> <span class="s1">&#39;new&#39;</span><span class="p">,</span> <span class="s1">&#39;api&#39;</span><span class="p">,</span> <span class="s1">&#39;settings&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;logout&#39;</span><span class="p">,</span> <span class="s1">&#39;login&#39;</span><span class="p">,</span> <span class="s1">&#39;users&#39;</span><span class="p">,</span> <span class="s1">&#39;groups&#39;</span><span class="p">,</span> <span class="s1">&#39;about&#39;</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="check-session-ip">
+<h3>CHECK_SESSION_IP<a class="headerlink" href="#check-session-ip" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key specifies whether to check the user’s IP
+address when retrieving its session. This makes things more secure but
+under certain setups it might not work (for example if there
+are proxies in front of the application).</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</div>
+<div class="section" id="pagure-auth">
+<h3>PAGURE_AUTH<a class="headerlink" href="#pagure-auth" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key specifies which authentication method to use.
+Valid options are <code class="docutils literal notranslate"><span class="pre">fas</span></code>, <code class="docutils literal notranslate"><span class="pre">openid</span></code>, <code class="docutils literal notranslate"><span class="pre">oidc</span></code>, or <code class="docutils literal notranslate"><span class="pre">local</span></code>.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">fas</span></code> uses the Fedora Account System <cite>FAS &lt;https://accounts.fedoraproject.org&gt;</cite>
+to provide user authentication and enforces that users sign the FPCA.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">openid</span></code> uses OpenID authentication.  Any provider may be used by
+changing the FAS_OPENID_ENDPOINT configuration key.  By default
+FAS (without FPCA) will be used.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">oidc</span></code> enables OpenID Connect using any provider.  This provider requires
+the configuration options starting with <code class="docutils literal notranslate"><span class="pre">OIDC_</span></code> (see below) to be provided.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">local</span></code> causes pagure to use the local pagure database for user management.
+User registration can be disabled with the ALLOW_USER_REGISTRATION configuration key.</p></li>
+</ul>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">local</span></code>.</p>
+</div>
+<div class="section" id="oidc-settings">
+<h3>OIDC Settings<a class="headerlink" href="#oidc-settings" title="Permalink to this headline">¶</a></h3>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Pagure uses <a class="reference external" href="https://github.com/puiterwijk/flask-oidc/">flask-oidc</a>
+to support OIDC authentication. This extension has a <a class="reference external" href="http://flask-oidc.readthedocs.io/en/latest/#settings-reference">number of configuration
+keys</a>
+that may be useful depending on your set-up</p>
+</div>
+<div class="section" id="oidc-client-secrets">
+<h4>OIDC_CLIENT_SECRETS<a class="headerlink" href="#oidc-client-secrets" title="Permalink to this headline">¶</a></h4>
+<p>Provide a path to client secrets file on local filesystem. This file can be
+obtained from your OpenID Connect identity provider. Note that some providers
+don’t fill in <code class="docutils literal notranslate"><span class="pre">userinfo_uri</span></code>. If that is the case, you need to add it to
+the secrets file manually.</p>
+</div>
+<div class="section" id="oidc-id-token-cookie-secure">
+<h4>OIDC_ID_TOKEN_COOKIE_SECURE<a class="headerlink" href="#oidc-id-token-cookie-secure" title="Permalink to this headline">¶</a></h4>
+<p>When this is set to True, the cookie with OpenID Connect Token will only be
+returned to the server via ssl (https). If you connect to the server via plain
+http, the cookie will not be sent. This prevents sniffing of the cookie contents.
+This may be set to False when testing your application but should always
+be set to True in production.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">True</span></code> for production with https, can be set to <code class="docutils literal notranslate"><span class="pre">False</span></code> for
+convenient development.</p>
+</div>
+<div class="section" id="oidc-scopes">
+<h4>OIDC_SCOPES<a class="headerlink" href="#oidc-scopes" title="Permalink to this headline">¶</a></h4>
+<p>List of <cite>OpenID Connect scopes http://openid.net/specs/openid-connect-core-1_0.html#ScopeClaims</cite>
+to request from identity provider.</p>
+</div>
+<div class="section" id="oidc-pagure-email">
+<h4>OIDC_PAGURE_EMAIL<a class="headerlink" href="#oidc-pagure-email" title="Permalink to this headline">¶</a></h4>
+<p>Name of key of user’s email in userinfo JSON returned by identity provider.</p>
+</div>
+<div class="section" id="oidc-pagure-fullname">
+<h4>OIDC_PAGURE_FULLNAME<a class="headerlink" href="#oidc-pagure-fullname" title="Permalink to this headline">¶</a></h4>
+<p>Name of key of user’s full name in userinfo JSON returned by identity provider.</p>
+</div>
+<div class="section" id="oidc-pagure-username">
+<h4>OIDC_PAGURE_USERNAME<a class="headerlink" href="#oidc-pagure-username" title="Permalink to this headline">¶</a></h4>
+<p>Name of key of user’s preferred username in userinfo JSON returned by identity
+provider.</p>
+</div>
+<div class="section" id="oidc-pagure-ssh-key">
+<h4>OIDC_PAGURE_SSH_KEY<a class="headerlink" href="#oidc-pagure-ssh-key" title="Permalink to this headline">¶</a></h4>
+<p>Name of key of user’s ssh key in userinfo JSON returned by identity provider.</p>
+</div>
+<div class="section" id="oidc-pagure-groups">
+<h4>OIDC_PAGURE_GROUPS<a class="headerlink" href="#oidc-pagure-groups" title="Permalink to this headline">¶</a></h4>
+<p>Name of key of user’s groups in userinfo JSON returned by identity provider.</p>
+</div>
+<div class="section" id="oidc-pagure-username-fallback">
+<h4>OIDC_PAGURE_USERNAME_FALLBACK<a class="headerlink" href="#oidc-pagure-username-fallback" title="Permalink to this headline">¶</a></h4>
+<p>This specifies fallback for getting username assuming <code class="docutils literal notranslate"><span class="pre">OIDC_PAGURE_USERNAME</span></code>
+is empty - can be <code class="docutils literal notranslate"><span class="pre">email</span></code> (to use the part before <code class="docutils literal notranslate"><span class="pre">&#64;</span></code>) or <code class="docutils literal notranslate"><span class="pre">sub</span></code>
+(IdP-specific user id, can be a nickname, email or a numeric ID
+depending on identity provider).</p>
+</div>
+</div>
+<div class="section" id="ip-allowed-internal">
+<h3>IP_ALLOWED_INTERNAL<a class="headerlink" href="#ip-allowed-internal" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key specifies which IP addresses are allowed
+to access the internal API endpoint. These endpoints are accessed by the
+milters for example and allow performing actions in the name of someone else
+which is sensitive, thus the origin of the request using
+these endpoints is validated.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">['127.0.0.1',</span> <span class="pre">'localhost',</span> <span class="pre">'::1']</span></code>.</p>
+</div>
+<div class="section" id="max-content-length">
+<h3>MAX_CONTENT_LENGTH<a class="headerlink" href="#max-content-length" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key specifies the maximum file size allowed when
+uploading content to pagure (for example, screenshots to a ticket).</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">4</span> <span class="pre">*</span> <span class="pre">1024</span> <span class="pre">*</span> <span class="pre">1024</span></code> which corresponds to 4 megabytes.</p>
+</div>
+<div class="section" id="enable-tickets">
+<h3>ENABLE_TICKETS<a class="headerlink" href="#enable-tickets" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key activates or deactivates the ticketing system
+for all the projects hosted on this pagure instance.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">True</span></code></p>
+</div>
+<div class="section" id="enable-tickets-namespace">
+<h3>ENABLE_TICKETS_NAMESPACE<a class="headerlink" href="#enable-tickets-namespace" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key can be used to restrict the namespace in which the ticketing
+system is enabled.
+So if your pagure instance has <code class="docutils literal notranslate"><span class="pre">ENABLE_TICKETS</span></code> as <code class="docutils literal notranslate"><span class="pre">True</span></code> and sets
+<code class="docutils literal notranslate"><span class="pre">ENABLE_TICKETS_NAMESPACE</span></code> to <code class="docutils literal notranslate"><span class="pre">['tests',</span> <span class="pre">'infra']</span></code> only the projects opened
+in these two namespaces will have the ticketing system enabled. All the other
+namespaces will not.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">[]</span></code></p>
+</div>
+<div class="section" id="enable-docs">
+<h3>ENABLE_DOCS<a class="headerlink" href="#enable-docs" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key activates or deactivates creation of git repos
+for documentation for all the projects hosted on this pagure instance.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">True</span></code></p>
+</div>
+<div class="section" id="enable-new-projects">
+<h3>ENABLE_NEW_PROJECTS<a class="headerlink" href="#enable-new-projects" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key permits or forbids creation of new projects via
+the user interface and the API of this pagure instance.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">True</span></code></p>
+</div>
+<div class="section" id="enable-ui-new-projects">
+<h3>ENABLE_UI_NEW_PROJECTS<a class="headerlink" href="#enable-ui-new-projects" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key permits or forbids creation of new projects via
+the user interface (only) of this pagure instance. It allows forbidding
+to create new project in the user interface while letting a set of trusted
+person to create projects via the API granted they have the API token with
+the corresponding ACL.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">True</span></code></p>
+</div>
+<div class="section" id="enable-del-projects">
+<h3>ENABLE_DEL_PROJECTS<a class="headerlink" href="#enable-del-projects" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key permits or forbids deletion of projects via
+the user interface of this pagure instance.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">True</span></code></p>
+</div>
+<div class="section" id="enable-del-forks">
+<h3>ENABLE_DEL_FORKS<a class="headerlink" href="#enable-del-forks" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key permits or forbids deletion of forks via
+the user interface of this pagure instance.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">ENABLE_DEL_PROJECTS</span></code></p>
+</div>
+<div class="section" id="git-hook-db-ro">
+<h3>GIT_HOOK_DB_RO<a class="headerlink" href="#git-hook-db-ro" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key specifies if the git hook have a read-only (RO) access
+to the database or not.
+Some pagure deployment provide an actual shell account on the host and thus the
+git hook called upon git push are executed under that account. If the user
+manages to by-pass git and is able to access the configuration file, they could
+have access to “private” information. So in those deployments the git hooks
+have a specific configuration file with a database access that is read-only,
+making pagure behave differently in those situations.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</div>
+<div class="section" id="email-send">
+<h3>EMAIL_SEND<a class="headerlink" href="#email-send" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key enables or disables all email notifications for
+this pagure instance. This can be useful to turn off when developing on
+pagure, or for test or pre-production instances.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This does not disable emails to the email address set in <code class="docutils literal notranslate"><span class="pre">EMAIL_ERROR</span></code>.</p>
+</div>
+</div>
+<div class="section" id="fedmsg-notifications">
+<h3>FEDMSG_NOTIFICATIONS<a class="headerlink" href="#fedmsg-notifications" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key can be used to turn on or off notifications via <a class="reference external" href="https://fedmsg.readthedocs.io/">fedmsg</a>.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</div>
+<div class="section" id="fedora-messaging-notifications">
+<h3>FEDORA_MESSAGING_NOTIFICATIONS<a class="headerlink" href="#fedora-messaging-notifications" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key can be used to turn on or off sending notifications via
+<a class="reference external" href="https://fedora-messaging.readthedocs.io/en/stable/">fedora-messaging</a>.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</div>
+<div class="section" id="always-fedmsg-on-commits">
+<h3>ALWAYS_FEDMSG_ON_COMMITS<a class="headerlink" href="#always-fedmsg-on-commits" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key can be used to enforce <a class="reference external" href="https://fedmsg.readthedocs.io/">fedmsg</a>
+notifications on commits made on all projects in a pagure instance.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</div>
+<div class="section" id="allow-delete-branch">
+<h3>ALLOW_DELETE_BRANCH<a class="headerlink" href="#allow-delete-branch" title="Permalink to this headline">¶</a></h3>
+<p>This configuration keys enables or disables allowing users to delete git
+branches from the user interface. In sensible pagure instance you may
+want to turn this off and with a customized gitolite configuration you can
+prevent users from deleting branches in their git repositories.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</div>
+<div class="section" id="allow-admin-ignore-existing-repos">
+<h3>ALLOW_ADMIN_IGNORE_EXISTING_REPOS<a class="headerlink" href="#allow-admin-ignore-existing-repos" title="Permalink to this headline">¶</a></h3>
+<p>This enables a checkbox “Ignore existing repos” for admins when creating a new
+project. When this is checkbox is checked, existing repositories will not cause
+project creation to fail.
+This could be used to assume responsibility of existing repositories.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</div>
+<div class="section" id="users-ignore-existing-repos">
+<h3>USERS_IGNORE_EXISTING_REPOS<a class="headerlink" href="#users-ignore-existing-repos" title="Permalink to this headline">¶</a></h3>
+<p>List of users who can al create a project while ignoring existing repositories.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">[]</span></code>.</p>
+</div>
+<div class="section" id="local-ssh-key">
+<h3>LOCAL_SSH_KEY<a class="headerlink" href="#local-ssh-key" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key can be used to let pagure administrate the user’s ssh keys
+or have a third party tool do it for you.
+In most cases, it will be fine to let pagure handle it.</p>
+<p>Defaults to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</div>
+<div class="section" id="deploy-key">
+<h3>DEPLOY_KEY<a class="headerlink" href="#deploy-key" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key can be used to disable the deploy keys feature of an
+entire pagure instance. This feature enable to add extra public ssh keys
+that a third party could use to push to a project.</p>
+<p>Defaults to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</div>
+<div class="section" id="old-view-commit-enabled">
+<h3>OLD_VIEW_COMMIT_ENABLED<a class="headerlink" href="#old-view-commit-enabled" title="Permalink to this headline">¶</a></h3>
+<p>In version 1.3, pagure changed its URL scheme to view the commit of a
+project in order to add support for pseudo-namespaced projects.</p>
+<p>For pagure instances older than 1.3, who care about backward compatibility,
+we added an endpoint <code class="docutils literal notranslate"><span class="pre">view_commit_old</span></code> that brings URL backward
+compatibility for URLs using the complete git hash (the 40 characters).
+For URLs using a shorter hash, the URLs will remain broken.</p>
+<p>This configuration key enables or disables this backward compatibility
+which is useful for pagure instances running since before 1.3 but is not
+for newer instances.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</div>
+<div class="section" id="disable-remote-pr">
+<h3>DISABLE_REMOTE_PR<a class="headerlink" href="#disable-remote-pr" title="Permalink to this headline">¶</a></h3>
+<p>In some pagure deployments remote pull requests need to be disabled
+due to legal / policy reasons.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</div>
+<div class="section" id="pagure-ci-services">
+<h3>PAGURE_CI_SERVICES<a class="headerlink" href="#pagure-ci-services" title="Permalink to this headline">¶</a></h3>
+<p>Pagure can be configure to integrate results of a Continuous Integration (CI)
+service to pull-requests open against a project.</p>
+<p>To enable this integration, follow the documentation on how to install
+pagure-ci and set this configuration key to <code class="docutils literal notranslate"><span class="pre">['jenkins']</span></code> (Jenkins being
+the only CI service supported at the moment).</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Requires <cite>Redis</cite> to be configured and running.</p>
+</div>
+</div>
+<div class="section" id="instance-name">
+<h3>INSTANCE_NAME<a class="headerlink" href="#instance-name" title="Permalink to this headline">¶</a></h3>
+<p>This allows giving a name to this running instance of pagure. The name is
+then used in the welcome screen shown upon first login.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">Pagure</span></code></p>
+</div>
+<div class="section" id="admin-email">
+<h3>ADMIN_EMAIL<a class="headerlink" href="#admin-email" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key allows you to change the default administrator email
+which is displayed on the “about” page. It can also be used elsewhere.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">root&#64;localhost.localdomain</span></code></p>
+</div>
+<div class="section" id="user-namespace">
+<h3>USER_NAMESPACE<a class="headerlink" href="#user-namespace" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key can be used to enforce that project are namespaced under
+the user’s username, behaving in this way in a similar fashion as github.com
+or gitlab.com.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</div>
+<div class="section" id="doc-app-url">
+<h3>DOC_APP_URL<a class="headerlink" href="#doc-app-url" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key allows you to specify where the documentation server
+is running (preferably in a different domain name entirely).
+If not set, the documentation page will show an error message saying that
+this pagure instance does not have a documentation server.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+</div>
+<div class="section" id="private-projects">
+<h3>PRIVATE_PROJECTS<a class="headerlink" href="#private-projects" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key allows you to host private repositories. These
+repositories are visible only to the creator of the repository and to the
+users who are given access to the repository. No information is leaked about the
+private repository which means redis doesn’t have the access to the repository
+and even fedmsg doesn’t get any notifications.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">True</span></code></p>
+</div>
+<div class="section" id="exclude-group-index">
+<h3>EXCLUDE_GROUP_INDEX<a class="headerlink" href="#exclude-group-index" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key can be used to hide project an user has access to via
+one of the groups listed in this key.</p>
+<p>The use-case is the following: the Fedora project is deploying pagure has a
+front-end for the git repos of the packages in the distribution, that means
+about 17,000 git repositories in pagure. The project has a group of people
+that have access to all of these repositories, so when viewing the user’s
+page of one member of that group, instead of seeing all the project that
+this user works on, you can see all the projects hosted in that pagure
+instance. Using this configuration key, pagure will hide all the projects
+that this user has access to via the specified groups and thus return only
+the groups of forks of that users.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">[]</span></code></p>
+</div>
+<div class="section" id="trigger-ci">
+<h3>TRIGGER_CI<a class="headerlink" href="#trigger-ci" title="Permalink to this headline">¶</a></h3>
+<p>A run of pagure-ci can be manually triggered if some key sentences are added
+as comment to a pull-request, either manually or via the “Rerun CI” dropdown.
+This allows one to re-run a test that failed due to some network outage or other
+unexpected issues unrelated to the test suite.</p>
+<p>This configuration key can be used to define all the sentences that can be used
+to trigger this pagure-ci run. The format is following: <code class="docutils literal notranslate"><span class="pre">{&quot;&lt;sentence&gt;&quot;:</span>
+<span class="pre">{&quot;name&quot;:</span> <span class="pre">&quot;&lt;name</span> <span class="pre">of</span> <span class="pre">the</span> <span class="pre">CI&gt;&quot;,</span> <span class="pre">&quot;description&quot;:</span> <span class="pre">&quot;&lt;short</span> <span class="pre">description&gt;&quot;}}</span></code></p>
+<p>Sentences which have <code class="docutils literal notranslate"><span class="pre">None</span></code> as value won’t show up in the “Rerun CI”
+dropdown. Additionally, it’s possible to add a <code class="docutils literal notranslate"><span class="pre">requires_project_hook_attr</span></code>
+key to the dict with data about a sentence. For example, having
+<code class="docutils literal notranslate"><span class="pre">&quot;requires_project_hook_attr&quot;:</span> <span class="pre">(&quot;ci_hook&quot;,</span> <span class="pre">&quot;active_pr&quot;,</span> <span class="pre">True)</span></code> would make
+the “Rerun CI” dropdown have a button for this specific CI only if the
+project has <code class="docutils literal notranslate"><span class="pre">ci_hook</span></code> activated and its <code class="docutils literal notranslate"><span class="pre">active_pr</span></code> value is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+<p>In versions before 5.2, this was a list containing just the sentences.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">{&quot;pretty</span> <span class="pre">please</span> <span class="pre">pagure-ci</span> <span class="pre">rebuild&quot;:</span> <span class="pre">{&quot;name&quot;:</span> <span class="pre">&quot;Default</span> <span class="pre">CI&quot;,</span>
+<span class="pre">&quot;description&quot;:</span> <span class="pre">&quot;Rerun</span> <span class="pre">default</span> <span class="pre">CI&quot;}}</span></code></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The sentences defined in this configuration key should be lower
+case only!</p>
+</div>
+</div>
+<div class="section" id="flag-statuses-labels">
+<h3>FLAG_STATUSES_LABELS<a class="headerlink" href="#flag-statuses-labels" title="Permalink to this headline">¶</a></h3>
+<p>By default, Pagure has <code class="docutils literal notranslate"><span class="pre">success</span></code>, <code class="docutils literal notranslate"><span class="pre">failure</span></code>, <code class="docutils literal notranslate"><span class="pre">error</span></code>, <code class="docutils literal notranslate"><span class="pre">pending</span></code> and
+<code class="docutils literal notranslate"><span class="pre">canceled</span></code> statuses of PR and commit flags. This setting allows you to
+define a custom mapping of statuses to their respective Bootstrap labels.</p>
+</div>
+<div class="section" id="flag-success">
+<h3>FLAG_SUCCESS<a class="headerlink" href="#flag-success" title="Permalink to this headline">¶</a></h3>
+<p>Holds name of PR/commit flag that is considered a success.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">success</span></code></p>
+</div>
+<div class="section" id="flag-failure">
+<h3>FLAG_FAILURE<a class="headerlink" href="#flag-failure" title="Permalink to this headline">¶</a></h3>
+<p>Holds name of PR/commit flag that is considered a failure.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">failure</span></code></p>
+</div>
+<div class="section" id="flag-pending">
+<h3>FLAG_PENDING<a class="headerlink" href="#flag-pending" title="Permalink to this headline">¶</a></h3>
+<p>Holds name of PR/commit flag that is considered a pending state.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">pending</span></code></p>
+</div>
+<div class="section" id="external-committer">
+<h3>EXTERNAL_COMMITTER<a class="headerlink" href="#external-committer" title="Permalink to this headline">¶</a></h3>
+<p>The external committer feature is a way to allow members of groups defined
+outside pagure (and provided to pagure upon login by the authentication
+system) to be consider committers on pagure.</p>
+<p>This feature can give access to all the projects on the instance, all but
+some or just some.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">{}</span></code></p>
+<p>To give access to all the projects to a group named <code class="docutils literal notranslate"><span class="pre">fedora-altarch</span></code> use
+a such a structure:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">EXTERNAL_COMMITTER</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;fedora-altarch&#39;</span><span class="p">:</span> <span class="p">{}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>To give access to all the projects but one (named <code class="docutils literal notranslate"><span class="pre">rpms/test</span></code>) to a group
+named <code class="docutils literal notranslate"><span class="pre">provenpackager</span></code> use a such a structure:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">EXTERNAL_COMMITTER</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;fedora-altarch&#39;</span><span class="p">:</span> <span class="p">{},</span>
+    <span class="s1">&#39;provenpackager&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;exclude&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;rpms/test&#39;</span><span class="p">]</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>To give access to just some projects (named <code class="docutils literal notranslate"><span class="pre">rpms/test</span></code> and
+<code class="docutils literal notranslate"><span class="pre">modules/test</span></code>) to a group named <code class="docutils literal notranslate"><span class="pre">testers</span></code> use a such a structure:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">EXTERNAL_COMMITTER</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;fedora-altarch&#39;</span><span class="p">:</span> <span class="p">{},</span>
+    <span class="s1">&#39;provenpackager&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;exclude&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;rpms/test&#39;</span><span class="p">]</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;testers&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;restrict&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;rpms/test&#39;</span><span class="p">,</span> <span class="s1">&#39;modules/test&#39;</span><span class="p">]</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="required-groups">
+<h3>REQUIRED_GROUPS<a class="headerlink" href="#required-groups" title="Permalink to this headline">¶</a></h3>
+<p>The required groups allows one to specify in which group an user must be to be
+added to a project with commit or admin access.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">{}</span></code></p>
+<p>Example configuration:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">REQUIRED_GROUPS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;rpms/kernel&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;packager&#39;</span><span class="p">,</span> <span class="s1">&#39;kernel-team&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;modules/*&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;module-packager&#39;</span><span class="p">,</span> <span class="s1">&#39;packager&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;rpms/*&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;packager&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;*&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;contributor&#39;</span><span class="p">],</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>With this configuration (evaluated in the provided order):</p>
+<ul class="simple">
+<li><p>only users that are in the groups <code class="docutils literal notranslate"><span class="pre">packager</span></code> and <code class="docutils literal notranslate"><span class="pre">kernel-team</span></code> will be
+allowed to be added the <code class="docutils literal notranslate"><span class="pre">rpms/kernel</span></code> project (where <code class="docutils literal notranslate"><span class="pre">rpms</span></code> is the
+namespace and <code class="docutils literal notranslate"><span class="pre">kernel</span></code> the project name).</p></li>
+<li><p>only users that are in the groups <code class="docutils literal notranslate"><span class="pre">module-packager</span></code> and <code class="docutils literal notranslate"><span class="pre">packager</span></code>
+will be allowed to be added to projects in the <code class="docutils literal notranslate"><span class="pre">modules</span></code> namespace.</p></li>
+<li><p>only users that are in the group <code class="docutils literal notranslate"><span class="pre">packager</span></code> will be allowed to be added
+to projects in the <code class="docutils literal notranslate"><span class="pre">rpms</span></code> namespace.</p></li>
+<li><p>only users in the <code class="docutils literal notranslate"><span class="pre">contributor</span></code> group will be allowed to be added to
+any project on this pagure instance.</p></li>
+</ul>
+</div>
+<div class="section" id="gitolite-pre-config">
+<h3>GITOLITE_PRE_CONFIG<a class="headerlink" href="#gitolite-pre-config" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key allows you to include some content at the <em>top</em> of
+the gitolite configuration file (such as some specific group definition),
+thus allowing to customize the gitolite configuration file with elements
+and information that are outside of pagure’s control.</p>
+<p>This can be used in combination with <code class="docutils literal notranslate"><span class="pre">GITOLITE_POST_CONFIG</span></code> to further
+customize gitolite’s configuration file. It can also be used with
+<code class="docutils literal notranslate"><span class="pre">EXTERNAL_COMMITTER</span></code> to give commit access to git repos based on external
+information.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+</div>
+<div class="section" id="gitolite-post-config">
+<h3>GITOLITE_POST_CONFIG<a class="headerlink" href="#gitolite-post-config" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key allows you to include some content at the <em>end</em> of
+the gitolite configuration file (such as some project definition or access),
+thus allowing to customize the gitolite configuration file with elements
+and information that are outside of pagure’s control.</p>
+<p>This can be used in combination with <code class="docutils literal notranslate"><span class="pre">GITOLITE_PRE_CONFIG</span></code> to further
+customize gitolite’s configuration file. It can also be used with
+<code class="docutils literal notranslate"><span class="pre">EXTERNAL_COMMITTER</span></code> to give commit access to git repos based on external
+information.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+</div>
+<div class="section" id="git-garbage-collect">
+<h3>GIT_GARBAGE_COLLECT<a class="headerlink" href="#git-garbage-collect" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key allows for explicit running of <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">gc</span> <span class="pre">--auto</span></code>
+after every operation that adds new objects to any git repository -
+that is after pushing and merging. The reason for having this functionality
+in Pagure is that gc is not guaranteed to be run by git after every
+object-adding operation.</p>
+<p>The garbage collection run by Pagure will respect git settings, so you
+can tweak <code class="docutils literal notranslate"><span class="pre">gc.auto</span></code> and <code class="docutils literal notranslate"><span class="pre">gc.autoPackLimit</span></code> to your liking
+and that will have immediate effect on the task that runs the garbage
+collection. These values can be configured system-wide in <code class="docutils literal notranslate"><span class="pre">/etc/gitconfig</span></code>.
+See <a class="reference external" href="https://git-scm.com/docs/git-gc#git-gc---auto">https://git-scm.com/docs/git-gc#git-gc—auto</a> for more details.</p>
+<p>This is especially useful if repositories are stored on NFS (or similar
+network storage), where file metadata access is expensive - having unpacked
+objects in repositories requires <em>a lot</em> of metadata reads.</p>
+<p>Note that the garbage collection is only run on repos that are not on
+repoSpanner.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</div>
+<div class="section" id="celery-config">
+<h3>CELERY_CONFIG<a class="headerlink" href="#celery-config" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key allows you to tweak the configuration of celery for
+your needs.
+See the documentation about <a class="reference external" href="http://docs.celeryproject.org/en/latest/userguide/configuration.html">celery configuration</a> for
+more information.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">{}</span></code></p>
+</div>
+<div class="section" id="case-sensitive">
+<h3>CASE_SENSITIVE<a class="headerlink" href="#case-sensitive" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key can be used to make this pagure instance case sensitive
+instead of its default: case-insensitive.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</div>
+<div class="section" id="project-name-regex">
+<h3>PROJECT_NAME_REGEX<a class="headerlink" href="#project-name-regex" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key can be used to customize the regular expression used to
+validate new project name.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">^[a-zA-z0-9_][a-zA-Z0-9-_]*$</span></code></p>
+</div>
+<div class="section" id="application-root">
+<h3>APPLICATION_ROOT<a class="headerlink" href="#application-root" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key is used in the path of the cookie used by pagure.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">'/'</span></code></p>
+</div>
+<div class="section" id="allowed-prefix">
+<h3>ALLOWED_PREFIX<a class="headerlink" href="#allowed-prefix" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key can be used to specify a list of allowed namespaces that
+will not require creating a group for users to create projects in.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">[]</span></code></p>
+</div>
+<div class="section" id="admin-session-lifetime">
+<h3>ADMIN_SESSION_LIFETIME<a class="headerlink" href="#admin-session-lifetime" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key allows specifying the lifetime of the session during
+which the user won’t have to re-login for admin actions.
+In other words, the maximum time between which an user can access a project’s
+settings page without re-login.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">timedelta(minutes=20)</span></code></p>
+<p>where timedelta comes from the python datetime module</p>
+</div>
+<div class="section" id="blacklisted-groups">
+<h3>BLACKLISTED_GROUPS<a class="headerlink" href="#blacklisted-groups" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key can be used to blacklist some group names.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">['forks',</span> <span class="pre">'group']</span></code></p>
+</div>
+<div class="section" id="enable-group-mngt">
+<h3>ENABLE_GROUP_MNGT<a class="headerlink" href="#enable-group-mngt" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key can be used to turn on or off managing (ie: creating a
+group, adding or removing users in that group) groups in this pagure instance.
+If turned off, groups and group members are to be managed outside of pagure
+and synced upon login.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">True</span></code></p>
+</div>
+<div class="section" id="enable-user-mngt">
+<h3>ENABLE_USER_MNGT<a class="headerlink" href="#enable-user-mngt" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key can be used to turn on or off managing users (adding or
+removing them from a project) in this pagure instance.
+If turned off, users are managed outside of pagure.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">True</span></code></p>
+</div>
+<div class="section" id="allow-user-registration">
+<h3>ALLOW_USER_REGISTRATION<a class="headerlink" href="#allow-user-registration" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key can be used to turn on or off user registration
+(that is, the ability for users to create an account) in this pagure instance.
+If turned off, user accounts cannot be created through the UI or API.
+Currently, this key only applies to pagure instances configured with the <code class="docutils literal notranslate"><span class="pre">local</span></code>
+authentication backend and has no effect with the other authentication backends.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">True</span></code></p>
+</div>
+<div class="section" id="session-cookie-name">
+<h3>SESSION_COOKIE_NAME<a class="headerlink" href="#session-cookie-name" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key can be used to specify the name of the session cookie used
+by pagure.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">'pagure'</span></code></p>
+</div>
+<div class="section" id="show-projects-index">
+<h3>SHOW_PROJECTS_INDEX<a class="headerlink" href="#show-projects-index" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key can be used to specify what is shown in the index page of
+logged in users.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">['repos',</span> <span class="pre">'myrepos',</span> <span class="pre">'myforks']</span></code></p>
+</div>
+<div class="section" id="email-on-watchcommits">
+<h3>EMAIL_ON_WATCHCOMMITS<a class="headerlink" href="#email-on-watchcommits" title="Permalink to this headline">¶</a></h3>
+<p>By default pagure sends an email to every one watch commits on a project when a
+commit is made.
+However some pagure instances may be using a different notification mechanism on
+commits and thus may not want this feature to double the notifications received.
+This configuration key can be used to turn on or off email being sent to people
+watching commits on a project upon commits.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">True</span></code></p>
+</div>
+<div class="section" id="allow-http-pull-push">
+<h3>ALLOW_HTTP_PULL_PUSH<a class="headerlink" href="#allow-http-pull-push" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key controls whether any HTTP access to repositories is provided
+via the support for that that’s embedded in Pagure.
+This provides HTTP pull access via &lt;pagureurl&gt;/&lt;reponame&gt;.git if nothing else
+serves this URL.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">True</span></code></p>
+</div>
+<div class="section" id="allow-http-push">
+<h3>ALLOW_HTTP_PUSH<a class="headerlink" href="#allow-http-push" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key controls whether pushing is possible via the HTTP interface.
+This is disabled by default, as it requires setting up an authentication mechanism
+on the webserver that sets REMOTE_USER.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</div>
+<div class="section" id="http-repo-access-gitolite">
+<h3>HTTP_REPO_ACCESS_GITOLITE<a class="headerlink" href="#http-repo-access-gitolite" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key configures the path to the gitolite-shell binary.
+If this is set to None, Git http-backend is used directly.
+Only set this to <code class="docutils literal notranslate"><span class="pre">None</span></code> if you intend to provide HTTP push access via Pagure, and
+are using a dynamic ACL backend.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">/usr/share/gitolite3/gitolite-shell</span></code></p>
+</div>
+<div class="section" id="mirror-sshkeys-folder">
+<h3>MIRROR_SSHKEYS_FOLDER<a class="headerlink" href="#mirror-sshkeys-folder" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key specificies where pagure should store the ssh keys
+generated for the mirroring feature. This folder should be properly backed up
+and kept secure.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">/var/lib/pagure/sshkeys/</span></code></p>
+</div>
+<div class="section" id="log-all-commits">
+<h3>LOG_ALL_COMMITS<a class="headerlink" href="#log-all-commits" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key will make pagure log all commits pushed to all
+branches of all repositories instead of logging only the once that are
+pushed to the default branch.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</div>
+<div class="section" id="disable-mirror-in">
+<h3>DISABLE_MIRROR_IN<a class="headerlink" href="#disable-mirror-in" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key allows a pagure instance to not support mirroring in
+projects (from third party git server).</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</div>
+<div class="section" id="syntax-alias-overrides">
+<h3>SYNTAX_ALIAS_OVERRIDES<a class="headerlink" href="#syntax-alias-overrides" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key can be used to force highlight.js to use a certain logic
+on certain files based on their extensions.</p>
+<p>It should be a dictionary containing the file extensions as keys and
+the highlighting language/category to use as values.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">{&quot;.spec&quot;:</span> <span class="pre">&quot;specfile&quot;,</span> <span class="pre">&quot;.patch&quot;:</span> <span class="pre">&quot;diff&quot;}</span></code></p>
+</div>
+<div class="section" id="allow-api-update-git-tags">
+<h3>ALLOW_API_UPDATE_GIT_TAGS<a class="headerlink" href="#allow-api-update-git-tags" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key determines whether users are allowed to update
+existing git tags via the API.
+When set to <code class="docutils literal notranslate"><span class="pre">False</span></code>, this essentially makes the API ignore whether the
+<code class="docutils literal notranslate"><span class="pre">force</span></code> argument is set or not.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">True</span></code></p>
+</div>
+<div class="section" id="pagure-plugins-config">
+<h3>PAGURE_PLUGINS_CONFIG<a class="headerlink" href="#pagure-plugins-config" title="Permalink to this headline">¶</a></h3>
+<p>This option can be used to specify the configuration file used for loading
+plugins. It is not set by default, instead if must be declared explicitly.
+Also see the documentation on plugins at <a class="reference internal" href="plugins.html#plugins"><span class="std std-ref">Plugins</span></a>.</p>
+</div>
+<div class="section" id="git-default-branch">
+<h3>GIT_DEFAULT_BRANCH<a class="headerlink" href="#git-default-branch" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key allows to specify the default branch configured upon
+project creation. The default branch can be specified by the user upon project
+creation but if the user does not specify any branch, this branch name will be
+used.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">None</span></code> (which results in the default branch being <code class="docutils literal notranslate"><span class="pre">master</span></code>).</p>
+</div>
+<div class="section" id="pr-warn-characters">
+<h3>PR_WARN_CHARACTERS<a class="headerlink" href="#pr-warn-characters" title="Permalink to this headline">¶</a></h3>
+<p>List of characters that triggers a warning to the users when met in a commit of
+a pull-request (each commit being made checked).</p>
+<p>Defaults to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">set</span><span class="p">([</span>
+    <span class="nb">chr</span><span class="p">(</span><span class="mh">0x202a</span><span class="p">),</span> <span class="nb">chr</span><span class="p">(</span><span class="mh">0x202b</span><span class="p">),</span> <span class="nb">chr</span><span class="p">(</span><span class="mh">0x202c</span><span class="p">),</span> <span class="nb">chr</span><span class="p">(</span><span class="mh">0x202d</span><span class="p">),</span> <span class="nb">chr</span><span class="p">(</span><span class="mh">0x202e</span><span class="p">),</span>
+    <span class="nb">chr</span><span class="p">(</span><span class="mh">0x2066</span><span class="p">),</span> <span class="nb">chr</span><span class="p">(</span><span class="mh">0x2067</span><span class="p">),</span> <span class="nb">chr</span><span class="p">(</span><span class="mh">0x2068</span><span class="p">),</span> <span class="nb">chr</span><span class="p">(</span><span class="mh">0x2069</span><span class="p">)</span>
+<span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="repospanner-options">
+<h2>RepoSpanner Options<a class="headerlink" href="#repospanner-options" title="Permalink to this headline">¶</a></h2>
+<p>Pagure can be integrated with <a class="reference external" href="https://repospanner.org">repoSpanner</a>
+allowing to deploy pagure in a load-balanced environment since the git
+repositories are then synced across multiple servers simultaneously.</p>
+<p>Support for this integration has been included in Pagure version 5.0 and higher.</p>
+<p>Here below are the different options one can/should use to integrate pagure
+with repoSpanner.</p>
+<div class="section" id="repobridge-binary">
+<h3>REPOBRIDGE_BINARY<a class="headerlink" href="#repobridge-binary" title="Permalink to this headline">¶</a></h3>
+<p>This should contain the path to the repoBridge binary, which is used for pushing
+and pulling to/from repoSpanner.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">/usr/libexec/repobridge</span></code>.</p>
+</div>
+<div class="section" id="repospanner-new-repo">
+<h3>REPOSPANNER_NEW_REPO<a class="headerlink" href="#repospanner-new-repo" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key instructs pagure to create new git repositories on
+repoSpanner or not.
+Its value should be the region in which the new git repositories should be
+created on.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</div>
+<div class="section" id="repospanner-new-repo-admin-override">
+<h3>REPOSPANNER_NEW_REPO_ADMIN_OVERRIDE<a class="headerlink" href="#repospanner-new-repo-admin-override" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key can be used to let pagure admin override the default
+region used when creating new git repositories on repoSpanner.
+Its value should be a boolean.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</div>
+<div class="section" id="repospanner-new-fork">
+<h3>REPOSPANNER_NEW_FORK<a class="headerlink" href="#repospanner-new-fork" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key instructs pagure on where/how to create new git
+repositories for the forks with repoSpanner.
+If <code class="docutils literal notranslate"><span class="pre">None</span></code>, git repositories for forks are created outside of repoSpanner
+entirely.
+If <code class="docutils literal notranslate"><span class="pre">True</span></code>, git repositories for forks are created in the same region as
+the parent project.
+Otherwise, a region can be directly specified where git repositories for
+forks will be created.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">True</span></code></p>
+</div>
+<div class="section" id="repospanner-admin-migration">
+<h3>REPOSPANNER_ADMIN_MIGRATION<a class="headerlink" href="#repospanner-admin-migration" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key can be used to let admin manually migrate individual
+project into repoSpanner once it is set up.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</div>
+<div class="section" id="repospanner-regions">
+<h3>REPOSPANNER_REGIONS<a class="headerlink" href="#repospanner-regions" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key can be used to specify the different region where repoSpanner
+is deployed and thus with which this pagure instance can be integrated.</p>
+<p>An example entry could look like:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">REPOSPANNER_REGIONS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;default&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://nodea.regiona.repospanner.local:8444&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;repo_prefix&#39;</span><span class="p">:</span> <span class="s1">&#39;pagure/&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;hook&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="s1">&#39;ca&#39;</span><span class="p">:</span> <span class="s1">&#39;/etc/pki/repospanner/pki/ca.crt&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;admin_cert&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;cert&#39;</span><span class="p">:</span> <span class="s1">&#39;/etc/pki/repospanner/pki/admin.crt&#39;</span><span class="p">,</span>
+                               <span class="s1">&#39;key&#39;</span><span class="p">:</span> <span class="s1">&#39;/etc/pki/repospanner/pki/admin.key&#39;</span><span class="p">},</span>
+                <span class="s1">&#39;push_cert&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;cert&#39;</span><span class="p">:</span> <span class="s1">&#39;/etc/pki/repospanner/pki/pagure.crt&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;key&#39;</span><span class="p">:</span> <span class="s1">&#39;/etc/pki/repospanner/pki/pagure.key&#39;</span><span class="p">}}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>If this configuration key is not defined, pagure will consider that it is
+not set to be integrated with repoSpanner.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">{}</span></code></p>
+</div>
+<div class="section" id="ssh-keys-username-lookup">
+<h3>SSH_KEYS_USERNAME_LOOKUP<a class="headerlink" href="#ssh-keys-username-lookup" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key is used by the keyhelper script to indicate that the
+git username should be used and looked up. Use this if the username that is sent
+to ssh is specific for a unique Pagure user (i.e. not using a single “git&#64;” user
+for all git operations).</p>
+</div>
+<div class="section" id="ssh-keys-username-forbidden">
+<h3>SSH_KEYS_USERNAME_FORBIDDEN<a class="headerlink" href="#ssh-keys-username-forbidden" title="Permalink to this headline">¶</a></h3>
+<p>A list of usernames that are exempted from being verified via the keyhelper.</p>
+</div>
+<div class="section" id="ssh-keys-username-expect">
+<h3>SSH_KEYS_USERNAME_EXPECT<a class="headerlink" href="#ssh-keys-username-expect" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key should contain the username that is used for git if a single
+SSH user is used for all git ssh traffic (i.e. “git”).</p>
+</div>
+<div class="section" id="ssh-keys-options">
+<h3>SSH_KEYS_OPTIONS<a class="headerlink" href="#ssh-keys-options" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key provides the options added to keys as they are returned
+to sshd, in the same format as AuthorizedKeysFile
+(see “AUTHORIZED_KEYS FILE FORMAT” in sshd(8)).</p>
+</div>
+<div class="section" id="ssh-admin-token">
+<h3>SSH_ADMIN_TOKEN<a class="headerlink" href="#ssh-admin-token" title="Permalink to this headline">¶</a></h3>
+<p>If not set to <code class="docutils literal notranslate"><span class="pre">None</span></code>, <code class="docutils literal notranslate"><span class="pre">aclchecker</span></code> and <code class="docutils literal notranslate"><span class="pre">keyhelper</span></code> will use this api
+admin token to get authorized to internal endpoints that they use. The token
+must have the <code class="docutils literal notranslate"><span class="pre">internal_access</span></code> ACL.</p>
+<p>This is useful when the IP address of sshd service is not predictable
+(e.g. because of running in a distributed cloud environment) and so
+it’s not possible to use the <code class="docutils literal notranslate"><span class="pre">IP_ALLOWED_INTERNAL</span></code> address list.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+</div>
+<div class="section" id="ssh-command-repospanner">
+<h3>SSH_COMMAND_REPOSPANNER<a class="headerlink" href="#ssh-command-repospanner" title="Permalink to this headline">¶</a></h3>
+<p>The command to run if a repository is on repospanner when aclchecker is in use.</p>
+</div>
+<div class="section" id="ssh-command-non-repospanner">
+<h3>SSH_COMMAND_NON_REPOSPANNER<a class="headerlink" href="#ssh-command-non-repospanner" title="Permalink to this headline">¶</a></h3>
+<p>The command to run if a repository is not on repospanner when aclchecker is in use.</p>
+</div>
+</div>
+<div class="section" id="mqtt-options">
+<h2>MQTT Options<a class="headerlink" href="#mqtt-options" title="Permalink to this headline">¶</a></h2>
+<p>If approprietly configured pagure supports sending messages to an MQTT
+message queue.</p>
+<p>Here below are the different configuration options to make it so.</p>
+<div class="section" id="mqtt-notifications">
+<h3>MQTT_NOTIFICATIONS<a class="headerlink" href="#mqtt-notifications" title="Permalink to this headline">¶</a></h3>
+<p>Global configuration key to turn on or off the code to send notifications
+to an MQTT message queue.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</div>
+<div class="section" id="mqtt-host">
+<h3>MQTT_HOST<a class="headerlink" href="#mqtt-host" title="Permalink to this headline">¶</a></h3>
+<p>Host name of the MQTT server to send the MQTT notifications to.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+</div>
+<div class="section" id="mqtt-port">
+<h3>MQTT_PORT<a class="headerlink" href="#mqtt-port" title="Permalink to this headline">¶</a></h3>
+<p>Port of the MQTT server to use to send the MQTT notifications to.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+</div>
+<div class="section" id="mqtt-username">
+<h3>MQTT_USERNAME<a class="headerlink" href="#mqtt-username" title="Permalink to this headline">¶</a></h3>
+<p>Username to authenticate to the MQTT server as.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+</div>
+<div class="section" id="mqtt-password">
+<h3>MQTT_PASSWORD<a class="headerlink" href="#mqtt-password" title="Permalink to this headline">¶</a></h3>
+<p>Password to authenticate to the MQTT server with.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+</div>
+<div class="section" id="mqtt-ca-certs">
+<h3>MQTT_CA_CERTS<a class="headerlink" href="#mqtt-ca-certs" title="Permalink to this headline">¶</a></h3>
+<p>When using SSL-based authentication to the MQTT server, use this
+configuration key to point to the CA cert to use.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+</div>
+<div class="section" id="mqtt-certfile">
+<h3>MQTT_CERTFILE<a class="headerlink" href="#mqtt-certfile" title="Permalink to this headline">¶</a></h3>
+<p>When using SSL-based authentication to the MQTT server, use this
+configuration key to point to the cert file to use.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+</div>
+<div class="section" id="mqtt-keyfile">
+<h3>MQTT_KEYFILE<a class="headerlink" href="#mqtt-keyfile" title="Permalink to this headline">¶</a></h3>
+<p>When using SSL-based authentication to the MQTT server, use this
+configuration key to point to the key file to use.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+</div>
+<div class="section" id="mqtt-cert-reqs">
+<h3>MQTT_CERT_REQS<a class="headerlink" href="#mqtt-cert-reqs" title="Permalink to this headline">¶</a></h3>
+<p>When using SSL-based authentication to the MQTT server, use this
+configuration key to specify if the CERT is required.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">ssl.CERT_REQUIRED</span></code> (from python’s ssl library)</p>
+</div>
+<div class="section" id="mqtt-tls-version">
+<h3>MQTT_TLS_VERSION<a class="headerlink" href="#mqtt-tls-version" title="Permalink to this headline">¶</a></h3>
+<p>When using SSL-based authentication to the MQTT server, use this
+configuration key to specify the TLS protocols to support/use.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">ssl.PROTOCOL_TLSv1_2</span></code> (from python’s ssl library)</p>
+</div>
+<div class="section" id="mqtt-ciphers">
+<h3>MQTT_CIPHERS<a class="headerlink" href="#mqtt-ciphers" title="Permalink to this headline">¶</a></h3>
+<p>When using SSL-based authentication to the MQTT server, use this
+configuration key to specify the ciphers.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+</div>
+<div class="section" id="mqtt-topic-prefix">
+<h3>MQTT_TOPIC_PREFIX<a class="headerlink" href="#mqtt-topic-prefix" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key can be used to specify a prefix to the mqtt messages sent.
+This prefix will be added to the topic used by pagure thus allowing the mqtt
+admins to specify a parent topic for all pagure-related messages.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+</div>
+<div class="section" id="always-mqtt-on-commits">
+<h3>ALWAYS_MQTT_ON_COMMITS<a class="headerlink" href="#always-mqtt-on-commits" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key can be used to enforce <a class="reference external" href="https://mqtt.org/">mqtt</a>
+notifications on commits made on all projects in a pagure instance.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</div>
+<div class="section" id="nogithooks">
+<h3>NOGITHOOKS<a class="headerlink" href="#nogithooks" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key should not be touched. It is used in the test suite as a
+way to prevent all the git hooks from running (which includes checking if the
+user is allowed to push). Using this mechanism we are able to check some
+behavior in the test suite that in a deployed pagure instance are happening in
+a different process.</p>
+<p><strong>Do not change this option in production</strong></p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</div>
+</div>
+<div class="section" id="deprecated-configuration-keys">
+<h2>Deprecated configuration keys<a class="headerlink" href="#deprecated-configuration-keys" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="fork-folder">
+<h3>FORK_FOLDER<a class="headerlink" href="#fork-folder" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key used to be use to specify the folder where the forks
+are placed. Since the release 2.0 of pagure, it has been deprecated, forks
+are now automatically placed in a sub-folder of the folder containing the
+mains git repositories (ie <code class="docutils literal notranslate"><span class="pre">GIT_FOLDER</span></code>).</p>
+<p>See the <code class="docutils literal notranslate"><span class="pre">UPGRADING.rst</span></code> file for more information about this change and
+how to handle it.</p>
+</div>
+<div class="section" id="upload-folder">
+<h3>UPLOAD_FOLDER<a class="headerlink" href="#upload-folder" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key used to be use to specify where the uploaded releases
+are available. It has been replaced by <cite>UPLOAD_FOLDER_PATH</cite> in the release
+2.10 of pagure.</p>
+</div>
+<div class="section" id="gitolite-version">
+<h3>GITOLITE_VERSION<a class="headerlink" href="#gitolite-version" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key specifies which version of gitolite you are
+using, it can be either <code class="docutils literal notranslate"><span class="pre">2</span></code> or <code class="docutils literal notranslate"><span class="pre">3</span></code>.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">3</span></code>.</p>
+<p>This has been replaced by <cite>GITOLITE_BACKEND</cite> in the release 3.0 of pagure.</p>
+</div>
+<div class="section" id="docs-folder-requests-folder-tickets-folder">
+<h3>DOCS_FOLDER, REQUESTS_FOLDER, TICKETS_FOLDER<a class="headerlink" href="#docs-folder-requests-folder-tickets-folder" title="Permalink to this headline">¶</a></h3>
+<p>These configuration values were removed. It has been found out that
+due to how Pagure writes repo names in the gitolite configuration file,
+these must have fixed paths relative to <cite>GIT_FOLDER</cite>. Specifically, they
+must occupy subdirectories <cite>docs</cite>, <cite>requests</cite> and <cite>tickets</cite> under <cite>GIT_FOLDER</cite>.
+They are now computed automatically based on value of <cite>GIT_FOLDER</cite>.
+Usage of docs and tickets can be triggered by setting <cite>ENABLE_DOCS</cite> and
+<cite>ENABLE_TICKETS</cite> to <cite>True</cite> (this is the default).</p>
+</div>
+<div class="section" id="file-size-highlight">
+<h3>FILE_SIZE_HIGHLIGHT<a class="headerlink" href="#file-size-highlight" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key can be used to specify the maximum number of characters a file
+or diff should have to have syntax highlighting. Everything above this limit
+will not have syntax highlighting as this is a memory intensive procedure that
+easily leads to out of memory error on large files or diff.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">5000</span></code></p>
+</div>
+<div class="section" id="bootstrap-urls-css">
+<h3>BOOTSTRAP_URLS_CSS<a class="headerlink" href="#bootstrap-urls-css" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key can be used to specify the URL where are hosted the bootstrap
+CSS file since the files hosted on apps.fedoraproject.org used in pagure.io
+are not restricted in browser access.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">'https://apps.fedoraproject.org/global/fedora-bootstrap-1.1.1/fedora-bootstrap.css'</span></code></p>
+<p>This has been deprecated by the new way of theming pagure, see the <a class="reference external" href="https://docs.pagure.org/pagure/usage/theming.html">theming
+documentation</a></p>
+</div>
+<div class="section" id="bootstrap-urls-js">
+<h3>BOOTSTRAP_URLS_JS<a class="headerlink" href="#bootstrap-urls-js" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key can be used to specify the URL where are hosted the bootstrap
+JS file since the files hosted on apps.fedoraproject.org used in pagure.io
+are not restricted in browser access.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">'https://apps.fedoraproject.org/global/fedora-bootstrap-1.1.1/fedora-bootstrap.js'</span></code></p>
+<p>This has been deprecated by the new way of theming pagure, see the <a class="reference external" href="https://docs.pagure.org/pagure/usage/theming.html">theming
+documentation</a></p>
+</div>
+<div class="section" id="html-title">
+<h3>HTML_TITLE<a class="headerlink" href="#html-title" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key allows you to customize the HTML title of all the
+pages, from <code class="docutils literal notranslate"><span class="pre">...</span> <span class="pre">-</span> <span class="pre">pagure</span></code> (default) to <code class="docutils literal notranslate"><span class="pre">...</span> <span class="pre">-</span> <span class="pre">&lt;your</span> <span class="pre">value&gt;</span></code>.</p>
+<p>Defaults to: <code class="docutils literal notranslate"><span class="pre">Pagure</span></code></p>
+<p>This has been deprecated by the new way of theming pagure, see the <a class="reference external" href="https://docs.pagure.org/pagure/usage/theming.html">theming
+documentation</a></p>
+</div>
+<div class="section" id="gitolite-backend">
+<h3>GITOLITE_BACKEND<a class="headerlink" href="#gitolite-backend" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key allowed specifying the gitolite backend.
+This has now been replaced by GIT_AUTH_BACKEND, please see that option
+for information on valid values.</p>
+</div>
+<div class="section" id="pagure-plugin">
+<h3>PAGURE_PLUGIN<a class="headerlink" href="#pagure-plugin" title="Permalink to this headline">¶</a></h3>
+<p>This configuration key allows to specify the path to the plugins configuration
+file. It is set as an environment variable. It has been replaced by
+PAGURE_PLUGINS_CONFIG. The new variable does not modify the behavior of the old
+variable, however unlike PAGURE_PLUGIN it can be set in the main Pagure
+configuration.</p>
+</div>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><h1 class='pagure-logo'><span></span>Pagure</h1><div class="sphinx-toc sphinxlocaltoc">
+    <h3><a href="index.html">Page contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Configuration</a><ul>
+<li><a class="reference internal" href="#must-options">Must options</a><ul>
+<li><a class="reference internal" href="#secret-key">SECRET_KEY</a></li>
+<li><a class="reference internal" href="#salt-email">SALT_EMAIL</a></li>
+<li><a class="reference internal" href="#db-url">DB_URL</a></li>
+<li><a class="reference internal" href="#app-url">APP_URL</a></li>
+<li><a class="reference internal" href="#email-error">EMAIL_ERROR</a></li>
+<li><a class="reference internal" href="#git-url-ssh">GIT_URL_SSH</a></li>
+<li><a class="reference internal" href="#git-url-git">GIT_URL_GIT</a></li>
+<li><a class="reference internal" href="#broker-url">BROKER_URL</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#repo-directories">Repo Directories</a><ul>
+<li><a class="reference internal" href="#git-folder">GIT_FOLDER</a></li>
+<li><a class="reference internal" href="#remote-git-folder">REMOTE_GIT_FOLDER</a></li>
+<li><a class="reference internal" href="#upload-folder-path">UPLOAD_FOLDER_PATH</a></li>
+<li><a class="reference internal" href="#attachments-folder">ATTACHMENTS_FOLDER</a></li>
+<li><a class="reference internal" href="#upload-folder-url">UPLOAD_FOLDER_URL</a></li>
+<li><a class="reference internal" href="#session-cookie-secure">SESSION_COOKIE_SECURE</a></li>
+<li><a class="reference internal" href="#session-type">SESSION_TYPE</a></li>
+<li><a class="reference internal" href="#from-email">FROM_EMAIL</a></li>
+<li><a class="reference internal" href="#domain-email-notifications">DOMAIN_EMAIL_NOTIFICATIONS</a></li>
+<li><a class="reference internal" href="#virus-scan-attachments">VIRUS_SCAN_ATTACHMENTS</a><ul>
+<li><a class="reference internal" href="#git-auth-backend">GIT_AUTH_BACKEND</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#configure-pagure-auth">Configure Pagure Auth</a></li>
+<li><a class="reference internal" href="#configure-gitolite">Configure Gitolite</a><ul>
+<li><a class="reference internal" href="#gitolite-2-and-3"><strong>gitolite 2 and 3</strong></a><ul>
+<li><a class="reference internal" href="#gitolite-home">GITOLITE_HOME</a></li>
+<li><a class="reference internal" href="#gitolite-keydir">GITOLITE_KEYDIR</a></li>
+<li><a class="reference internal" href="#gitolite-config">GITOLITE_CONFIG</a></li>
+<li><a class="reference internal" href="#gitolite-celery-queue">GITOLITE_CELERY_QUEUE</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#gitolite-2-only"><strong>gitolite 2 only</strong></a><ul>
+<li><a class="reference internal" href="#gl-rc">GL_RC</a></li>
+<li><a class="reference internal" href="#gl-bindir">GL_BINDIR</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#gitolite-3-only"><strong>gitolite 3 only</strong></a><ul>
+<li><a class="reference internal" href="#gitolite-has-compile-1">GITOLITE_HAS_COMPILE_1</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#eventsource-options">EventSource options</a><ul>
+<li><a class="reference internal" href="#eventsource-source">EVENTSOURCE_SOURCE</a></li>
+<li><a class="reference internal" href="#eventsource-port">EVENTSOURCE_PORT</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#web-hooks-notifications">Web-hooks notifications</a><ul>
+<li><a class="reference internal" href="#webhook">WEBHOOK</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#redis-options">Redis options</a><ul>
+<li><a class="reference internal" href="#redis-host">REDIS_HOST</a></li>
+<li><a class="reference internal" href="#redis-port">REDIS_PORT</a></li>
+<li><a class="reference internal" href="#redis-db">REDIS_DB</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#authentication-options">Authentication options</a><ul>
+<li><a class="reference internal" href="#admin-group">ADMIN_GROUP</a></li>
+<li><a class="reference internal" href="#pagure-admin-users">PAGURE_ADMIN_USERS</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#celery-queue-options">Celery Queue options</a><ul>
+<li><a class="reference internal" href="#fast-celery-queue">FAST_CELERY_QUEUE</a></li>
+<li><a class="reference internal" href="#medium-celery-queue">MEDIUM_CELERY_QUEUE</a></li>
+<li><a class="reference internal" href="#slow-celery-queue">SLOW_CELERY_QUEUE</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#stomp-options">Stomp Options</a><ul>
+<li><a class="reference internal" href="#stomp-notifications">STOMP_NOTIFICATIONS</a></li>
+<li><a class="reference internal" href="#stomp-brokers">STOMP_BROKERS</a></li>
+<li><a class="reference internal" href="#stomp-hierarchy">STOMP_HIERARCHY</a></li>
+<li><a class="reference internal" href="#stomp-ssl">STOMP_SSL</a></li>
+<li><a class="reference internal" href="#stomp-key-file">STOMP_KEY_FILE</a></li>
+<li><a class="reference internal" href="#stomp-cert-file">STOMP_CERT_FILE</a></li>
+<li><a class="reference internal" href="#stomp-creds-password">STOMP_CREDS_PASSWORD</a></li>
+<li><a class="reference internal" href="#always-stomp-on-commits">ALWAYS_STOMP_ON_COMMITS</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#api-token-acls">API token ACLs</a><ul>
+<li><a class="reference internal" href="#acls">ACLS</a></li>
+<li><a class="reference internal" href="#user-acls">USER_ACLS</a></li>
+<li><a class="reference internal" href="#admin-api-acls">ADMIN_API_ACLS</a></li>
+<li><a class="reference internal" href="#cross-project-acls">CROSS_PROJECT_ACLS</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#optional-options">Optional options</a><ul>
+<li><a class="reference internal" href="#theming">Theming</a><ul>
+<li><a class="reference internal" href="#theme">THEME</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#git-repository-templates">Git repository templates</a><ul>
+<li><a class="reference internal" href="#project-template-path">PROJECT_TEMPLATE_PATH</a></li>
+<li><a class="reference internal" href="#fork-template-path">FORK_TEMPLATE_PATH</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#ssh-keys">SSH_KEYS</a></li>
+<li><a class="reference internal" href="#csp-headers">CSP_HEADERS</a></li>
+<li><a class="reference internal" href="#logging-git-hooks">LOGGING_GIT_HOOKS</a></li>
+<li><a class="reference internal" href="#logging">LOGGING</a></li>
+<li><a class="reference internal" href="#item-per-page">ITEM_PER_PAGE</a></li>
+<li><a class="reference internal" href="#pr-target-matching-branch">PR_TARGET_MATCHING_BRANCH</a></li>
+<li><a class="reference internal" href="#ssh-access-groups">SSH_ACCESS_GROUPS</a></li>
+<li><a class="reference internal" href="#smtp-configuration">SMTP configuration</a><ul>
+<li><a class="reference internal" href="#smtp-server">SMTP_SERVER</a></li>
+<li><a class="reference internal" href="#smtp-port">SMTP_PORT</a></li>
+<li><a class="reference internal" href="#smtp-ssl">SMTP_SSL</a></li>
+<li><a class="reference internal" href="#smtp-starttls">SMTP_STARTTLS</a></li>
+<li><a class="reference internal" href="#smtp-keyfile">SMTP_KEYFILE</a></li>
+<li><a class="reference internal" href="#smtp-certfile">SMTP_CERTFILE</a></li>
+<li><a class="reference internal" href="#smtp-username">SMTP_USERNAME</a></li>
+<li><a class="reference internal" href="#smtp-password">SMTP_PASSWORD</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#short-length">SHORT_LENGTH</a></li>
+<li><a class="reference internal" href="#blacklisted-projects">BLACKLISTED_PROJECTS</a></li>
+<li><a class="reference internal" href="#check-session-ip">CHECK_SESSION_IP</a></li>
+<li><a class="reference internal" href="#pagure-auth">PAGURE_AUTH</a></li>
+<li><a class="reference internal" href="#oidc-settings">OIDC Settings</a><ul>
+<li><a class="reference internal" href="#oidc-client-secrets">OIDC_CLIENT_SECRETS</a></li>
+<li><a class="reference internal" href="#oidc-id-token-cookie-secure">OIDC_ID_TOKEN_COOKIE_SECURE</a></li>
+<li><a class="reference internal" href="#oidc-scopes">OIDC_SCOPES</a></li>
+<li><a class="reference internal" href="#oidc-pagure-email">OIDC_PAGURE_EMAIL</a></li>
+<li><a class="reference internal" href="#oidc-pagure-fullname">OIDC_PAGURE_FULLNAME</a></li>
+<li><a class="reference internal" href="#oidc-pagure-username">OIDC_PAGURE_USERNAME</a></li>
+<li><a class="reference internal" href="#oidc-pagure-ssh-key">OIDC_PAGURE_SSH_KEY</a></li>
+<li><a class="reference internal" href="#oidc-pagure-groups">OIDC_PAGURE_GROUPS</a></li>
+<li><a class="reference internal" href="#oidc-pagure-username-fallback">OIDC_PAGURE_USERNAME_FALLBACK</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#ip-allowed-internal">IP_ALLOWED_INTERNAL</a></li>
+<li><a class="reference internal" href="#max-content-length">MAX_CONTENT_LENGTH</a></li>
+<li><a class="reference internal" href="#enable-tickets">ENABLE_TICKETS</a></li>
+<li><a class="reference internal" href="#enable-tickets-namespace">ENABLE_TICKETS_NAMESPACE</a></li>
+<li><a class="reference internal" href="#enable-docs">ENABLE_DOCS</a></li>
+<li><a class="reference internal" href="#enable-new-projects">ENABLE_NEW_PROJECTS</a></li>
+<li><a class="reference internal" href="#enable-ui-new-projects">ENABLE_UI_NEW_PROJECTS</a></li>
+<li><a class="reference internal" href="#enable-del-projects">ENABLE_DEL_PROJECTS</a></li>
+<li><a class="reference internal" href="#enable-del-forks">ENABLE_DEL_FORKS</a></li>
+<li><a class="reference internal" href="#git-hook-db-ro">GIT_HOOK_DB_RO</a></li>
+<li><a class="reference internal" href="#email-send">EMAIL_SEND</a></li>
+<li><a class="reference internal" href="#fedmsg-notifications">FEDMSG_NOTIFICATIONS</a></li>
+<li><a class="reference internal" href="#fedora-messaging-notifications">FEDORA_MESSAGING_NOTIFICATIONS</a></li>
+<li><a class="reference internal" href="#always-fedmsg-on-commits">ALWAYS_FEDMSG_ON_COMMITS</a></li>
+<li><a class="reference internal" href="#allow-delete-branch">ALLOW_DELETE_BRANCH</a></li>
+<li><a class="reference internal" href="#allow-admin-ignore-existing-repos">ALLOW_ADMIN_IGNORE_EXISTING_REPOS</a></li>
+<li><a class="reference internal" href="#users-ignore-existing-repos">USERS_IGNORE_EXISTING_REPOS</a></li>
+<li><a class="reference internal" href="#local-ssh-key">LOCAL_SSH_KEY</a></li>
+<li><a class="reference internal" href="#deploy-key">DEPLOY_KEY</a></li>
+<li><a class="reference internal" href="#old-view-commit-enabled">OLD_VIEW_COMMIT_ENABLED</a></li>
+<li><a class="reference internal" href="#disable-remote-pr">DISABLE_REMOTE_PR</a></li>
+<li><a class="reference internal" href="#pagure-ci-services">PAGURE_CI_SERVICES</a></li>
+<li><a class="reference internal" href="#instance-name">INSTANCE_NAME</a></li>
+<li><a class="reference internal" href="#admin-email">ADMIN_EMAIL</a></li>
+<li><a class="reference internal" href="#user-namespace">USER_NAMESPACE</a></li>
+<li><a class="reference internal" href="#doc-app-url">DOC_APP_URL</a></li>
+<li><a class="reference internal" href="#private-projects">PRIVATE_PROJECTS</a></li>
+<li><a class="reference internal" href="#exclude-group-index">EXCLUDE_GROUP_INDEX</a></li>
+<li><a class="reference internal" href="#trigger-ci">TRIGGER_CI</a></li>
+<li><a class="reference internal" href="#flag-statuses-labels">FLAG_STATUSES_LABELS</a></li>
+<li><a class="reference internal" href="#flag-success">FLAG_SUCCESS</a></li>
+<li><a class="reference internal" href="#flag-failure">FLAG_FAILURE</a></li>
+<li><a class="reference internal" href="#flag-pending">FLAG_PENDING</a></li>
+<li><a class="reference internal" href="#external-committer">EXTERNAL_COMMITTER</a></li>
+<li><a class="reference internal" href="#required-groups">REQUIRED_GROUPS</a></li>
+<li><a class="reference internal" href="#gitolite-pre-config">GITOLITE_PRE_CONFIG</a></li>
+<li><a class="reference internal" href="#gitolite-post-config">GITOLITE_POST_CONFIG</a></li>
+<li><a class="reference internal" href="#git-garbage-collect">GIT_GARBAGE_COLLECT</a></li>
+<li><a class="reference internal" href="#celery-config">CELERY_CONFIG</a></li>
+<li><a class="reference internal" href="#case-sensitive">CASE_SENSITIVE</a></li>
+<li><a class="reference internal" href="#project-name-regex">PROJECT_NAME_REGEX</a></li>
+<li><a class="reference internal" href="#application-root">APPLICATION_ROOT</a></li>
+<li><a class="reference internal" href="#allowed-prefix">ALLOWED_PREFIX</a></li>
+<li><a class="reference internal" href="#admin-session-lifetime">ADMIN_SESSION_LIFETIME</a></li>
+<li><a class="reference internal" href="#blacklisted-groups">BLACKLISTED_GROUPS</a></li>
+<li><a class="reference internal" href="#enable-group-mngt">ENABLE_GROUP_MNGT</a></li>
+<li><a class="reference internal" href="#enable-user-mngt">ENABLE_USER_MNGT</a></li>
+<li><a class="reference internal" href="#allow-user-registration">ALLOW_USER_REGISTRATION</a></li>
+<li><a class="reference internal" href="#session-cookie-name">SESSION_COOKIE_NAME</a></li>
+<li><a class="reference internal" href="#show-projects-index">SHOW_PROJECTS_INDEX</a></li>
+<li><a class="reference internal" href="#email-on-watchcommits">EMAIL_ON_WATCHCOMMITS</a></li>
+<li><a class="reference internal" href="#allow-http-pull-push">ALLOW_HTTP_PULL_PUSH</a></li>
+<li><a class="reference internal" href="#allow-http-push">ALLOW_HTTP_PUSH</a></li>
+<li><a class="reference internal" href="#http-repo-access-gitolite">HTTP_REPO_ACCESS_GITOLITE</a></li>
+<li><a class="reference internal" href="#mirror-sshkeys-folder">MIRROR_SSHKEYS_FOLDER</a></li>
+<li><a class="reference internal" href="#log-all-commits">LOG_ALL_COMMITS</a></li>
+<li><a class="reference internal" href="#disable-mirror-in">DISABLE_MIRROR_IN</a></li>
+<li><a class="reference internal" href="#syntax-alias-overrides">SYNTAX_ALIAS_OVERRIDES</a></li>
+<li><a class="reference internal" href="#allow-api-update-git-tags">ALLOW_API_UPDATE_GIT_TAGS</a></li>
+<li><a class="reference internal" href="#pagure-plugins-config">PAGURE_PLUGINS_CONFIG</a></li>
+<li><a class="reference internal" href="#git-default-branch">GIT_DEFAULT_BRANCH</a></li>
+<li><a class="reference internal" href="#pr-warn-characters">PR_WARN_CHARACTERS</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#repospanner-options">RepoSpanner Options</a><ul>
+<li><a class="reference internal" href="#repobridge-binary">REPOBRIDGE_BINARY</a></li>
+<li><a class="reference internal" href="#repospanner-new-repo">REPOSPANNER_NEW_REPO</a></li>
+<li><a class="reference internal" href="#repospanner-new-repo-admin-override">REPOSPANNER_NEW_REPO_ADMIN_OVERRIDE</a></li>
+<li><a class="reference internal" href="#repospanner-new-fork">REPOSPANNER_NEW_FORK</a></li>
+<li><a class="reference internal" href="#repospanner-admin-migration">REPOSPANNER_ADMIN_MIGRATION</a></li>
+<li><a class="reference internal" href="#repospanner-regions">REPOSPANNER_REGIONS</a></li>
+<li><a class="reference internal" href="#ssh-keys-username-lookup">SSH_KEYS_USERNAME_LOOKUP</a></li>
+<li><a class="reference internal" href="#ssh-keys-username-forbidden">SSH_KEYS_USERNAME_FORBIDDEN</a></li>
+<li><a class="reference internal" href="#ssh-keys-username-expect">SSH_KEYS_USERNAME_EXPECT</a></li>
+<li><a class="reference internal" href="#ssh-keys-options">SSH_KEYS_OPTIONS</a></li>
+<li><a class="reference internal" href="#ssh-admin-token">SSH_ADMIN_TOKEN</a></li>
+<li><a class="reference internal" href="#ssh-command-repospanner">SSH_COMMAND_REPOSPANNER</a></li>
+<li><a class="reference internal" href="#ssh-command-non-repospanner">SSH_COMMAND_NON_REPOSPANNER</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mqtt-options">MQTT Options</a><ul>
+<li><a class="reference internal" href="#mqtt-notifications">MQTT_NOTIFICATIONS</a></li>
+<li><a class="reference internal" href="#mqtt-host">MQTT_HOST</a></li>
+<li><a class="reference internal" href="#mqtt-port">MQTT_PORT</a></li>
+<li><a class="reference internal" href="#mqtt-username">MQTT_USERNAME</a></li>
+<li><a class="reference internal" href="#mqtt-password">MQTT_PASSWORD</a></li>
+<li><a class="reference internal" href="#mqtt-ca-certs">MQTT_CA_CERTS</a></li>
+<li><a class="reference internal" href="#mqtt-certfile">MQTT_CERTFILE</a></li>
+<li><a class="reference internal" href="#mqtt-keyfile">MQTT_KEYFILE</a></li>
+<li><a class="reference internal" href="#mqtt-cert-reqs">MQTT_CERT_REQS</a></li>
+<li><a class="reference internal" href="#mqtt-tls-version">MQTT_TLS_VERSION</a></li>
+<li><a class="reference internal" href="#mqtt-ciphers">MQTT_CIPHERS</a></li>
+<li><a class="reference internal" href="#mqtt-topic-prefix">MQTT_TOPIC_PREFIX</a></li>
+<li><a class="reference internal" href="#always-mqtt-on-commits">ALWAYS_MQTT_ON_COMMITS</a></li>
+<li><a class="reference internal" href="#nogithooks">NOGITHOOKS</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#deprecated-configuration-keys">Deprecated configuration keys</a><ul>
+<li><a class="reference internal" href="#fork-folder">FORK_FOLDER</a></li>
+<li><a class="reference internal" href="#upload-folder">UPLOAD_FOLDER</a></li>
+<li><a class="reference internal" href="#gitolite-version">GITOLITE_VERSION</a></li>
+<li><a class="reference internal" href="#docs-folder-requests-folder-tickets-folder">DOCS_FOLDER, REQUESTS_FOLDER, TICKETS_FOLDER</a></li>
+<li><a class="reference internal" href="#file-size-highlight">FILE_SIZE_HIGHLIGHT</a></li>
+<li><a class="reference internal" href="#bootstrap-urls-css">BOOTSTRAP_URLS_CSS</a></li>
+<li><a class="reference internal" href="#bootstrap-urls-js">BOOTSTRAP_URLS_JS</a></li>
+<li><a class="reference internal" href="#html-title">HTML_TITLE</a></li>
+<li><a class="reference internal" href="#gitolite-backend">GITOLITE_BACKEND</a></li>
+<li><a class="reference internal" href="#pagure-plugin">PAGURE_PLUGIN</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div class="sphinxprev">
+    <h4>Previous page</h4>
+    <p class="topless"><a href="install_crons.html"
+                          title="Previous page">&larr; Cron Jobs</a></p>
+  </div>
+  <div class="sphinxnext">
+    <h4>Next page</h4>
+    <p class="topless"><a href="plugins.html"
+                          title="Next page">&rarr; Plugins</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/configuration.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="plugins.html" title="Plugins"
+             >next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="install_crons.html" title="Cron Jobs"
+             >previous</a> &nbsp; &nbsp;</li>
+    <li><a href="index.html">pagure  documentation</a> &#187;</li>
+
+        <li class="nav-item nav-item-this"><a href="">Configuration</a></li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015, Red Hat Inc, Pierre-Yves Chibon &lt;pingou@pingoured.fr&gt;.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+  </body>
+</html>

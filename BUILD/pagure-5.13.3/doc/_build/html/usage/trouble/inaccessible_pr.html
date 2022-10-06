@@ -1,0 +1,200 @@
+
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inaccessible pull-requests &#8212; pagure  documentation</title>
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/site.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/site.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+
+    
+    
+     
+        <script src="../../_static/jquery.cookie.js"></script>
+    
+
+    
+     
+        <script src="../../_static/cloud.base.js"></script>
+    
+
+    
+     
+        <script src="../../_static/cloud.js"></script>
+    
+
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Tips and tricks" href="../tips_tricks.html" />
+    <link rel="prev" title="Troubleshooting" href="../troubleshooting.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head><body>
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../tips_tricks.html" title="Tips and tricks"
+             accesskey="N">next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../troubleshooting.html" title="Troubleshooting"
+             accesskey="P">previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../../index.html">pagure  documentation</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="../index.html" >Usage</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../troubleshooting.html" accesskey="U">Troubleshooting</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Inaccessible pull-requests</a></li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="inaccessible-pull-requests">
+<h1>Inaccessible pull-requests<a class="headerlink" href="#inaccessible-pull-requests" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="the-symptoms">
+<h2>The symptoms<a class="headerlink" href="#the-symptoms" title="Permalink to this headline">¶</a></h2>
+<p>When trying to open a pull-request, if you run into this error:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">The</span> <span class="n">branch</span> <span class="n">into</span> <span class="n">which</span> <span class="n">this</span> <span class="n">pull</span><span class="o">-</span><span class="n">request</span> <span class="n">was</span> <span class="n">to</span> <span class="n">be</span> <span class="n">merged</span><span class="p">:</span> <span class="n">XXX</span> <span class="n">seems</span> <span class="n">to</span>
+<span class="n">no</span> <span class="n">longer</span> <span class="n">be</span> <span class="n">present</span> <span class="ow">in</span> <span class="n">this</span> <span class="n">repo</span>
+</pre></div>
+</div>
+<p>(Where <code class="docutils literal notranslate"><span class="pre">XXX</span></code> is a branch name).</p>
+<a class="reference external image-reference" href="../../_images/inaccessible_pr.png"><img alt="../../_images/inaccessible_pr.png" src="../../_images/inaccessible_pr.png" /></a>
+<p>(Here <code class="docutils literal notranslate"><span class="pre">XXX</span></code> is <code class="docutils literal notranslate"><span class="pre">m2</span></code>).</p>
+<p>This means that the pull-request was opened against a branch on your repo and
+that this branch no longer exists.
+Pagure is therefore unable to compute the diff between the sources and
+the target of the pull-request.</p>
+<p>The pull-request is thus inaccessible but remains in the list of open
+pull-requests.</p>
+</div>
+<div class="section" id="the-solution">
+<h2>The solution<a class="headerlink" href="#the-solution" title="Permalink to this headline">¶</a></h2>
+<p>The easiest solution to solve this problem is to re-create the target branch
+in your repo.</p>
+<p>This can be done using git simply by doing:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">checkout</span> <span class="o">-</span><span class="n">b</span> <span class="o">&lt;</span><span class="n">branch_name</span><span class="o">&gt;</span>
+<span class="n">git</span> <span class="n">push</span> <span class="n">origin</span> <span class="o">&lt;</span><span class="n">branch_name</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>It will create the branch named <code class="docutils literal notranslate"><span class="pre">&lt;branch_name&gt;</span></code> in pagure, allowing the
+diff to be computed for that pull-request and thus allowing it to be
+displayed. It is then up to you to see if this pull-request is still relevant
+and should be merged or closed.</p>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><h1 class='pagure-logo'><span></span>Pagure</h1><div class="sphinx-toc sphinxlocaltoc">
+    <h3><a href="../../index.html">Page contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Inaccessible pull-requests</a><ul>
+<li><a class="reference internal" href="#the-symptoms">The symptoms</a></li>
+<li><a class="reference internal" href="#the-solution">The solution</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div class="sphinxprev">
+    <h4>Previous page</h4>
+    <p class="topless"><a href="../troubleshooting.html"
+                          title="Previous page">&larr; Troubleshooting</a></p>
+  </div>
+  <div class="sphinxnext">
+    <h4>Next page</h4>
+    <p class="topless"><a href="../tips_tricks.html"
+                          title="Next page">&rarr; Tips and tricks</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/usage/trouble/inaccessible_pr.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../tips_tricks.html" title="Tips and tricks"
+             >next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../troubleshooting.html" title="Troubleshooting"
+             >previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../../index.html">pagure  documentation</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="../index.html" >Usage</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../troubleshooting.html" >Troubleshooting</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Inaccessible pull-requests</a></li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015, Red Hat Inc, Pierre-Yves Chibon &lt;pingou@pingoured.fr&gt;.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+  </body>
+</html>

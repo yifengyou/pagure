@@ -1,0 +1,218 @@
+
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Flags &#8212; pagure  documentation</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/site.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/site.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+
+    
+    
+     
+        <script src="../_static/jquery.cookie.js"></script>
+    
+
+    
+     
+        <script src="../_static/cloud.base.js"></script>
+    
+
+    
+     
+        <script src="../_static/cloud.js"></script>
+    
+
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Magic Words" href="magic_words.html" />
+    <link rel="prev" title="Using the roadmap feature" href="roadmap.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head><body>
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="magic_words.html" title="Magic Words"
+             accesskey="N">next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="roadmap.html" title="Using the roadmap feature"
+             accesskey="P">previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">pagure  documentation</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Usage</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Flags</a></li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="flags">
+<span id="id1"></span><h1>Flags<a class="headerlink" href="#flags" title="Permalink to this headline">¶</a></h1>
+<p>Pagure offers the possibility to flag pull-requests and commits. A flag
+is a way for a third-party tool to provide feedback on a pull-request or a
+commit.</p>
+<p>This feedback can be as simple as the outcome of running the tests, or some
+lint tool, or test coverage evolution.</p>
+<div class="section" id="add-a-flag">
+<h2>Add a flag<a class="headerlink" href="#add-a-flag" title="Permalink to this headline">¶</a></h2>
+<p>Flags can be set via the API, see the <code class="docutils literal notranslate"><span class="pre">/api/</span></code> URL in your pagure instance
+or at <a class="reference external" href="https://pagure.io/api/0/">pagure.io/api/</a> and look for the endpoints
+with the titles: <code class="docutils literal notranslate"><span class="pre">Flag</span> <span class="pre">a</span> <span class="pre">commit</span></code> or <code class="docutils literal notranslate"><span class="pre">Flag</span> <span class="pre">a</span> <span class="pre">pull-request</span></code>.</p>
+<ul class="simple">
+<li><p><strong>uid</strong>: the API endpoints to add flag have an optional UID argument. It
+is a unique identifier (of maximum 32 characters) that is unique the commit
+or pull-request that is being/has been flagged.
+If it is not specified by the user/tool adding the flag, it will be
+automatically generated and in either case, will be returned in the JSON
+data returned by the API endpoints. Note that this is the only time you
+would be able to retrieve this identifier if you do not specify it
+yourself.</p></li>
+<li><p><strong>status</strong>: this field indicates the status of the task in the system
+running it. Pagure supports the following statuses:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">success</span></code>: the task ended successfully.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">canceled</span></code>: the task was canceled.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">failure</span></code>: the task ended but failed.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">error</span></code>: the task did not end at all.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pending</span></code>: the results of this task are pending.
+(for <code class="docutils literal notranslate"><span class="pre">failure</span></code> vs <code class="docutils literal notranslate"><span class="pre">error</span></code> think of the test system ran the tests but
+they failed vs the test system did not get to run the tests)</p></li>
+</ul>
+</li>
+<li><p><strong>percent</strong>: this is an optional field which can be used to provide some more
+details about the outcome of the task. For example this could be used for
+test coverage, or the number of test that failed/passed.</p></li>
+<li><p><strong>username</strong>: the name of the system running the tests. While not being
+restricted in length, a shorter name will render better in the interface.</p></li>
+<li><p><strong>comment</strong>: a free text form not restricted in length (however, here as
+well if the comment is too long it may render off in the interface).</p></li>
+<li><p><strong>url</strong>: the URL the flag is linked to and where the user should be able
+to retrieve more information about the task and its outcome.</p></li>
+</ul>
+</div>
+<div class="section" id="example-of-two-flags-on-a-commit">
+<span id="example-flag-commit"></span><h2>Example of two flags on a commit:<a class="headerlink" href="#example-of-two-flags-on-a-commit" title="Permalink to this headline">¶</a></h2>
+<a class="reference external image-reference" href="../_images/pagure_commit_flag.png"><img alt="../_images/pagure_commit_flag.png" src="../_images/pagure_commit_flag.png" /></a>
+</div>
+<div class="section" id="example-of-two-flags-on-a-pull-request">
+<span id="example-flag-pr"></span><h2>Example of two flags on a pull-request:<a class="headerlink" href="#example-of-two-flags-on-a-pull-request" title="Permalink to this headline">¶</a></h2>
+<a class="reference external image-reference" href="../_images/pagure_flag_pr.png"><img alt="../_images/pagure_flag_pr.png" src="../_images/pagure_flag_pr.png" /></a>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><h1 class='pagure-logo'><span></span>Pagure</h1><div class="sphinx-toc sphinxlocaltoc">
+    <h3><a href="../index.html">Page contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Flags</a><ul>
+<li><a class="reference internal" href="#add-a-flag">Add a flag</a></li>
+<li><a class="reference internal" href="#example-of-two-flags-on-a-commit">Example of two flags on a commit:</a></li>
+<li><a class="reference internal" href="#example-of-two-flags-on-a-pull-request">Example of two flags on a pull-request:</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div class="sphinxprev">
+    <h4>Previous page</h4>
+    <p class="topless"><a href="roadmap.html"
+                          title="Previous page">&larr; Using the roadmap feature</a></p>
+  </div>
+  <div class="sphinxnext">
+    <h4>Next page</h4>
+    <p class="topless"><a href="magic_words.html"
+                          title="Next page">&rarr; Magic Words</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/usage/flags.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="magic_words.html" title="Magic Words"
+             >next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="roadmap.html" title="Using the roadmap feature"
+             >previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">pagure  documentation</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Usage</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Flags</a></li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015, Red Hat Inc, Pierre-Yves Chibon &lt;pingou@pingoured.fr&gt;.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+  </body>
+</html>

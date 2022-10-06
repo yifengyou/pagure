@@ -1,0 +1,203 @@
+
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Magic Words &#8212; pagure  documentation</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/site.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/site.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+
+    
+    
+     
+        <script src="../_static/jquery.cookie.js"></script>
+    
+
+    
+     
+        <script src="../_static/cloud.base.js"></script>
+    
+
+    
+     
+        <script src="../_static/cloud.js"></script>
+    
+
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Using the doc repository of your project" href="using_doc.html" />
+    <link rel="prev" title="Flags" href="flags.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head><body>
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="using_doc.html" title="Using the doc repository of your project"
+             accesskey="N">next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="flags.html" title="Flags"
+             accesskey="P">previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">pagure  documentation</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Usage</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Magic Words</a></li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="magic-words">
+<h1>Magic Words<a class="headerlink" href="#magic-words" title="Permalink to this headline">¶</a></h1>
+<p>Magic words are words and constructs you can use in your commit message to
+make pagure act on tickets or pull-requests.</p>
+<div class="section" id="enabling-magic-words">
+<h2>Enabling magic words<a class="headerlink" href="#enabling-magic-words" title="Permalink to this headline">¶</a></h2>
+<p>These magic words are enabled if the <code class="docutils literal notranslate"><span class="pre">pagure</span></code> git hook is enable. To do
+so, go to your project’s <code class="docutils literal notranslate"><span class="pre">settings</span></code> page, open the <code class="docutils literal notranslate"><span class="pre">Hooks</span></code> tab and
+activate there the <code class="docutils literal notranslate"><span class="pre">Pagure</span></code> hook.</p>
+</div>
+<div class="section" id="using-magic-words">
+<h2>Using magic words<a class="headerlink" href="#using-magic-words" title="Permalink to this headline">¶</a></h2>
+<p>To reference an issue/PR you need to use one of recognized keywords followed by
+a reference to the issue or PR, separated by whitespace and and optional colon.
+Such references can be either:</p>
+<ul class="simple">
+<li><p>The issue/PR number preceded by the # symbol</p></li>
+<li><p>The full URL of the issue or PR</p></li>
+</ul>
+<p>If using the full URL, it is possible to reference issues in other projects.</p>
+<p>The recognized keywords are:</p>
+<ul class="simple">
+<li><p>fix/fixed/fixes</p></li>
+<li><p>relate/related/relates</p></li>
+<li><p>merge/merges/merged</p></li>
+<li><p>close/closes/closed</p></li>
+<li><p>resolve/resolves/resolved</p></li>
+</ul>
+<p>Examples:</p>
+<ul class="simple">
+<li><p>Fixes #21</p></li>
+<li><p>related: <a class="reference external" href="https://pagure.io/myproject/issue/32">https://pagure.io/myproject/issue/32</a></p></li>
+<li><p>this commit merges #74</p></li>
+<li><p>Merged: <a class="reference external" href="https://pagure.io/myproject/pull-request/74">https://pagure.io/myproject/pull-request/74</a></p></li>
+</ul>
+<p>Capitalization does not matter; neither does the colon (<code class="docutils literal notranslate"><span class="pre">:</span></code>) between
+keyword and number.</p>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><h1 class='pagure-logo'><span></span>Pagure</h1><div class="sphinx-toc sphinxlocaltoc">
+    <h3><a href="../index.html">Page contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Magic Words</a><ul>
+<li><a class="reference internal" href="#enabling-magic-words">Enabling magic words</a></li>
+<li><a class="reference internal" href="#using-magic-words">Using magic words</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div class="sphinxprev">
+    <h4>Previous page</h4>
+    <p class="topless"><a href="flags.html"
+                          title="Previous page">&larr; Flags</a></p>
+  </div>
+  <div class="sphinxnext">
+    <h4>Next page</h4>
+    <p class="topless"><a href="using_doc.html"
+                          title="Next page">&rarr; Using the doc repository of your project</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/usage/magic_words.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="using_doc.html" title="Using the doc repository of your project"
+             >next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="flags.html" title="Flags"
+             >previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">pagure  documentation</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Usage</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Magic Words</a></li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015, Red Hat Inc, Pierre-Yves Chibon &lt;pingou@pingoured.fr&gt;.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+  </body>
+</html>

@@ -1,0 +1,289 @@
+
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Using the doc repository of your project &#8212; pagure  documentation</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/site.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/site.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+
+    
+    
+     
+        <script src="../_static/jquery.cookie.js"></script>
+    
+
+    
+     
+        <script src="../_static/cloud.base.js"></script>
+    
+
+    
+     
+        <script src="../_static/cloud.js"></script>
+    
+
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Using web-hooks" href="using_webhooks.html" />
+    <link rel="prev" title="Magic Words" href="magic_words.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head><body>
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="using_webhooks.html" title="Using web-hooks"
+             accesskey="N">next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="magic_words.html" title="Magic Words"
+             accesskey="P">previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">pagure  documentation</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Usage</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Using the doc repository of your project</a></li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="using-the-doc-repository-of-your-project">
+<h1>Using the doc repository of your project<a class="headerlink" href="#using-the-doc-repository-of-your-project" title="Permalink to this headline">¶</a></h1>
+<p>In this section of the documentation, we are interested in the doc repository.</p>
+<p>The doc repository is a simple Git repo. It can be displayed as a subfolder
+of a project or as a dedicated Git repo.
+Either way its content can be displayed in 2 ways:</p>
+<ul class="simple">
+<li><p>inline under the <cite>Docs</cite> tab in Pagure:</p>
+<ul>
+<li><p><a class="reference external" href="https://pagure.io/docs">https://pagure.io/docs</a>/&lt;project&gt;/ or</p></li>
+<li><p><a class="reference external" href="https://pagure.io/docs">https://pagure.io/docs</a>/&lt;namespace&gt;/&lt;project&gt;/</p></li>
+</ul>
+</li>
+<li><p>standalone:</p>
+<ul>
+<li><p><a class="reference external" href="https://docs.pagure.org">https://docs.pagure.org</a>/&lt;project&gt;/ or</p></li>
+<li><p><a class="reference external" href="https://docs.pagure.org">https://docs.pagure.org</a>/&lt;namespace&gt;.&lt;project&gt;/</p></li>
+</ul>
+</li>
+</ul>
+<p>By default the <cite>Docs</cite> tab in the project’s menu is disabled, you
+will have to visit the project’s settings page and turn it on
+in the <code class="docutils literal notranslate"><span class="pre">Project</span> <span class="pre">options</span></code> section.</p>
+<p>The URL to clone the doc repo is:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://pagure.io/docs">https://pagure.io/docs</a>/&lt;namespace&gt;/&lt;project&gt;.git</p></li>
+</ul>
+<p>To view the doc source files in the browser:</p>
+<ul class="simple">
+<li><p>if the doc repo is kept in the project’s sources, use the project’s website</p></li>
+<li><p>if the doc repo is a dedicated repo, use <a class="reference external" href="https://pagure.io">https://pagure.io</a>/&lt;namespace&gt;/&lt;name&gt;</p></li>
+</ul>
+<p>Different file types can be used for your documentation in this repo:</p>
+<ul>
+<li><p>simple text files</p>
+<p>Pagure will display them as plain text. If one of these is named <code class="docutils literal notranslate"><span class="pre">index</span></code>
+it will be presented as the front page.</p>
+</li>
+<li><p>RST or markdown files</p>
+<p>Pagure will convert them to HTML on the fly and display them as such.
+The RST files must end with <code class="docutils literal notranslate"><span class="pre">.rst</span></code> and the markdown ones must end with
+<code class="docutils literal notranslate"><span class="pre">.mk</span></code>, <code class="docutils literal notranslate"><span class="pre">.md</span></code> or simply <code class="docutils literal notranslate"><span class="pre">.markdown</span></code>.</p>
+</li>
+<li><p>HTML files</p>
+<p>Pagure will simply show them as such.</p>
+</li>
+</ul>
+<p>Updating documentation hosted in a dedicated repo is like
+<a class="reference external" href="https://docs.pagure.org/pagure/usage/forks.html">using other repos</a>.</p>
+<div class="section" id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<p>Pagure’s documentation is kept in pagure’s sources, in the <cite>doc</cite> folder there.
+You can see it at: <a class="reference external" href="https://pagure.io/pagure/blob/master/f/doc">https://pagure.io/pagure/blob/master/f/doc</a>. This doc can be built with
+<a class="reference external" href="http://sphinx-doc.org/">Sphinx</a> to make it HTML and prettier.</p>
+<p>The built documentation is available at: <a class="reference external" href="https://docs.pagure.org/pagure/">https://docs.pagure.org/pagure/</a>.</p>
+<p>This is how it is built/updated:</p>
+<ul>
+<li><p>Clone pagure’s sources:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">pagure</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">pagure</span><span class="o">.</span><span class="n">git</span>
+</pre></div>
+</div>
+</li>
+<li><p>Move into its doc folder:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">pagure</span><span class="o">/</span><span class="n">doc</span>
+</pre></div>
+</div>
+</li>
+<li><p>Build the doc:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">html</span>
+</pre></div>
+</div>
+</li>
+<li><p>Clone pagure’s doc repository:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">ssh</span><span class="p">:</span><span class="o">//</span><span class="n">git</span><span class="nd">@pagure</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">docs</span><span class="o">/</span><span class="n">pagure</span><span class="o">.</span><span class="n">git</span>
+</pre></div>
+</div>
+</li>
+<li><p>Copy the result of sphinx’s build to the doc repo:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cp</span> <span class="o">-</span><span class="n">r</span> <span class="n">_build</span><span class="o">/</span><span class="n">html</span><span class="o">/*</span> <span class="n">pagure</span><span class="o">/</span>
+</pre></div>
+</div>
+</li>
+<li><p>Go into the doc repo and update it:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">pagure</span>
+<span class="n">git</span> <span class="n">add</span> <span class="o">.</span>
+<span class="n">git</span> <span class="n">commit</span> <span class="o">-</span><span class="n">am</span> <span class="s2">&quot;Update documentation&quot;</span>
+<span class="n">git</span> <span class="n">push</span>
+</pre></div>
+</div>
+</li>
+<li><p>Clean the sources:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">..</span>
+<span class="n">rm</span> <span class="o">-</span><span class="n">rf</span> <span class="n">pagure</span>  <span class="c1"># remove the doc repo</span>
+<span class="n">rm</span> <span class="o">-</span><span class="n">rf</span> <span class="n">_build</span>  <span class="c1"># remove the output from the sphinx&#39;s build</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<p>To make things simpler, the following script (name <cite>update_doc.sh</cite>) can be
+used:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>#!/bin/bash
+
+make html
+
+git clone &quot;ssh://git@pagure.io/docs/$1.git&quot;
+cp -r _build/html/* $1/
+(
+    cd $1
+    git add .
+    git commit -av
+    git push
+)
+
+rm -rfI _build
+rm -rfI $1
+</pre></div>
+</div>
+<p>It can be used by running <cite>update_doc.sh &lt;project&gt;</cite> from within the folder
+containing the doc.</p>
+<p>So for pagure it would be something like:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">pagure</span><span class="o">/</span><span class="n">doc</span>
+<span class="n">update_doc</span><span class="o">.</span><span class="n">sh</span> <span class="n">pagure</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><h1 class='pagure-logo'><span></span>Pagure</h1><div class="sphinx-toc sphinxlocaltoc">
+    <h3><a href="../index.html">Page contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Using the doc repository of your project</a><ul>
+<li><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div class="sphinxprev">
+    <h4>Previous page</h4>
+    <p class="topless"><a href="magic_words.html"
+                          title="Previous page">&larr; Magic Words</a></p>
+  </div>
+  <div class="sphinxnext">
+    <h4>Next page</h4>
+    <p class="topless"><a href="using_webhooks.html"
+                          title="Next page">&rarr; Using web-hooks</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/usage/using_doc.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="using_webhooks.html" title="Using web-hooks"
+             >next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="magic_words.html" title="Magic Words"
+             >previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">pagure  documentation</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Usage</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Using the doc repository of your project</a></li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015, Red Hat Inc, Pierre-Yves Chibon &lt;pingou@pingoured.fr&gt;.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+  </body>
+</html>

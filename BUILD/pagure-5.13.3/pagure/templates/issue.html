@@ -1,0 +1,1322 @@
+{% extends "repo_master.html" %}
+{% from "_formhelper.html"
+    import render_bootstrap_field,
+           show_comment, show_initial_comment, show_attachments %}
+
+{% block title %}Issue #{{ issueid }}: {{issue.title | noJS(ignore="img") | safe }} - {{ repo.name }}{% endblock %}
+{% set tag = "home"%}
+
+{% block header %}
+<link rel="stylesheet" nonce="{{ g.nonce }}" href="{{
+  url_for('static', filename='vendor/emojione/emojione.sprites.css') }}?version={{ g.version}}"/>
+<link rel="stylesheet" nonce="{{ g.nonce }}" href="{{
+  url_for('static', filename='vendor/selectize/selectize.bootstrap3.css') }}?version={{ g.version}}"/>
+<link rel="stylesheet" nonce="{{ g.nonce }}" href="{{
+  url_for('static', filename='vendor/jquery.atwho/jquery.atwho.css') }}?version={{ g.version}}"/>
+{% endblock %}
+
+{% block repo %}
+<div class="d-flex align-items-start">
+    <h4 class="ml-1">
+      {% if g.authenticated and (g.repo_user or open_access or g.fas_user.username == issue.user.user) %}
+        <form action="{{ url_for('ui_ns.update_issue', username=username,
+        namespace=repo.namespace, repo=repo.name, issueid=issueid)
+        }}" method="post" class="hidden" id="changestatusform">
+        {{form.csrf_token}}
+        <input type="hidden" id="statusform_status" name="status" value=""/>
+        <input type="hidden" id="statusform_close_status" name="close_status" value=""/>
+      {% endif %}
+      {% if g.authenticated and (g.repo_user or open_access) %}
+        <input type="hidden" id="statusform_tag" name="tag" value=""/>
+        <input type="hidden" id="statusform_depending" name="depending" value=""/>
+        <input type="hidden" id="statusform_blocking" name="blocking" value=""/>
+        <input type="hidden" id="statusform_assignee" name="assignee" value=""/>
+        <input type="hidden" id="statusform_milestone" name="milestone" value=""/>
+        <input type="hidden" id="statusform_priority" name="priority" value=""/>
+        {{form.private}}
+
+        {% if repo.issue_keys %}
+          {% for field in repo.issue_keys %}
+          <input type="hidden" id="statusform_{{ field.name | replace(' ', '_') }}" name="{{ field.name }}" value=""/>
+          {% endfor %}
+        {% endif %}
+      {% endif %}
+      {% if g.authenticated and (g.repo_user or open_access or g.fas_user.username == issue.user.user) %}
+        </form>
+      {% endif %}
+        <div>
+          {% if issue.private %}
+            <span title="Private ticket" class="text-danger fa fa-fw fa-lock"></span>
+          {% endif %}
+          {% if issue.status == 'Open' %}
+            <span class="fa fa-fw text-success fa-exclamation-circle pt-1"></span>
+            <span class="text-success font-weight-bold">#{{issue.id}}</span>
+          {% elif issue.status == 'Closed' %}
+            <span class="fa fa-fw text-danger fa-exclamation-circle pt-1"></span>
+            <span class="text-danger font-weight-bold">#{{issue.id}}</span>
+          {% endif %}
+          <span class="font-weight-bold">
+                {{ issue.title | noJS(ignore="img") | safe}}
+          </span>
+          {% if g.repo_committer or (
+            g.fas_user and g.fas_user.username == issue.user.username) %}
+          <a class="btn btn-outline-secondary btn-sm border-0" href="{{
+              url_for('ui_ns.edit_issue',
+                      repo=repo.name,
+                      username=username,
+                      namespace=repo.namespace,
+                      issueid=issueid)
+              }}" title="Edit this issue">
+          <i class="fa fa-pencil"></i></a>
+          {% endif %}
+        </div>
+        <div>
+          <small>
+          {% if issue.status == 'Open' %}
+            <span data-toggle="tooltip" title="{{issue.date_created | format_datetime}}">
+              <span class="text-success font-weight-bold">Opened</span> {{ issue.date_created |humanize }}
+            </span>
+            <span title="{{ issue.user.html_title }}"> by {{ issue.user.user }}.</span>
+            <span class="text-muted" data-toggle="tooltip" title="{{issue.last_updated | format_datetime}}">
+              Modified {{ issue.last_updated |humanize }}
+            </span>
+          {% elif issue.status == 'Closed' %}
+            <span data-toggle="tooltip" title="{{issue.closed_at | format_datetime}}">
+              <span class="text-danger font-weight-bold">
+                {% if issue.close_status %}
+                Closed: {{issue.close_status}}
+                {% else %}
+                Closed
+                {% endif %}
+              </span> {{ issue.closed_at |humanize }}
+            </span>
+            {% if issue.closed_by %}
+            by
+            <span title="{{ issue.closed_by.html_title }}">{{ issue.closed_by.user }}.</span>
+            {% endif %}
+            <span class="text-muted" data-toggle="tooltip" title="{{issue.date_created | format_datetime}}">
+                <span class="font-weight-bold">Opened</span> {{ issue.date_created |humanize }}
+            </span>
+            <span class="text-muted" title="{{ issue.user.html_title }}">by {{ issue.user.user }}.</span>
+          {% endif %}
+          </small>
+        </div>
+      </h4>
+    <div class="ml-auto">
+        <div class="btn-group">
+        <div class="dropdown">
+          {% if g.authenticated and (g.repo_user or open_access or g.fas_user.username == issue.user.user) %}
+          <a class="font-weight-bold btn btn-sm {{'btn-success' if issue.status=='Open' else 'btn-danger'}} dropdown-toggle pointer"
+          id="dropdownMenuButton" data-toggle='dropdown' aria-haspopup="true" aria-expanded="false">
+          {% else %}
+          <a class="font-weight-bold opacity-100 disabled btn btn-sm {{'btn-success' if issue.status=='Open' else 'btn-danger'}} pointer">
+          {% endif %}
+              {% if issue.status == 'Open' %}
+                Open
+              {% else %}
+                {% if issue.close_status %}
+                Closed: {{issue.close_status}}
+                {% else %}
+                Closed
+                {% endif %}
+              {% endif %}
+            </a>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+            {% if issue.status == 'Open' %}
+              {% if repo.close_status %}
+              <h6 class="dropdown-header">Close issue as:</h6>
+              {% for close_status in repo.close_status %}
+              <a class="dropdown-item close_status_dropdown_action pointer" data-value="{{close_status}}">{{close_status}}</a>
+              {% endfor %}
+              {% else %}
+              <a class="dropdown-item close_status_dropdown_action pointer" data-value="">Close Issue</a>
+              {% endif %}
+            {% else %}
+              <a class="dropdown-item close_status_dropdown_action pointer">Reopen Issue</a>
+            {% endif %}
+            {% if g.repo_committer %}
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item text-danger pointer" id="closeticket"
+                title="Delete this ticket">
+                <i class="fa fa-fw fa-trash"></i> Delete Issue
+            </a>
+            {% endif %}
+            </div>
+          </div>
+        </div>
+    </div>
+</div>
+
+<form action="{{ url_for('ui_ns.update_issue', username=username,
+namespace=repo.namespace, repo=repo.name, issueid=issueid)
+}}" method="post" class="mainform">
+{{ form.csrf_token }}
+  <div class="row mt-4">
+  <div class="col-md-8 mt-2">
+
+    {{ show_initial_comment(issue, username, repo,issueid, form) }}
+
+    <hr class="mb-1"/>
+
+    <section id="comments" class="pt-1">
+      {% if issue.comments %}
+        {% for comment in issue.comments %}
+        {% if comment.notification %}
+          <div class="d-flex align-items-center px-3 py-2 mb-3">
+            <div class="">
+                {{ comment.user.default_email | avatar(16) | safe }}
+            </div>
+            <span class="font-size-09 autogenerated-comment pl-4">{{ comment.comment | markdown | noJS | safe }}</span>
+            <div class="text-muted ml-auto">
+              {{ comment.date_created | humanize_tooltip | safe }}
+            </div>
+          </div>
+        {% else %}
+          {{ show_comment(comment, comment.id, repo, username, issueid, form) }}
+        {% endif %}
+        {% endfor %}
+      {% endif %}
+    </section>
+
+        {% if g.authenticated and form and not repo.settings.get('issue_tracker_read_only', False) %}
+
+        <div class="card mt-5">
+          <div class="card-header pb-0 pt-1 bg-light">
+            <div class="row">
+              <div class="col align-self-center">
+                    <span><strong>Add new comment</strong></span>
+              </div>
+              <div class="col">
+                      <ul class="nav nav-tabs float-right border-bottom-0">
+                        <li class="nav-item">
+                          <a class="nav-link pointer" id="previewinmarkdown">Preview</a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link active pointer" id="editinmarkdown" >Edit</a>
+                        </li>
+                      </ul>
+                    {% if repo.quick_replies %}
+                    {% include "quick_reply.html" %}
+                    {% endif %}
+                </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <textarea class="form-control" rows=8 id="comment" name="comment"
+              placeholder="Enter your comment here" tabindex=1></textarea>
+            <div id="preview" class="p-1">
+            </div>
+            <div class="mt-2">
+                <label class="custom-file font-size-09">
+                    <input type="file" id="file-picker" class="custom-file-input" name="file" accept="image/*" multiple tabindex=3>
+                    <label class="custom-file-label" for="file-picker">
+                      Browse to attach images or drag them into the comment field
+                    </label>
+                </label>
+                <div id="progress" class="progress hidden height-22p">
+                  <div id="progress-bar" class="progress-bar height-22p">0%</div>
+                </div>
+            </div>
+          </div>
+          <div class="card-footer bg-light">
+            <div class="d-flex align-items-center">
+              <small>Comments use <a href="https://docs.pagure.org/pagure/usage/markdown.html"
+                 target="_blank" rel="noopener noreferrer" class="notblue">Markdown Syntax</a></small>
+              <div class="ml-auto">
+                <div class="btn-group">
+                  {% if g.authenticated and (g.repo_user or open_access or g.fas_user.username == issue.user.user) %}
+                  {% if issue.status == 'Open' %}
+                    {% if repo.close_status %}
+                    <div class="btn-group">
+                    <a class="btn btn-outline-primary dropdown-toggle pointer"
+                    id="dropdownMenuButton" data-toggle='dropdown' aria-haspopup="true" aria-expanded="false" tabindex=3>
+                      Comment &amp; Close
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                      <h6 class="dropdown-header">Close issue as:</h6>
+                      {% for close_status in repo.close_status %}
+                        <a class="dropdown-item comment_and_close_action pointer" data-value="{{close_status}}">{{close_status}}</a>
+                      {% endfor %}
+                    </div>
+                    </div>
+                    {% else %}
+                      <a class="btn btn-outline-primary comment_and_close_action pointer" data-value="">
+                        Comment &amp; Close
+                      </a>
+                    {% endif %}
+                {% else %}
+                <a class="btn btn-outline-primary comment_and_close_action pointer" data-value="">
+                    Comment &amp; Reopen
+                  </a>
+                {% endif %}
+                {% endif %}
+                <input type="submit" class="btn btn-primary"
+                value="Comment" tabindex=2 />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% elif g.authenticated and form and repo.settings.get('issue_tracker_read_only', False) %}
+        <p>
+          This issue tracker is read-only.
+        </p>
+      {% else %}
+        <p>
+          <a href="{{ url_for('auth_login', next=request.url) }}">Login</a>
+          to comment on this ticket.
+        </p>
+      {% endif %}
+
+  </div>
+
+  <div class="col-md-4">
+    <div>
+      <div class="mb-4">
+        <h5 class="d-flex align-items-center font-weight-bold border-bottom">
+            <div class="py-2 text-uppercase font-size-09">Metadata</div>
+            {% if g.authenticated and (g.repo_user or g.fas_user.username == issue.user.user or open_access)
+              and not repo.settings.get('issue_tracker_read_only', False) %}
+            <div class="ml-auto">
+            <a class="btn btn-outline-primary border-0 btn-sm issue-metadata-display editmetadatatoggle pointer inline-block"><i class="fa fa-fw fa-pencil"></i></a>
+            <a class="btn btn-outline-secondary border-0 btn-sm issue-metadata-form hidden editmetadatatoggle pointer hidden"><i class="fa fa-fw fa-times"></i></a>
+            </div>
+            {% endif %}
+          </h5>
+
+          {% if g.authenticated and (g.repo_user or g.fas_user.username == issue.user.user) %}
+            <div class="hidden">
+            {{form.status}}
+            {{form.close_status}}
+            </div>
+          {% endif%}
+
+          <fieldset class="form-group issue-metadata-display mt-4">
+            <label class="mb-1 pl-1"> <i class="fa fa-fw fa-user-plus"></i> <strong>Assignee</strong></label>
+            <div id="assignee_plain">
+              <div class="ml-2" title="{{ issue.assignee.html_title if issue.assignee else '' }}">
+                {% if issue.assignee %}
+                  <div class="mt-1">{{issue.assignee.username| avatar(size=24) | safe}}
+                      <a href="{{ url_for(
+                        'ui_ns.view_issues',
+                        repo=repo.name,
+                        username=username,
+                        namespace=repo.namespace,
+                        assignee=issue.assignee.username)
+                        }}" title="{{ issue.assignee.html_title }}">
+                        {{ issue.assignee.username }}
+                      </a>
+                      {% if g.authenticated and (issue.assignee.username == g.fas_user.username) %}
+                      &mdash; <a class="pointer" id="drop-btn"
+                          title="drop the assignment of this issue">
+                        Drop
+                      </a>
+                    {% endif %}
+                  </div>
+                {% else %}
+                  <div class="text-muted">
+                    None
+                    {% if g.authenticated and (g.repo_user or g.fas_user.username == issue.user.user or open_access) and issue.status|lower == 'open'
+                      and (not issue.assignee or issue.assignee.username != g.fas_user.username)
+                      and not repo.settings.get('issue_tracker_read_only', False) %}
+                      &mdash; <a class="pointer" id="take-btn"
+                      title="assign this issue to you">
+                        Take
+                    </a>
+                    {% endif %}
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          </fieldset>
+
+          {% if g.authenticated and (g.repo_user or open_access) %}
+          <fieldset class="form-group issue-metadata-form hidden">
+            <label for="assignee"><strong>Assignee</strong></label>
+            <input class="form-control" name="assignee" id="assignee"
+              placeholder="username"
+              value="{{ issue.assignee.username or '' }}" />
+          </fieldset>
+          {% endif%}
+
+          <fieldset class="form-group issue-metadata-display mt-4">
+            <label class="mb-1"><i class="fa fa-fw fa-tag"></i> <strong>Tags</strong></label>
+            {% if issue.tags %}
+              <h4 class="ml-2" id="taglist">
+                {% for tag in issue.tags %}
+                  <a id="tag-{{ tag.tag }}" title="{{ tag.tag_description }}"
+                    data-bg-color="{{ tag.tag_color }}"
+                    class="badge badge-secondary text-left my-1 p-2 badge-tag"
+                    href="{{ url_for('ui_ns.view_issues',
+                        repo=repo.name,
+                        username=username,
+                        namespace=repo.namespace,
+                        tags=tag.tag) }}">
+                    {{ tag.tag }}
+                  </a>
+                {% endfor %}
+              </h4>
+            {% else %}
+              <div class="text-muted">None</div>
+            {% endif%}
+          </fieldset>
+
+          {% if g.authenticated and (g.repo_user or open_access) %}
+          <fieldset class="form-group issue-metadata-form hidden">
+            <label for="tag"><strong>Tags</strong></label>
+             <input id="tag" type="text" placeholder="tag1, tag2" name="tag"
+                title="comma separated list of tags"
+                value="{{ issue.tags_text | join(',') }}" />
+          </fieldset>
+          {% endif%}
+
+          {%macro blocks_item(ticket, itemtype="block") %}
+          {% if ticket.status|lower == 'open' %}
+            {% set status_color = "success" %}
+          {% elif ticket.status|lower == 'merged' %}
+            {% set status_color = "info" %}
+          {% else %}
+            {% set status_color = "danger" %}
+          {% endif %}
+          <div class="d-flex align-items-center">
+              <div class="nowrap">
+              <span class="fa fa-fw text-{{status_color}} fa-exclamation-circle pt-1"></span>
+              <span class="text-{{status_color}} font-weight-bold">#{{ticket.id}}</span>
+              </div>
+              <div class="ellipsis pl-2 font-size-09">
+                  <a id="{{itemtype}}-{{ ticket.id }}"
+                  href="{{ url_for('ui_ns.view_issue',
+                   repo=repo.name,
+                   username=username,
+                   namespace=repo.namespace,
+                   issueid=ticket.id)
+                 }}" class="notblue">{{ticket.title}}</a>
+              </div>
+          </div>
+          {% endmacro %}
+
+          <fieldset class="form-group issue-metadata-display mt-4">
+            <label class="mb-1 pl-1"> <i class="fa fa-fw fa-ban"></i> <strong>Blocking</strong></label>
+            <div class="ml-2" id="blocklist">
+            {% if issue.children %}
+              {% for ticket in issue.children %}
+              {{blocks_item(ticket, itemtype="block")}}
+              {% endfor %}
+            {% else %}
+              <div class="text-muted">None</div>
+            {% endif%}
+            </div>
+          </fieldset>
+
+          {% if g.authenticated and (g.repo_user or open_access) %}
+            <fieldset class="form-group issue-metadata-form hidden">
+              <label for="blocking"><strong>Blocking</strong></label>
+              <input class="form-control" id="blocking" type="text"
+                placeholder="issue blocking" name="blocking"
+                value="{{ issue.blocking_text | join(',') }}" />
+            </fieldset>
+          {% endif%}
+
+          <fieldset class="form-group issue-metadata-display mt-4">
+            <label class="mb-1 pl-1"> <i class="fa fa-fw fa-check-circle-o"></i> <strong>Depending on</strong></label>
+            <div class="ml-2" id="dependlist">
+            {% if issue.parents %}
+              {% for ticket in issue.parents %}
+              {{blocks_item(ticket, itemtype="depend")}}
+              {% endfor %}
+            {% else %}
+              <div class="text-muted">None</div>
+            {% endif %}
+          </div>
+          </fieldset>
+
+          {% if g.authenticated and (g.repo_user or open_access) %}
+            <fieldset class="form-group issue-metadata-form hidden">
+              <label for="depending"><strong>Depending on</strong></label>
+              <input class="form-control" id="depending" type="text"
+                placeholder="issue depending" name="depending"
+                value="{{ issue.depending_text | join(',') }}" />
+            </fieldset>
+          {% endif%}
+
+          {% if repo.priorities %}
+          <fieldset class="form-group issue-metadata-display mt-4">
+            <label class="mb-1 pl-1"> <i class="fa fa-bolt"></i> <strong>Priority</strong></label>
+            <div class="ml-2" id="priority_plain">
+            {% if issue.priority is not none  %}
+              <span >{{ repo.priorities[issue.priority | string] }}</span>
+            {% else %}
+              <div class="text-muted">None</div>
+            {% endif %}
+            </div>
+          </fieldset>
+          {% if g.authenticated and (g.repo_user or open_access) %}
+            {{ render_bootstrap_field(form.priority,
+              formclass="issue-metadata-form hidden") }}
+          {% endif%}
+
+          {% endif %}
+
+          {% if repo.milestones %}
+          <fieldset class="form-group issue-metadata-display mt-4">
+            <label class="mb-1 pl-1"> <i class="fa fa-fw fa-map-signs"></i> <strong>Milestone</strong></label>
+            <div class="ml-2" id="milestone_plain">
+              {% if issue.milestone %}
+              <span>
+                <a href="{{ url_for(
+                    'ui_ns.view_milestone',
+                    repo=repo.name,
+                    username=username,
+                    namespace=repo.namespace,
+                    milestone=issue.milestone) }}">
+                  {{ issue.milestone }}
+                </a>
+              </span>
+              {% else %}
+              <span class="text-muted">None</span>
+              {% endif %}
+            </div>
+          </fieldset>
+          {% if g.authenticated and (g.repo_user or open_access) %}
+            {{ render_bootstrap_field(form.milestone,
+                 formclass="issue-metadata-form hidden") }}
+          {% endif%}
+
+          {% endif %}
+
+          {% if g.authenticated and (g.repo_user or open_access) %}
+            {{ render_bootstrap_field(form.private,
+                 formclass="issue-metadata-form hidden") }}
+          {% endif%}
+
+          {% if repo.issue_keys %}
+          {% for field in repo.issue_keys %}
+            <fieldset class="form-group issue-metadata-display mt-4">
+              <label class="mb-0"> <i class="fa fa-fw fa-circle-o"></i> <strong>{{ field.name }}</strong></label>
+              <div class="pl-2" id="{{ field.name | replace(' ', '_') }}_plain">
+                  {% if field.name in knowns_keys %}
+                    {% if field.key_type == 'link' %}
+                      {% for link in knowns_keys[field.name].value.split(',') %}
+                        <a target="_blank" rel="noopener noreferrer" href="{{ link }}">{{ link }}</a>
+                        <br>
+                      {% endfor %}
+                    {% else %}
+                      {{ knowns_keys[field.name].value }}
+                    {% endif %}
+                  {% else %}
+                    <div class="text-muted">None</div>
+                  {% endif %}
+              </div>
+            </fieldset>
+            {% if g.authenticated and (g.repo_user or open_access) %}
+              <fieldset class="form-group issue-metadata-form hidden">
+                <label for="field"><strong> <i class="fa fa-fw fa-circle-o"></i>{{ field.name }}</strong></label>
+                {% if field.key_type == 'list' %}
+                  <select class="form-control"
+                      name="{{ field.name }}"
+                      id="{{ field.name | replace(' ', '_') }}">
+                    <option value="None">None</option>
+                    {% for item in field.data or [] %}
+                      <option value="{{item}}" {% if field.name in knowns_keys and item == knowns_keys[field.name].value %} selected {% endif %}>
+                        {{ item }}
+                      </option>
+                    {% endfor %}
+                  </select>
+                {% else %}
+                  <input
+                    {%- if field.key_type == 'boolean' %} type="checkbox" {% endif %}
+                    {%- if field.key_type == 'date'%} type="date" {% endif %}
+                    class="form-control" name="{{ field.name }}" id="{{ field.name }}"
+                    {%- if field.name in knowns_keys %}
+                      {% if field.key_type == 'boolean'%}
+                        {% if knowns_keys[field.name].value in ['true', 'on', '1'] %}checked{% endif %}
+                      {% else %} value="{{ knowns_keys[field.name].value }}"
+                      {% endif %}
+                    {%- endif -%} />
+                {% endif %}
+              </fieldset>
+            {% endif %}
+          {% endfor %}
+
+    {% endif %}
+
+          <input type="submit" class="btn btn-primary issue-metadata-form hidden" value="Update">
+      </div>
+    </div>
+
+    {% if issue.boards_issues %}
+      <div class="mt-3">
+        <h5 class="d-flex align-items-center font-weight-bold border-bottom">
+          <div class="py-2 text-uppercase font-size-09">
+            Boards
+            <span class="badge badge-secondary badge-pill font-size-09 ml-1" id="boards-count">{{ issue.boards_issues |count}}</span>
+          </div>
+        </h5>
+        <div class="list-group list-group-flush">
+        {% for board_issue in issue.boards_issues %}
+          <div class="list-group-item list-group-item-action border-0 pl-2">
+            <div class="ellipsis font-size-09">
+              <a href="{{ url_for(
+                 'ui_ns.view_board',
+                 repo=repo.name,
+                 board_name=board_issue.status.board.name,
+                 username=username,
+                 namespace=repo.namespace) }}"
+                title="{{ board_issue.status.board.name }}" class="font-weight-bold" data-toggle="tooltip">{{ board_issue.status.board.name }}</a>
+              <span class="font-weight-bold">Status:</span> {{ board_issue.status.name }}
+            </div>
+          </div>
+        {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+
+    {% if attachments %}
+      <div class="mt-3">
+        <h5 class="d-flex align-items-center font-weight-bold border-bottom">
+            <div class="py-2 text-uppercase font-size-09">
+              Attachments
+              <span class="badge badge-secondary badge-pill font-size-09 ml-1" id="attachments-count">{{attachments|count}}</span>
+            </div>
+          </h5>
+          {{ show_attachments(attachments) }}
+      </div>
+    {% endif %}
+
+    {% if g.authenticated %}
+
+      <div class="mt-3">
+        <h5 class="d-flex align-items-center font-weight-bold border-bottom">
+          <div class="py-2 text-uppercase font-size-09">
+            Subscribers
+            <span class="badge badge-secondary badge-pill font-size-09 ml-1" id="subscribers-count">{{subscribers|count}}</span>
+            <span id="subscribers-toggle" title="Show/Hide subscribers">
+              <span class="fa fa-arrow-circle-down fa-fw fa-1x"></span>
+            </span>
+          </div>
+          <div class="ml-auto">
+              <a href="#" class="btn btn-sm btn-link" id="subcribe-btn"
+              {% if g.fas_user.username in subscribers -%}
+                title="Unsubscribe from this issue">Unsubscribe
+              {%- else -%}
+                title="Subscribe to this issue">Subscribe
+              {%- endif -%}
+            </a>
+            </div>
+        </h5>
+
+        {% if subscribers %}
+        <div id="subscribers_list" class="p-2 hidden">
+        {% for subscriber in subscribers %}
+            <a href="{{ url_for('ui_ns.view_user', username=subscriber)
+            }}" title="{{ subscriber }}" id="sub-avatar-{{subscriber}}">{{
+              subscriber |avatar(size=30, css_class="pb-1", src_tag="data-src") | safe
+            }}</a>
+        {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center text-muted pt-2">No Subscribers</div>
+        {% endif %}
+
+      </div>
+    {% endif %}
+
+
+    {% if issue.related_prs %}
+      <div class="mt-3">
+        <h5 class="d-flex align-items-center font-weight-bold border-bottom">
+          <div class="py-2 text-uppercase font-size-09">
+            Related Pull Requests
+          </div>
+        </h5>
+        <div id="pr_list">
+          <ul class="list-unstyled">
+            {% for pr in issue.related_prs %}
+            <li>
+              <a class="badge badge-secondary" href="{{ url_for(
+                  'ui_ns.request_pull',
+                  repo=pr.project.name,
+                  username=pr.project.user.user if pr.project.is_fork else none,
+                  namespace=pr.project.namespace,
+                  requestid=pr.id) }}">#{{pr.id}}</a>
+              {{ pr.status if pr.status != 'Open' else 'Last updated'
+                }} {{ pr.updated_on | humanize_tooltip | safe }}
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+
+  </div>
+</form>
+
+
+{% endblock %}
+
+{% block jscripts %}
+{{ super() }}
+<script type="text/javascript" nonce="{{ g.nonce }}">
+  var UPLOAD_URL = "{{ url_for('ui_ns.upload_issue', repo=repo.name, username=username, namespace=repo.namespace, issueid=issue.id) }}";
+</script>
+
+<script nonce="{{ g.nonce }}" src="{{
+  url_for('static', filename='vendor/jquery.textcomplete/jquery.textcomplete.min.js') }}?version={{ g.version}}"></script>
+<script type="text/javascript" nonce="{{ g.nonce }}" src="{{
+  url_for('static', filename='vendor/emojione/emojione.min.js') }}?version={{ g.version}}"></script>
+<script type="text/javascript" nonce="{{ g.nonce }}" src="{{
+  url_for('static', filename='emoji/emojicomplete.js') }}?version={{ g.version}}"></script>
+<script type="text/javascript" nonce="{{ g.nonce }}" src="{{
+  url_for('static', filename='upload.js') }}?version={{ g.version}}"></script>
+
+<script type="text/javascript" nonce="{{ g.nonce }}" src="{{
+  url_for('static', filename='vendor/selectize/selectize.min.js') }}?version={{ g.version}}"></script>
+<script type="text/javascript" nonce="{{ g.nonce }}" src="{{
+  url_for('static', filename='vendor/jquery.caret/jquery.caret.min.js') }}?version={{ g.version}}"></script>
+<script type="text/javascript" nonce="{{ g.nonce }}" src="{{
+  url_for('static', filename='vendor/jquery.atwho/jquery.atwho.min.js') }}?version={{ g.version}}"></script>
+<script type="text/javascript" nonce="{{ g.nonce }}" src="{{
+  url_for('static', filename='tags.js') }}?version={{ g.version}}"></script>
+<script type="text/javascript" nonce="{{ g.nonce }}" src="{{
+  url_for('static', filename='comments.js') }}?version={{ g.version}}"></script>
+
+
+<script type="text/javascript" nonce="{{ g.nonce }}">
+
+{% if g.authenticated and form %}
+$(document).ready(function() {
+  // Set up the drag/drop zone.
+  initDropbox("{{ form.csrf_token.current_token }}", "#comment");
+
+  // Set up the handler for the file input box.
+  $("#file-picker").on("change", function() {
+    doUpload("{{ form.csrf_token.current_token }}", this.files);
+  });
+
+  $('.delete_comment_btn').click(function() {
+    return confirm('Do you really want to remove this comment?');
+  });
+
+  $('.mainform').submit(function() {
+    return try_async_comment($(this));
+  });
+
+  $('.mainform #assignee').selectize({
+    valueField: 'user',
+    labelField: 'user',
+    searchField: 'user',
+    maxItems: 1,
+    create: false,
+    load: function(query, callback) {
+      if (!query.length) return callback();
+      $.getJSON(
+        "{{ url_for('api_ns.api_users') }}", {
+          pattern: "*"+query+"*"
+        },
+        function( data ) {
+          callback( data.users.map(function(x) { return { user: x }; }) );
+        }
+      );
+    }
+  });
+
+  $.get("{{ url_for('api_ns.api_users') }}", {
+    pattern: '*'
+  }).done(function(resp) {
+    var userConfig = {
+      at: '@',
+      data: resp['mention'],
+      insertTpl: '@${username}',
+      displayTpl: "<li><img src=\"${image}\"> ${username} <small>${name}</small></li>",
+      searchKey: "username"
+    }
+    $("#comment").atwho(userConfig);
+
+  });
+   $.when($.get("{{ url_for('api_ns.api_view_issues',
+                            repo=repo.name,
+                            username=username,
+                            namespace=repo.namespace,
+                            status='all') }}"),
+          $.get("{{ url_for('api_ns.api_pull_request_views',
+                            repo=repo.name,
+                            username=username,
+                            namespace=repo.namespace,
+                            status='all') }}")
+   ).done(function(issuesResp, prResp) {
+     // 0 is the api response
+     var issuesAndPrs = issuesResp[0]['issues'].concat(prResp[0]['requests']);
+     var data = $.map(issuesAndPrs, function(ticket, idx) {
+       return {
+         name: ticket.id.toString(),
+         title: $('<div>').text(ticket.title).html()
+       }
+     });
+     var issueAndPrConfig = {
+       at: '#',
+       data: data,
+       insertTpl: '#${name}',
+       displayTpl: "<li>#${name}<small> ${title}</small></li>",
+     }
+     $("#comment").atwho(issueAndPrConfig);
+   })
+ });
+{% endif %}
+
+function setup_edit_btns() {
+  $(".edit_btn").unbind();
+  $(".edit_btn").click(function() {
+    var commentid = $( this ).attr('data-comment');
+    var _url = '{{ request.base_url }}' + '/comment/' + commentid + '/edit';
+    $.ajax({
+        url: _url + '?js=1',
+        type: 'GET',
+        dataType: 'html',
+        success: function(res) {
+            var el = $('#comment-' + commentid);
+            var sec = el.parent().find('.issue_comment');
+            $(sec).hide();
+            el.parent().find('.issue_actions').hide();
+            $(sec).after(res);
+            cancel_edit_btn();
+        },
+        error: function() {
+            alert('Could not make edit work');
+        }
+    });
+    return false;
+  });
+};
+
+function cancel_edit_btn() {
+  $("#comment_update_cancel").unbind();
+  $("#comment_update_cancel").click(
+    function() {
+      $(this).closest('#comments').find('.issue_comment').show();
+      $(this).closest('#comments').find('.issue_actions').show();
+      $(this).closest('.edit_comment').remove();
+      return false;
+    });
+};
+
+$(document).ready(function() {
+  var cur_hash = null;
+
+  highlight_comment = function() {
+    var _hash = window.location.hash;
+    if (_hash != cur_hash) {
+      $( cur_hash ).css(
+        "background", "linear-gradient(to bottom, #ededed 0%, #fff 100%)"
+      );
+    };
+    cur_hash = _hash;
+    if ( _hash ) {
+      $( _hash ).css(
+        "background", "linear-gradient(to bottom, #eded98 0%, #fff 100%)"
+      );
+    };
+    return false;
+  };
+
+  $('#subscribers-toggle').click(function(event){
+    var _el = $('#subscribers_list');
+    if (! _el.is(':visible')){
+      $('#subscribers-toggle').html('<span class="fa fa-arrow-circle-up fa-fw fa-1x">');
+    } else {
+      $('#subscribers-toggle').html('<span class="fa fa-arrow-circle-down fa-fw fa-1x">');
+    }
+    _el.toggle();
+  });
+
+  {% if g.repo_user %}
+  $('#closeticket').click(function(event){
+    event.preventDefault();
+    var closeForm = $('<form>', {
+        'method': 'POST',
+        'action': '{{
+        url_for('ui_ns.delete_issue',
+                 repo=repo.name,
+                 username=username,
+                 namespace=repo.namespace,
+                 issueid=issueid) }}',
+    }).append($('<input>', {
+        'name': 'csrf_token',
+        'value': '{{ form.csrf_token.current_token }}',
+        'type': 'hidden'
+    })).appendTo('body');
+    if (confirm('Are you sure to delete this ticket? \nThis is final and cannot be un-done.')){
+      closeForm.submit();
+    }
+    return false;
+  });
+  {% endif %}
+
+  $(window.onload=highlight_comment());
+  $(window).on('hashchange', highlight_comment);
+  cancel_edit_btn();
+  setup_edit_btns();
+
+  var url = "{{ url_for(
+      'api_ns.api_view_issue',
+      repo=repo.name,
+      username=username,
+      namespace=repo.namespace,
+      issueid=issueid) }}";
+  setup_issue_reply_btns(url);
+
+});
+</script>
+
+{% if config['EVENTSOURCE_SOURCE'] and not issue.private %}
+<script type="text/javascript" nonce="{{ g.nonce }}" src="{{
+  url_for('static', filename='issue_ev.js') }}?version={{ g.version}}"></script>
+{% endif %}
+
+
+<script type="text/javascript" nonce="{{ g.nonce }}">
+var source = null;
+var sse = true;
+
+{% if config['EVENTSOURCE_SOURCE'] and not issue.private %}
+if (!!window.EventSource) {
+  source = new EventSource('{{ config["EVENTSOURCE_SOURCE"]
+    + request.script_root + request.path }}');
+  source.addEventListener('error', function(e) {
+    sse = false;
+  }, false);
+}
+
+window.onbeforeunload = function() {
+    source.close()
+};
+
+source.addEventListener('message', function(e) {
+  console.log(e.data);
+  var data = $.parseJSON(e.data);
+  var _issues_url ='{{
+    url_for('ui_ns.view_issues',
+            repo=repo.name,
+            username=username,
+            namespace=repo.namespace)}}';
+  var _api_issues_url ='{{
+    url_for('api_ns.api_view_issue',
+            repo=repo.name,
+            username=username,
+            namespace=repo.namespace,
+            issueid='-123456789')}}';
+  var _issue_url ='{{
+    url_for('ui_ns.view_issue',
+            repo=repo.name,
+            username=username,
+            namespace=repo.namespace,
+            issueid='-123456789')}}';
+  var _roadmap_url ='{{
+    url_for('ui_ns.view_roadmap',
+            repo=repo.name,
+            username=username,
+            namespace=repo.namespace,
+            milestone='-123456789')}}';
+  process_event(data, "{{ issue.uid }}", _issue_url,
+                _issues_url, _api_issues_url, _roadmap_url,
+                "{{ g.fas_user.username if g.authenticated or '' }}");
+  setup_edit_btns();
+  setup_reply_btns();
+
+  }, false);
+
+{% else %}
+sse = false;
+{% endif %}
+
+{% if g.authenticated and form %}
+function set_ui_for_comment(setting){
+  if (setting == false) {
+    $(document.body).find('input[type="submit"]').removeAttr("disabled");
+    document.body.style.cursor = 'default';
+  } else {
+    $(document.body).find('input[type="submit"]').attr("disabled", "disabled");
+    document.body.style.cursor = 'wait';
+  }
+}
+function try_async_comment(form) {
+  console.log('Submitting form:');
+  console.log(form);
+  set_ui_for_comment(true);
+  var _data = $(form).serialize();
+  var btn = $(document.activeElement);
+  if (btn[0].name == 'drop_comment'){
+    _data += '&drop_comment=' + btn[0].value;
+    set_ui_for_comment(false);
+    return true;
+  }
+  if (!sse || source.readyState != 1) {
+    $(form).off('submit');
+    form.submit();
+    return false;
+  }
+  var _url = form.attr("action") + "?js=1";
+  $.post( _url, _data )
+    .done(function(data) {
+      if(data == 'ok') {
+        {# The event-source server will automatically refresh the UI #}
+        $('#comment').val('');
+        $('#preview').html('');
+        $('#previewinmarkdown').addClass('inactive');
+        $('#previewinmarkdown').removeClass('active');
+        $('#preview').hide();
+        $('#comment').show();
+        $('#comments').find('.comment_body').show();
+        $('#comments').find('.edit_comment').remove();
+        $( ".issue-metadata-form" ).hide();
+        $( ".issue-metadata-display" ).show();
+        set_ui_for_comment(false);
+      } else {
+        // Make the browser submit the form sync
+        $(form).off('submit');
+        form.submit();
+      }
+    })
+    .fail(function() {
+      // Make the browser submit the form sync
+      $(form).off('submit');
+      form.submit();
+    })
+  return false;
+};
+{% endif %}
+
+</script>
+
+
+<script type="text/javascript" nonce="{{ g.nonce }}">
+{% if g.authenticated and (g.repo_user or issue.user.user == g.fas_user.username or open_access) %}
+function take_issue(){
+  var _url = "{{ url_for('api_ns.api_assign_issue',
+            repo=repo.name, namespace=repo.namespace, username=username,
+            issueid=issueid) }}";
+  var _data = {assignee: "{{ g.fas_user.username }}"};
+  $.post (_url, _data ).done(
+    function(data) {
+      var _user_url = '\n<div class="ml-2"><div class="mt-1">{{g.fas_user.username| avatar(size=24) | safe}} '
+        + '<a href="{{ url_for("ui_ns.view_issues", repo=repo.name, username=username, namespace=repo.namespace) }}'
+        + '?assignee={{ g.fas_user.username }}">'
+        + '{{ g.fas_user.username }}</a>'
+        + ' &mdash; <a id="drop-btn" title="drop the assignment of this issue" '
+        + 'class="pointer">Drop</a></div></div>';
+      $('#assignee_plain').html(_user_url);
+      $('#assignee').val("{{ g.fas_user.username }}");
+      setup_btn_take_drop();
+    }
+  ).fail(function() {
+    alert( "An error occured, could not assign this ticket to you." );
+  })
+  return false;
+}
+{% endif %}
+
+{% if g.authenticated and (
+    g.repo_user
+    or issue.user.user == g.fas_user.username
+    or issue.assignee.user == g.fas_user.username) %}
+function drop_issue(){
+  var _url = "{{ url_for('api_ns.api_assign_issue',
+            repo=repo.name, namespace=repo.namespace, username=username,
+            issueid=issueid) }}";
+  var _data = {assignee: ""};
+  $.post( _url, _data ).done(
+    function(data) {
+      var _user_url = '<div class="ml-2">\n<span class="text-muted">None</span>'
+        + ' &mdash; <a id="take-btn" title="assign this issue to you" '
+        + 'class="pointer">Take</a></div>';
+      $('#assignee_plain').html(_user_url);
+      $('#assignee').val("");
+      setup_btn_take_drop();
+    }
+  ).fail(function() {
+    alert( "An error occured, could not drop the current assignee." );
+  })
+  return false;
+}
+{% endif %}
+
+function setup_btn_take_drop(){
+  {% if g.authenticated and (g.repo_user or open_access) %}
+  $("#take-btn").click(take_issue)
+  {% endif %}
+  {% if g.authenticated and (
+    g.repo_user
+    or issue.user.user == g.fas_user.username
+    or issue.assignee.user == g.fas_user.username) %}
+  $("#drop-btn").click(drop_issue);
+  {% endif %}
+}
+
+$( document ).ready(function() {
+
+  $(".close_status_dropdown_action").click(function(event){
+    var status = "{{issue.status}}";
+    if (status == "Open") {
+      $("#changestatusform #statusform_status").val("Closed");
+      $("#changestatusform #statusform_close_status").val($(this).attr("data-value"));
+    } else {
+      $("#changestatusform #statusform_status").val("Open");
+    }
+    $("#changestatusform #statusform_assignee").val($("#assignee").val());
+    $("#changestatusform #statusform_tag").val($("#tag").val());
+    $("#changestatusform #statusform_priority").val($("#priority").val());
+    $("#changestatusform #statusform_milestone").val($("#milestone").val());
+    $("#changestatusform #statusform_blocking").val($("#blocking").val());
+    $("#changestatusform #statusform_depending").val($("#depending").val());
+
+    {% if repo.issue_keys %}
+      {% for field in repo.issue_keys %}
+        $("#changestatusform #statusform_{{ field.name | replace(' ', '_') }}").val($("#{{ field.name | replace(' ', '_') }}").val());
+      {% endfor %}
+    {% endif %}
+    $("#changestatusform").submit();
+
+  });
+
+  $(".comment_and_close_action").click(function(event){
+    var status = "{{issue.status}}";
+    if (status == "Open") {
+      $(".mainform #status").val("Closed");
+      $(".mainform #close_status").val($(this).attr("data-value"));
+    } else {
+      $(".mainform #status").val("Open");
+    }
+    $(".mainform").submit();
+
+  });
+
+
+  var emojiStrategy;
+  $.getJSON(
+    '{{ url_for("static", filename="vendor/emojione/emoji_strategy.json") }}',
+    function( data ) {
+      emojiStrategy =  data;
+    }
+  );
+
+  var folder = '{{url_for("static", filename="emoji/png/") }}?version={{ g.version}}';
+  var json_url = '{{ url_for("static", filename="vendor/emojione/emoji_strategy.json") }}?version={{ g.version}}';
+  emoji_complete(json_url, folder);
+
+  $(".comment_body").each(function(ind, obj) {
+    var source = $(obj).html();
+    var preview = emojione.toImage(source);
+    $(obj).html(preview);
+  });
+
+  $( ".editmetadatatoggle" ).click(
+    function() {
+      $( ".issue-metadata-form" ).toggle();
+      $( ".issue-metadata-display" ).toggle();
+    }
+  );
+
+  function _get_issues(url, callback){
+    $.getJSON(
+        url,
+        function( data ) {
+          issues = data.issues.filter(function(el) {
+            return el.id !== {{issue.id}};
+          });
+          callback(issues);
+          if (data.pagination.next){
+            _get_issues(data.pagination.next, callback)
+          }
+        }
+      );
+  }
+
+  $('.mainform #blocking').selectize({
+    plugins: ['remove_button'],
+    valueField: 'id',
+    labelField: 'id',
+    searchField: ['id', 'title'],
+    preload: 'focus',
+    render: {
+      option: function(item, escape) {
+        return '<div><span>'+escape(item.id)+'</span> <span>'+escape(item.title)+'</span></div>';
+      },
+      item: function(item, escape) {
+        return '<div><span>#'+escape(item.id)+'</span></div>';
+      },
+    },
+    create: false,
+    load: function(query, callback) {
+      if (!query){
+        callback();
+        return;
+      };
+      var _url = "{{ url_for('api_ns.api_view_issues',
+            repo=repo.name,
+            username=username,
+            namespace=repo.namespace) }}" + "?query_id=" + query;
+      _get_issues(_url, callback);
+    }
+  });
+
+  $('.mainform #depending').selectize({
+    plugins: ['remove_button'],
+    valueField: 'id',
+    labelField: 'id',
+    searchField: ['id', 'title'],
+    preload: 'focus',
+    render: {
+      option: function(item, escape) {
+        return '<div><span>'+escape(item.id)+'</span> <span>'+escape(item.title)+'</span></div>';
+      },
+      item: function(item, escape) {
+        return '<div><span>#'+escape(item.id)+'</span></div>';
+      },
+    },
+    create: false,
+    load: function(query, callback) {
+      if (!query){
+        callback();
+        return;
+      };
+      var _url = "{{ url_for('api_ns.api_view_issues',
+            repo=repo.name,
+            username=username,
+            namespace=repo.namespace) }}" + "?query_id=" + query;
+      _get_issues(_url, callback);
+    }
+  });
+
+  var available_tags = [];
+  {%for tog in tag_list %}
+    available_tags.push("{{tog.tag}}");
+  {%endfor%}
+  var items = available_tags.map(function(x) { return { item: x }; });
+
+  $('.mainform #tag').selectize({
+    delimiter: ',',
+    options: items,
+    persist: false,
+    create: false,
+    labelField: "item",
+    valueField: "item",
+    searchField: ["item"],
+  });
+
+  $( "#preview" ).hide();
+
+$( "#previewinmarkdown" ).click(
+    function(event, ui) {
+        var _text = $( "#comment" ).val();
+        var _url = "{{ url_for('ui_ns.markdown_preview',
+                        repo=repo.name,
+                        user=repo.user.user if repo.is_fork,
+                        namespace=repo.namespace) | safe}}";
+        $.ajax({
+          url: _url ,
+          type: 'POST',
+          data: {
+            content: _text,
+            csrf_token: "{{ g.confirmationform.csrf_token.current_token }}",
+          },
+          dataType: 'html',
+          success: function(res) {
+            var preview = emojione.toImage(res);
+            $( "#preview" ).html(preview);
+            $( "#previewinmarkdown" ).addClass("active");
+            $( "#editinmarkdown" ).removeClass("active");
+            $( "#comment" ).hide();
+            $( "#preview" ).show();
+          },
+          error: function() {
+            alert('Unable to generate preview!'+error);
+          }
+        });
+        return false;
+    }
+  );
+
+  $( "#editinmarkdown" ).click(
+    function(event, ui) {
+      $( "#editinmarkdown" ).addClass("active");
+      $( "#previewinmarkdown" ).removeClass("active");
+      $( "#comment" ).show();
+      $( "#preview" ).hide();
+    }
+  );
+
+  function submitFormOnCtrlKey(event) {
+    if (event.ctrlKey && event.keyCode == 13) {
+      var form = event.target.form;
+      form.submit();
+      event.preventDefault();
+    }
+  }
+
+  $('#comment').keydown(function(e) {
+    submitFormOnCtrlKey(e);
+  });
+
+
+  {% if g.authenticated and (
+    g.repo_user
+    or open_access
+    or issue.user.user == g.fas_user.username
+    or issue.assignee.user == g.fas_user.username) %}
+  setup_btn_take_drop();
+  {% endif %}
+
+  {% if g.authenticated %}
+  function set_up_subcribed() {
+    $("#subcribe-btn").click(function(){
+      var _url = "{{ url_for(
+        'api_ns.api_subscribe_issue',
+        repo=repo.name,
+        username=username,
+        namespace=repo.namespace,
+        issueid=issueid
+        ) }}";
+      var _btn = $("#subcribe-btn");
+      var _data = {};
+      if (_btn.text() == 'Unsubscribe'){
+        _data.status = false;
+      } else {
+        _data.status = true;
+      }
+      $.post( _url, _data ).done(
+        function(data) {
+          var _btn = $("#subcribe-btn");
+          var _countlabel = $("#subscribers-count")
+          var _count = parseInt(_countlabel.text())
+          if (_btn.text() == 'Subscribe'){
+            _btn.text('Unsubscribe');
+            _countlabel.text(_count+1)
+            var _html = '<a href="/user/' + data.user + '"'
+                      + 'title="'+data.user+'" id="sub-avatar-'+data.user+'">'
+                      + '<img src="'+data.avatar_url+'" class="pb-1"></a>';
+            $('#subscribers_list').prepend(_html);
+          } else {
+            _btn.text('Subscribe');
+            _countlabel.text(_count-1);
+            $('#sub-avatar-'+data.user).remove();
+          }
+          return false;
+        }
+      )
+      return false;
+    });
+  };
+  set_up_subcribed();
+  {% endif %}
+
+});
+</script>
+
+{% if repo.quick_replies %}
+<script type="text/javascript" nonce="{{ g.nonce }}" src="{{
+  url_for('static', filename='quick_reply.js') }}?version={{ g.version}}"></script>
+{% endif %}
+<script type="text/javascript" nonce="{{ g.nonce }}" src="{{
+  url_for('static', filename='reactions.js') }}?version={{ g.version}}"></script>
+
+{% endblock %}

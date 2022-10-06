@@ -1,0 +1,323 @@
+
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Usage &#8212; pagure  documentation</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/site.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/site.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+
+    
+    
+     
+        <script src="../_static/jquery.cookie.js"></script>
+    
+
+    
+     
+        <script src="../_static/cloud.base.js"></script>
+    
+
+    
+     
+        <script src="../_static/cloud.js"></script>
+    
+
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="First Steps on pagure" href="first_steps.html" />
+    <link rel="prev" title="Overview" href="../overview.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head><body>
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="first_steps.html" title="First Steps on pagure"
+             accesskey="N">next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../overview.html" title="Overview"
+             accesskey="P">previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">pagure  documentation</a> &#187;</li>
+
+        <li class="nav-item nav-item-this"><a href="">Usage</a></li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="usage">
+<h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
+<p>Using pagure should come fairly easily, especially to people already used
+to forges such as GitHub or GitLab. There are however some tips and tricks
+which can be useful to know and that this section of the doc covers.</p>
+<p>One of the major difference with GitHub and GitLab is that for each project
+on pagure, four git repositories are made available:</p>
+<ul class="simple">
+<li><p>A git repository containing the source code, displayed in the main section
+of the pagure project.</p></li>
+<li><p>A git repository for the documentation</p></li>
+<li><p>A git repository for the issues and their metadata</p></li>
+<li><p>A git repository for the metadata for pull-requests</p></li>
+</ul>
+<p>Issues and pull-requests repositories contain the meta-data (comments,
+notifications, assignee…) from the issues and pull-request. They are are
+not public and only available to admins and committers of the project,
+since they may contain private information.</p>
+<p>You can use these repositories for offline access to your tickets or
+pull-requests (the <a class="reference external" href="https://pagure.io/pag-off">pag-off</a> project for example
+relies on a local copy of the issue git repository). They are designed to
+allow you to have full access to all the data about your project.
+One of the original idea was also to allow syncing a project between multiple
+pagure instances by syncing these git repositories between the instances.</p>
+<p>You can find the URLs to access or clone these git repositories on the
+overview page of the project. On the top right of the page, in the drop-down
+menu entitled <code class="docutils literal notranslate"><span class="pre">Clone</span></code>. Beware that if documentation, the issue tracker or
+the pull-requests are disabled on the project, the corresponding URL will
+not be shown.</p>
+<p>Contents:</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="first_steps.html">First Steps on pagure</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="first_steps.html#login-to-pagure-or-create-your-account">Login to pagure or create your account</a></li>
+<li class="toctree-l2"><a class="reference internal" href="first_steps.html#upload-your-ssh-key">Upload your SSH key</a></li>
+<li class="toctree-l2"><a class="reference internal" href="first_steps.html#configure-the-default-email-address">Configure the default email address</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="forks.html">Forks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="forks.html#create-a-fork-on-pagure">Create a Fork on Pagure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="forks.html#configure-your-local-git-repository">Configure your Local Git Repository</a></li>
+<li class="toctree-l2"><a class="reference internal" href="forks.html#pushing-changes">Pushing Changes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="read_only.html">Understanding Read Only Mode of projects</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="read_only.html#actions-that-put-the-project-in-read-only-mode">Actions that put the project in read only mode</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="http_push.html">HTTP PUSH</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="http_push.html#git-push-over-http-with-api-token">Git push over http with API token</a></li>
+<li class="toctree-l2"><a class="reference internal" href="http_push.html#git-push-over-http-with-username-password">Git push over http with Username &amp; Password</a></li>
+<li class="toctree-l2"><a class="reference internal" href="http_push.html#storing-the-password-token">Storing the password/token</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pull_requests.html">Pull Requests</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pull_requests.html#open-a-pull-request">Open a Pull Request</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pull_requests.html#updating-your-pull-request">Updating Your Pull Request</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pull_requests.html#working-with-pull-requests">Working with Pull Requests</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="markdown.html">Using Markdown in Pagure</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="markdown.html#styling">Styling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="markdown.html#quoting">Quoting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="markdown.html#code">Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="markdown.html#hyperlinks">Hyperlinks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="markdown.html#lists">Lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="markdown.html#tagging-users">Tagging users</a></li>
+<li class="toctree-l2"><a class="reference internal" href="markdown.html#tagging-issues-or-pull-requests">Tagging issues or pull requests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="markdown.html#emoji">Emoji</a></li>
+<li class="toctree-l2"><a class="reference internal" href="markdown.html#improve-this-documentation">Improve this documentation!</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="project_settings.html">Project settings</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="project_settings.html#always-merge"><cite>Always merge</cite></a></li>
+<li class="toctree-l2"><a class="reference internal" href="project_settings.html#comment-editing"><cite>Comment editing</cite></a></li>
+<li class="toctree-l2"><a class="reference internal" href="project_settings.html#enforce-signed-off-commits-in-pull-request"><cite>Enforce signed-off commits in pull-request</cite></a></li>
+<li class="toctree-l2"><a class="reference internal" href="project_settings.html#issue-tracker"><cite>Issue tracker</cite></a></li>
+<li class="toctree-l2"><a class="reference internal" href="project_settings.html#minimum-score-to-merge-pull-request"><cite>Minimum score to merge pull-request</cite></a></li>
+<li class="toctree-l2"><a class="reference internal" href="project_settings.html#only-assignee-can-merge-pull-request"><cite>Only assignee can merge pull-request</cite></a></li>
+<li class="toctree-l2"><a class="reference internal" href="project_settings.html#project-documentation"><cite>Project documentation</cite></a></li>
+<li class="toctree-l2"><a class="reference internal" href="project_settings.html#pull-requests"><cite>Pull requests</cite></a></li>
+<li class="toctree-l2"><a class="reference internal" href="project_settings.html#web-hooks"><cite>Web-hooks</cite></a></li>
+<li class="toctree-l2"><a class="reference internal" href="project_settings.html#tags"><cite>Tags</cite></a></li>
+<li class="toctree-l2"><a class="reference internal" href="project_settings.html#deploy-keys"><cite>Deploy keys</cite></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="project_acls.html">Project Level Access Control</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="project_acls.html#add-update-access">Add/Update Access</a></li>
+<li class="toctree-l2"><a class="reference internal" href="project_acls.html#points-to-be-noted">Points to be noted</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="roadmap.html">Using the roadmap feature</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="roadmap.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="flags.html">Flags</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="flags.html#add-a-flag">Add a flag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flags.html#example-of-two-flags-on-a-commit">Example of two flags on a commit:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flags.html#example-of-two-flags-on-a-pull-request">Example of two flags on a pull-request:</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="magic_words.html">Magic Words</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="magic_words.html#enabling-magic-words">Enabling magic words</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magic_words.html#using-magic-words">Using magic words</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="using_doc.html">Using the doc repository of your project</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="using_doc.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="using_webhooks.html">Using web-hooks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="using_webhooks.html#activating-web-hooks-notifications">Activating web-hooks notifications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_webhooks.html#authenticating-the-notifications">Authenticating the notifications</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ticket_templates.html">Templates for ticket input</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ticket_templates.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pr_custom_page.html">Customize the PR page</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pr_custom_page.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="theming.html">Theming Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="theming.html#setting-a-theme">Setting a theme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="theming.html#theme-contents">Theme contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="upgrade_db.html">Upgrade a database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pagure_ci.html">Pagure CI</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pagure_ci_jenkins.html">Jenkins with Pagure-ci</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pagure_ci.html#tips-and-tricks">Tips and tricks</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="quick_replies.html">Quick replies</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quick_replies.html#using-quick-replies">Using quick replies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quick_replies.html#creating-and-modifying-quick-replies">Creating and modifying quick replies</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="trouble/inaccessible_pr.html">Inaccessible pull-requests</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tips_tricks.html">Tips and tricks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tips_tricks.html#place-image-onto-your-overview-page">Place image onto your overview page</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tips_tricks.html#pre-fill-issue-using-the-url">Pre-fill issue using the URL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tips_tricks.html#pre-fill-issue-template-using-the-url">Pre-fill issue template using the URL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tips_tricks.html#filter-for-issues-not-having-a-certain-tag">Filter for issues <em>not</em> having a certain tag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tips_tricks.html#local-user-creation-without-email-verification">Local user creation without email verification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tips_tricks.html#filter-an-user-s-projects-by-their-access">Filter an user’s projects by their access</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tips_tricks.html#filter-issues-by-custom-fields">Filter issues by (custom) fields</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tips_tricks.html#search-the-comments-of-issues">Search the comments of issues</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="pagure-api">
+<h2>Pagure API<a class="headerlink" href="#pagure-api" title="Permalink to this headline">¶</a></h2>
+<p>The API documentation can be found at <a class="reference external" href="https://pagure.io/api/0/">https://pagure.io/api/0/</a>
+or in <code class="docutils literal notranslate"><span class="pre">/api/0/</span></code> of you local pagure instance.</p>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><h1 class='pagure-logo'><span></span>Pagure</h1><div class="sphinx-toc sphinxlocaltoc">
+    <h3><a href="../index.html">Page contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Usage</a><ul>
+<li><a class="reference internal" href="#pagure-api">Pagure API</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div class="sphinxprev">
+    <h4>Previous page</h4>
+    <p class="topless"><a href="../overview.html"
+                          title="Previous page">&larr; Overview</a></p>
+  </div>
+  <div class="sphinxnext">
+    <h4>Next page</h4>
+    <p class="topless"><a href="first_steps.html"
+                          title="Next page">&rarr; First Steps on pagure</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/usage/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="first_steps.html" title="First Steps on pagure"
+             >next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../overview.html" title="Overview"
+             >previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">pagure  documentation</a> &#187;</li>
+
+        <li class="nav-item nav-item-this"><a href="">Usage</a></li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015, Red Hat Inc, Pierre-Yves Chibon &lt;pingou@pingoured.fr&gt;.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+  </body>
+</html>

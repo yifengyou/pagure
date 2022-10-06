@@ -1,0 +1,138 @@
+{% extends "repo_master.html" %}
+{% from "_formhelper.html" import render_bootstrap_field %}
+
+{% block title %}Edit PR#{{ request.id }}: {{ request.title }} - {{
+    repo.namespace + '/' if repo.namespace }}{{ repo.name }}{% endblock %}
+{% set tag = "home" %}
+
+{% block header %}
+<link type="text/css" rel="stylesheet" nonce="{{ g.nonce }}" href="{{
+  url_for('static', filename='vendor/emojione/emojione.sprites.css') }}?version={{ g.version}}"/>
+<link type="text/css" rel="stylesheet" nonce="{{ g.nonce }}" href="{{
+  url_for('static', filename='vendor/selectize/selectize.bootstrap3.css') }}?version={{ g.version}}"/>
+<link type="text/css" rel="stylesheet" nonce="{{ g.nonce }}" href="{{
+  url_for('static', filename='vendor/jquery.atwho/jquery.atwho.css') }}?version={{ g.version}}"/>
+{% endblock %}
+
+{% block repo %}
+
+<div class="row">
+  <div class="col-md-8 col-md-offset-2">
+    <div class="card">
+      <div class="card-header">
+        Edit PR#{{ request.id }}: {{ request.title }} - {{ repo.name }}
+      </div>
+      <div class="card-block" class="edit_tag">
+        <form action="{{ url_for('ui_ns.request_pull_edit',
+            repo=repo.name,
+            username=username,
+            namespace=repo.namespace,
+            requestid=request.id) }}" method="post">
+
+          <table>
+            {{ render_bootstrap_field(
+                form.title,
+                field_description="the new title of your pull-request") }}
+
+            <fieldset class="form-group">
+              <label for="comment"><strong>Initial comment</strong></label>
+              <small class="text-muted pull-xs-right">
+                <span class="btn btn-sm btn-secondary inactive"
+                  aria-pressed="false" id="edit_previewinmarkdown">Preview
+                </span>
+              </small>
+
+              <div id="edit">
+                <textarea class="form-control width-100per" id="initial_comment"
+                    name="initial_comment">
+                  {{- form.initial_comment.data if form.initial_comment.data -}}
+                </textarea>
+              </div>
+              <div id="preview" class="p-1">
+              </div>
+            </fieldset>
+            {{ render_bootstrap_field(
+              form.branch_to,
+              field_description="branch in which the pull-request should be merged") }}
+            <div class="form-control">
+              <label for="allow_rebase">Allow rebasing</label>
+              <label class="c-input c-checkbox">
+              <input id="allow_rebase" name="allow_rebase" type="checkbox" value="y" {%
+                if request.allow_rebase -%}checked{%- endif -%} {% if g.fas_user.username != request.user.username %} disabled{% endif %}>
+              </label>
+              <small class="text-muted">
+                Let the maintainer of the target project to rebase the pull-request
+              </small>
+            </div>
+          </table>
+          <p class="buttons indent">
+            <input type="submit" class="btn btn-primary" value="Save">
+            {{ form.csrf_token }}
+            <a href="{{ url_for('ui_ns.request_pull',
+              repo=repo.name,
+              username=username,
+              namespace=repo.namespace,
+              requestid=request.id)}}">
+              <input type="button" class="btn btn-secondary" value="Cancel" />
+            </a>
+            {{ form.csrf_token }}
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block jscripts %}
+{{ super() }}
+<script type="text/javascript" nonce="{{ g.nonce }}" src="{{
+  url_for('static', filename='vendor/emojione/emojione.min.js') }}?version={{ g.version}}"></script>
+<script type="text/javascript" nonce="{{ g.nonce }}" src="{{
+  url_for('static', filename='emoji/emojicomplete.js') }}?version={{ g.version}}"></script>
+<script type="text/javascript" nonce="{{ g.nonce }}" src="{{
+  url_for('static', filename='vendor/jquery.caret/jquery.caret.min.js') }}?version={{ g.version}}"></script>
+<script type="text/javascript" nonce="{{ g.nonce }}" src="{{
+  url_for('static', filename='vendor/jquery.atwho/jquery.atwho.min.js') }}?version={{ g.version}}"></script>
+
+<script type="text/javascript" nonce="{{ g.nonce }}">
+  $("#preview").hide();
+  $("#edit_previewinmarkdown").click(
+    function(event, ui) {
+      if ($("#edit_previewinmarkdown").hasClass("inactive")){
+        var _text = $("#initial_comment").val();
+        var _url = "{{ url_for('ui_ns.markdown_preview',
+                      repo=repo.name,
+                      user=repo.user.user if repo.is_fork,
+                      namespace=repo.namespace) | safe}}";
+        $.ajax({
+          url: _url ,
+          type: 'POST',
+          data: {
+            content: _text,
+            csrf_token: "{{ g.confirmationform.csrf_token.current_token }}",
+          },
+          dataType: 'html',
+          success: function(res) {
+              var preview = emojione.toImage(res);
+              $("#preview").html(preview);
+              $("#edit_previewinmarkdown").toggleClass("inactive active");
+              $("#initial_comment").hide();
+              $("#preview" ).show();
+          },
+          error: function() {
+              alert('Unable to generate preview!');
+          }
+        });
+        return false;
+      } else if ($("#edit_previewinmarkdown").hasClass("active")){
+          $("#edit_previewinmarkdown").toggleClass("active inactive");
+          $("#initial_comment").show();
+          $("#preview").hide();
+      }
+    }
+  );
+</script>
+
+{% endblock %}

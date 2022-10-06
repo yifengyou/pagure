@@ -1,0 +1,25 @@
+Metadata-Version: 1.2
+Name: pagure
+Version: 5.13.3
+Summary: A light-weight git-centered forge based on pygit2.
+Home-page: https://pagure.io/pagure/
+Author: Pierre-Yves Chibon
+Author-email: pingou@pingoured.fr
+Maintainer: Pierre-Yves Chibon
+Maintainer-email: pingou@pingoured.fr
+License: GPLv2+
+Download-URL: https://pagure.io/releases/pagure/
+Description: UNKNOWN
+Platform: UNKNOWN
+Classifier: License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Programming Language :: Python :: 2
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Topic :: Internet :: WWW/HTTP :: WSGI :: Application
+Classifier: Topic :: Software Development :: Bug Tracking
+Classifier: Topic :: Software Development :: Version Control

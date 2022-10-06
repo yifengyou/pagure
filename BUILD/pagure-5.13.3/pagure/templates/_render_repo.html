@@ -1,0 +1,390 @@
+{% from "_projectstring.html" import projectstring, projecticon %}
+
+{% macro searchbox(select) %}
+<form action="{{url_for('ui_ns.search')}}" id="headerSearch">
+
+    <select name="type" class="hidden">
+      <option value="projects"{% if select=='projects' %} selected {% endif %}>{{projectstring(plural=True)}}</option>
+      <option value="projects_forks"{% if select=='projects_forks' %} selected {% endif %}>{{projectstring(plural=True)}} &amp; Forks</option>
+      <option value="user"{% if select=='users' %} selected {% endif %}>Users</option>
+      <option value="groups"{% if select=='groups' %} selected {% endif %}>Groups</option>
+    </select>
+    {% if select == 'projects' %}
+    <input type="hidden" name="direct" readonly value="1">
+    {% endif %}
+
+    <input type="text" name="term" id="term" placeholder="{%
+      if select=='projects' %}Search {{projectstring(plural=True)}}{%
+      elif select=='users' %} Search Users {%
+      elif select=='groups'%} Search Groups{%
+      endif %}" class="form-control" title="Search" />
+    <input type="submit" class="hidden" value="Search" class="btn btn-primary" />
+  </form>
+{% endmacro%}
+
+{% macro render_row(items) -%}
+    {% for repo in items %}
+      {% set url = url_for('ui_ns.view_repo',
+        username=repo.user.username if repo.is_fork else None,
+        repo=repo.name, namespace=repo.namespace) %}
+  <div class="col-lg-4 col-md-6">
+    <div class="border mb-4">
+      <div class="d-flex p-2">
+        {% if repo.avatar_email %}
+          <img src="{{ repo.avatar_email | avatar_url }}" width=60 height=60 />
+        {% else %}
+          <div><span class="fa {{projecticon()}} fa-4x text-muted"></span></div>
+        {% endif %}
+        <div class="pl-3">
+          <a href="{{ url }}">
+            <div>
+              <strong>
+                {{ repo.namespace + '/' if repo.namespace }}{{ repo.name }}
+              </strong>
+              {% if repo.private %}
+                <span title="Private {{projectstring()}}" class="text-danger fa fa-fw fa-lock"></span>
+              {% endif %}
+            </div>
+          </a>
+          <div title="{{ repo.description }}" data-toggle="tooltip">
+            <small>
+              {% if repo.description %}{{ repo.description }}{% else %}
+              <span class="text-muted">no description<span>{% endif %}
+            </small>
+          </div>
+        </div>
+      </div>
+      <div class="bg-light border-top">
+        <span class="pl-2">
+          <small>created {{repo.date_created|humanize_tooltip | safe}}</small>
+        </span>
+        <div class="pr-2 text-muted float-right text-align-right">
+          <span title="Forks" data-toggle="tooltip">
+            <i class="fa fa-code-fork"></i>
+            {{repo.forks|count}}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+    {% else %}
+<p>No {{projectstring(plural=True)}} found</p>
+    {% endfor %}
+{%- endmacro %}
+
+
+{% macro pagination_link(pagetitle, page, total) -%}
+{% set prev_page = request.url | combine_url(
+    page=page-1, pagetitle=pagetitle, **kwargs) %}
+{% set next_page = request.url | combine_url(
+    page=page+1, pagetitle=pagetitle, **kwargs) %}
+<aside>
+    <nav class="text-center">
+      <ul class="pagination">
+        <li class="page-item {% if page <= 1%} disabled {% endif %}">
+          <a href="{{ prev_page }}" class="page-link">
+            <span aria-hidden="true">&laquo;</span>
+            <span class="sr-only">Newer</span>
+          </a>
+        </li>
+        <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">page {{ page }} of {{ total }}</a></li>
+        <li class="page-item {% if page >= total %}disabled{%endif%}">
+          <a href="{{ next_page }}" class="page-link">
+            <span aria-hidden="true">&raquo;</span>
+            <span class="sr-only">Older</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+</aside>
+{%- endmacro %}
+
+
+{% macro render_repos(
+        list, total, pagetitle, page, title, count, id,
+        username=None, hide=True, sorting=None, select='projects') %}
+
+    <div class="row mb-3" id="{{ id }}">
+      <div class="col align-self-center">
+        <h3 class="m-0 font-weight-bold">{{
+            title
+            }} <span class="badge badge-secondary">{{ count }}</span>
+            {%- if username -%}
+            <a href="{{ url_for('ui_ns.new_project') }}">
+            <button type="button" class="btn btn-success float-right">
+              New {{projectstring()}}
+            </button>
+            </a>
+            {%- endif -%}
+        </h3>
+      </div>
+      <div class="col-auto form-inline">
+        {{searchbox(select)}}
+        <button type="button" class="btn btn-outline-primary dropdown-toggle ml-2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Sort
+        </button>
+        <div class="dropdown-menu dropdown-menu-right">
+          <a class="dropdown-item" href="{{
+              url_for('ui_ns.browse_projects') }}">
+            {% if not sorting or sorting == 'name'%}
+            <span class="fa fa-check"></span>
+            {%endif%}
+            Name
+          </a>
+          <a class="dropdown-item" href="{{
+              url_for('ui_ns.browse_projects', sorting='latest') }}">
+            {% if sorting == 'latest'%}
+            <span class="fa fa-check"></span>
+            {%endif%}
+            Recent First
+          </a>
+          <a class="dropdown-item" href="{{
+              url_for('ui_ns.browse_projects', sorting='oldest') }}">
+            {% if sorting == 'oldest'%}
+            <span class="fa fa-check"></span>
+            {%endif%}
+            Oldest First
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+        {{ render_row(list) }}
+    </div>
+    {% if total and total > 1 %}
+    {{ pagination_link(pagetitle, page, total, sorting=sorting) }}
+    {% endif %}
+{% endmacro %}
+
+{% macro render_user_repos(
+        list, total, pagetitle, page, title, count, id, username=None, hide=True) %}
+      <div class="card" id="{{ id }}">
+          <div class="card-header">
+              {{ title }} <span class="badge badge-secondary">{{ count }}</span>
+          </div>
+          {% if total and total > 1 %}
+          {{ pagination_link(pagetitle, page, total) }}
+          {% endif %}
+          <div class="card-block">
+
+            {% for repo in list %}
+                <a class="project_link logo_link" href="{{
+                    url_for(
+                    'ui_ns.view_repo',
+                    repo=repo.name,
+                    username=repo.user.username if repo.is_fork else None,
+                    namespace=repo.namespace)
+                }}">
+                  <div>
+                    <strong>
+                      {{ repo.namespace + '/' if repo.namespace }}{{ repo.name }}
+                    </strong>
+                  </div>
+               </a>
+            {% else %}
+            <p>No {{projectstring(plural=True)}} found</p>
+            {% endfor %}
+
+          </div>
+          {% if total and total > 1 %}
+          {{ pagination_link(pagetitle, page, total) }}
+          {% endif %}
+      </div>
+{% endmacro %}
+
+
+{% macro repos_switch(all=True, hide=True) %}
+    <aside class="show_parts">
+        <div class="container">
+        <strong>
+            {% if all %}My repos:{% else %}Repos:{% endif %}
+        </strong>
+        <label class="switch">
+            <input type="checkbox" class="switch-input"
+                name="{% if all %}my{% endif %}repos"
+                {%- if (
+                    (all and 'myrepos' in config.get('SHOW_PROJECTS_INDEX', []))
+                    or
+                    (not all and 'repos' not in config.get('SHOW_PROJECTS_INDEX', []))
+                  )
+                  or not hide %} checked {% endif %}/>
+            <span class="switch-label" data-on="On" data-off="Off"></span>
+            <span class="switch-handle"></span>
+        </label>
+        <strong>Forks:</strong>
+        <label class="switch">
+            <input type="checkbox" class="switch-input"
+                name="{% if all %}my{% endif %}forks" {%
+                if 'myforks' in config.get('SHOW_PROJECTS_INDEX', []) or not hide
+                %} checked {% endif %}/>
+            <span class="switch-label" data-on="On" data-off="Off"></span>
+            <span class="switch-handle"></span>
+        </label>
+        {% if all %}
+        <strong>All repos:</strong>
+        <label class="switch">
+            <input type="checkbox" class="switch-input"
+                name="repos" id="allrepos" {%
+                if 'repos' in config.get('SHOW_PROJECTS_INDEX', []) or not hide
+                %} checked {% endif %}/>
+            <span class="switch-label" data-on="On" data-off="Off"></span>
+            <span class="switch-handle"></span>
+        </label>
+        {% endif %}
+        </div>
+    </aside>
+{% endmacro %}
+
+{% macro render_repos_as_card(list, total, name, pagetitle, page, total_page) %}
+        {% if total_page and total_page > 1 %}
+        {{ pagination_link(pagetitle, page, total_page) }}
+        {% endif %}
+        <div class="card mb-3">
+          <div class="card-header">
+            {{name}} <span class="badge badge-secondary">{{total}}</span>
+          </div>
+          {% if list %}
+            <div class="list-group">
+            {% for repo in list %}
+              {% set url = url_for('ui_ns.view_repo',
+              repo=repo.name,
+              username=repo.user.username if repo.is_fork else None,
+              namespace=repo.namespace) %}
+              <div class="list-group-item">
+                <div class="media">
+                  {% if repo.avatar_email %}
+                    <img class="align-self-center text-center mr-3"
+                      src="{{ repo.avatar_email | avatar_url }}"
+                      width=60 height=60 />
+                  {% elif repo.is_fork %}
+                    <div class="align-self-center text-center width-60p" >
+                      <span class="fa fa-code-fork fa-4x text-muted" ></span>
+                    </div>
+                  {% else %}
+                    <div class="align-self-center text-center mr-3 width-60p">
+                      <span class="fa {{projecticon()}} fa-4x text-muted" ></span>
+                    </div>
+                  {% endif %}
+                  <div class="media-body align-self-center">
+                    <a class="font-weight-bold" href="{{ url }}">{{ repo.fullname }}</a>
+
+                    <div title="{{ repo.description }}" data-toggle="tooltip" class="repo_descripton">
+                      <small>
+                        {% if repo.description %}
+                          {{ repo.description }}
+                        {% else %}
+                          <span class="text-muted">no description<span>
+                        {% endif %}
+                      </small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+            </div>
+        {% else %}
+          <div class="card-block">
+            <p>No {{projectstring(plural=True)}} found</p>
+          </div>
+        {% endif %}
+        </div>
+        {% if total_page and total_page > 1 %}
+        {{ pagination_link(pagetitle, page, total_page) }}
+        {% endif %}
+{% endmacro %}
+
+{% macro render_activity_graph(username, _class="") %}
+<script type="text/javascript" nonce="{{ g.nonce }}" src="{{
+  url_for('static', filename='vendor/jquery/jquery.min.js') }}?version={{ g.version}}"></script>
+<script type="text/javascript" nonce="{{ g.nonce }}" src="{{
+  url_for('static', filename='vendor/d3/d3.v3.min.js') }}"></script>
+<script type="text/javascript" nonce="{{ g.nonce }}" src="{{
+  url_for('static', filename='vendor/jstimezonedetect/jstz.min.js') }}?version={{ g.version}}"></script>
+<script type="text/javascript" nonce="{{ g.nonce }}" src="{{
+  url_for('static', filename='vendor/cal-heatmap/cal-heatmap.min.js') }}?version={{ g.version}}"></script>
+<link rel="stylesheet" nonce="{{ g.nonce }}" href="{{
+  url_for('static', filename='vendor/cal-heatmap/cal-heatmap.css') }}?version={{ g.version}}" />
+
+<div class="mb-2 {{_class}}" id="user_graph">
+  <div class="p-0">
+    <div id="cal-heatmap">
+    </div>
+    <div id="user-activity" class="hidden">
+        <div class="list-group" id="user-activity-body">
+        <div class="list-group-item bg-light font-weight-bold">
+            <span id="user-activity-title"></span>
+            <span class="float-right">
+                <button class="btn btn-outline-secondary border-0 btn-sm" id="hide_activity">
+                  <span class="fa fa-times" data-toggle="tooltip"
+                    title="Hide activity info" aria-hidden="true">
+                  </span>
+                </button>
+              </span>
+        </div>
+      </div>
+      </div>
+    </div>
+    <script type="text/javascript" nonce="{{ g.nonce }}">
+      function padStr(i) {
+          return (i < 10) ? "0" + i : "" + i;
+      }
+      $('#hide_activity').click(function(){
+        $('#user-activity').hide();
+      });
+      var cal = new CalHeatMap();
+      var tz = jstz.determine().name();
+      cal.init({
+        cellSize: 9,
+        domain: "month",
+        subDomain: "day",
+        domainLabelFormat: "%b",
+        displayLegend: false,
+        legend: [0, 1, 5, 10, 15, 20],
+        legendColors: {
+          min: "#efefef",
+          max: "#204a87",
+          empty: "#efefef"
+        },
+        start: new Date(new Date().setMonth(new Date().getMonth() - 11)),
+        data: "{{ url_for(
+          'api_ns.api_view_user_activity_stats',
+          username=username, format='timestamp') }}" + '&tz=' + tz,
+        dataType: "json",
+        highlight: "now",
+        onClick: function(date, nb) {
+          date = date.getFullYear() + '-' + padStr(date.getMonth() + 1)
+            + '-' + padStr(date.getDate());
+          $.ajax({
+            type: 'GET',
+            url: "{{ url_for(
+              'api_ns.api_view_user_activity_date',
+              username=username, date='') }}" + date + '?grouped=1&tz=' + tz,
+            contentType: "application/json",
+            dataType: 'json',
+            success: function(data) {
+              $('.activity-item').remove();
+              $('#user-activity-title').text(data.activities.length+' actions on ' + date);
+              $('#user-activity').show();
+              if (data.activities.length > 0){
+                for (var i=0; i<data.activities.length; i++){
+                  var d = data.activities[i];
+                  $('#user-activity-body').append(
+                    '<div class="list-group-item activity-item">'
+                    + d.description_mk
+                    + '</div>'
+                  );
+                }
+              }
+               else {
+                  $('#user-activity-body').append(
+                  '<div class="list-group-item activity-item">No activity recorded on that day</div>'
+                );
+              }
+            }
+          });
+        }
+      });
+    </script>
+  </div>
+{% endmacro%}
+

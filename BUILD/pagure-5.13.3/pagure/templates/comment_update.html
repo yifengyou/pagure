@@ -1,0 +1,113 @@
+{% if not is_js %}
+{% extends "repo_master.html" %}
+{% endif %}
+
+{% block repo %}
+<section class="edit_comment">
+
+  <form action="{{ request.base_url }}" method="post" class="pr_comment_form">
+
+
+    <fieldset class="form-group">
+      <label for="comment"><strong>Edit comment</strong></label>
+      <small class="text-muted pull-xs-right">
+        <span class="btn btn-sm btn-secondary inactive"
+          aria-pressed="false" id="edit_previewinmarkdown">Preview
+        </span>
+      </small>
+
+      <div id="edit">
+        <textarea class="form-control width-100per" id="update_comment" name="update_comment">
+          {{- comment.comment -}}
+        </textarea>
+      </div>
+      <div id="preview" class="p-1">
+      </div>
+    </fieldset>
+
+
+  {{ form.csrf_token }}
+    <div>
+      <input type="hidden" name="edit_comment" value="{{ comment.id }}" />
+      <input type="submit" class="btn btn-primary" value="Update" />
+      <input type="button" id="comment_update_cancel" class="btn btn-secondary cancel cancel_btn" value="Cancel" />
+    </div>
+
+  </form>
+
+</section>
+<script type="text/javascript" nonce="{{ g.nonce }}">
+  $("#preview").hide();
+    $("#edit_previewinmarkdown").click(
+      function(event, ui) {
+        if ($("#edit_previewinmarkdown").hasClass("inactive")){
+          var _text = $("#update_comment").val();
+          var _url = "{{ url_for('ui_ns.markdown_preview',
+                        repo=repo.name,
+                        user=repo.user.user if repo.is_fork,
+                        namespace=repo.namespace) | safe}}";
+          $.ajax({
+            url: _url ,
+            type: 'POST',
+            data: {
+              content: _text,
+              csrf_token: "{{ g.confirmationform.csrf_token.current_token }}",
+            },
+            dataType: 'html',
+            success: function(res) {
+                var preview = emojione.toImage(res);
+                $("#preview").html(preview);
+                $("#edit_previewinmarkdown").toggleClass("inactive active");
+                $("#update_comment").hide();
+                $("#preview" ).show();
+            },
+            error: function() {
+                alert('Unable to generate preview!');
+            }
+          });
+          return false;
+        } else if ($("#edit_previewinmarkdown").hasClass("active")){
+            $("#edit_previewinmarkdown").toggleClass("active inactive");
+            $("#update_comment").show();
+            $("#preview").hide();
+        }
+    }
+  );
+
+  $.get("{{ url_for('api_ns.api_users') }}", {
+    pattern: '*'
+  }).done(function(resp) {
+    var userConfig = {
+      at: '@',
+      data: resp['mention'],
+      insertTpl: '@${username}',
+      displayTpl: "<li><img src=\"${image}\"> ${username} <small>${name}</small></li>",
+      searchKey: "username"
+    }
+    $("#update_comment").atwho(userConfig);
+  });
+  $.when(
+    {% if g.issues_enabled %}
+      $.get("{{ url_for('api_ns.api_view_issues', namespace=repo.namespace, repo=repo.name, username=username, status='all') }}"),
+    {% endif %}
+    $.get("{{ url_for('api_ns.api_pull_request_views', namespace=repo.namespace, repo=repo.name, username=username, status='all') }}")
+  ).done(function(issuesResp, prResp) {
+    // 0 is the api response
+    var issuesAndPrs = issuesResp[0]['issues'].concat(prResp[0]['requests']);
+    var data = $.map(issuesAndPrs, function(ticket, idx) {
+      return {
+        name: ticket.id.toString(),
+        title: $('<div>').text(ticket.title).html()
+      }
+    });
+    var issueAndPrConfig = {
+      at: '#',
+      data: data,
+      insertTpl: '#${name}',
+      displayTpl: "<li>#${name}<small> ${title}</small></li>",
+    }
+    $("#update_comment").atwho(issueAndPrConfig);
+  })
+</script>
+
+{% endblock %}

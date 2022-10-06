@@ -1,0 +1,224 @@
+
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Installing pagure-ci &#8212; pagure  documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/site.css" type="text/css" />
+    <link rel="stylesheet" href="_static/site.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+
+    
+    
+     
+        <script src="_static/jquery.cookie.js"></script>
+    
+
+    
+     
+        <script src="_static/cloud.base.js"></script>
+    
+
+    
+     
+        <script src="_static/cloud.js"></script>
+    
+
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installing pagure-loadjson" href="install_pagure_loadjson.html" />
+    <link rel="prev" title="Installing pagure’s web-hooks notification system" href="install_pagure_webhooks.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head><body>
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="install_pagure_loadjson.html" title="Installing pagure-loadjson"
+             accesskey="N">next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="install_pagure_webhooks.html" title="Installing pagure’s web-hooks notification system"
+             accesskey="P">previous</a> &nbsp; &nbsp;</li>
+    <li><a href="index.html">pagure  documentation</a> &#187;</li>
+
+        <li class="nav-item nav-item-this"><a href="">Installing pagure-ci</a></li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="installing-pagure-ci">
+<h1>Installing pagure-ci<a class="headerlink" href="#installing-pagure-ci" title="Permalink to this headline">¶</a></h1>
+<p>A CI stands for <a class="reference external" href="https://en.wikipedia.org/wiki/Continuous_integration">Continuous Integration</a>. Pagure can be
+configured to integrate results coming from CI services, such as <a class="reference external" href="https://en.wikipedia.org/wiki/Jenkins_(software)">Jenkins</a> on pull-request opened
+against the project.</p>
+<div class="section" id="configure-your-system">
+<h2>Configure your system<a class="headerlink" href="#configure-your-system" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Install the required dependencies</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span><span class="o">-</span><span class="n">jenkins</span>
+<span class="n">python</span><span class="o">-</span><span class="n">redis</span>
+<span class="n">python</span><span class="o">-</span><span class="n">trololio</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>We ship a systemd unit file for pagure_ci but we welcome patches
+for scripts for other init systems.</p>
+</div>
+<ul class="simple">
+<li><p>Install the files of pagure-ci as follow:</p></li>
+</ul>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 43%" />
+<col style="width: 57%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Source</p></th>
+<th class="head"><p>Destination</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pagure-ci/pagure_ci_server.py</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">/usr/libexec/pagure-ci/pagure_ci_server.py</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pagure-ci/pagure_ci.service</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">/etc/systemd/system/pagure_ci.service</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>The first file is the pagure-ci service itself, triggering the build on the
+CI service when there is a new pull-request or a change to an existing one.</p>
+<p>The second file is the systemd service file.</p>
+<ul class="simple">
+<li><p>Configure your pagure instance to support CI, add the following to your
+configuration file</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">PAGURE_CI_SERVICES</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;jenkins&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Activate the service and ensure it’s started upon boot:</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">systemctl</span> <span class="n">enable</span> <span class="n">redis</span>
+<span class="n">systemctl</span> <span class="n">start</span> <span class="n">redis</span>
+<span class="n">systemctl</span> <span class="n">enable</span> <span class="n">pagure_ci</span>
+<span class="n">systemctl</span> <span class="n">start</span> <span class="n">pagure_ci</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><h1 class='pagure-logo'><span></span>Pagure</h1><div class="sphinx-toc sphinxlocaltoc">
+    <h3><a href="index.html">Page contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Installing pagure-ci</a><ul>
+<li><a class="reference internal" href="#configure-your-system">Configure your system</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div class="sphinxprev">
+    <h4>Previous page</h4>
+    <p class="topless"><a href="install_pagure_webhooks.html"
+                          title="Previous page">&larr; Installing pagure’s web-hooks notification system</a></p>
+  </div>
+  <div class="sphinxnext">
+    <h4>Next page</h4>
+    <p class="topless"><a href="install_pagure_loadjson.html"
+                          title="Next page">&rarr; Installing pagure-loadjson</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/install_pagure_ci.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="install_pagure_loadjson.html" title="Installing pagure-loadjson"
+             >next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="install_pagure_webhooks.html" title="Installing pagure’s web-hooks notification system"
+             >previous</a> &nbsp; &nbsp;</li>
+    <li><a href="index.html">pagure  documentation</a> &#187;</li>
+
+        <li class="nav-item nav-item-this"><a href="">Installing pagure-ci</a></li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015, Red Hat Inc, Pierre-Yves Chibon &lt;pingou@pingoured.fr&gt;.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+  </body>
+</html>

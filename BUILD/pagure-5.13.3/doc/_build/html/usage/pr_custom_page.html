@@ -1,0 +1,230 @@
+
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Customize the PR page &#8212; pagure  documentation</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/site.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/site.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+
+    
+    
+     
+        <script src="../_static/jquery.cookie.js"></script>
+    
+
+    
+     
+        <script src="../_static/cloud.base.js"></script>
+    
+
+    
+     
+        <script src="../_static/cloud.js"></script>
+    
+
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Theming Guide" href="theming.html" />
+    <link rel="prev" title="Templates for ticket input" href="ticket_templates.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head><body>
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="theming.html" title="Theming Guide"
+             accesskey="N">next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="ticket_templates.html" title="Templates for ticket input"
+             accesskey="P">previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">pagure  documentation</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Usage</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Customize the PR page</a></li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="customize-the-pr-page">
+<h1>Customize the PR page<a class="headerlink" href="#customize-the-pr-page" title="Permalink to this headline">¶</a></h1>
+<p>Pagure offers the possibility to customize the page that creates pull-request
+to add your specific information, such as: please follow the XYZ coding style,
+run the tests or whatever you wish to inform contributors when they open a
+new pull-request.</p>
+<p>The customization is done via a file in the git repository containing the
+meta-data for the pull-requests. This file must be placed under a <code class="docutils literal notranslate"><span class="pre">templates</span></code>
+folder, be named <code class="docutils literal notranslate"><span class="pre">contributing.md</span></code> and can be formatted as you wish using
+markdown.</p>
+<div class="section" id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<p>For a project named <code class="docutils literal notranslate"><span class="pre">test</span></code> on <code class="docutils literal notranslate"><span class="pre">pagure.io</span></code>.</p>
+<ul class="simple">
+<li><p>First, clone the pull-request git repo <a class="footnote-reference brackets" href="#f1" id="id1">1</a> and move into it</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">ssh</span><span class="p">:</span><span class="o">//</span><span class="n">git</span><span class="nd">@pagure</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">requests</span><span class="o">/</span><span class="n">test</span><span class="o">.</span><span class="n">git</span>
+<span class="n">cd</span> <span class="n">test</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Create the templates folder</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mkdir</span> <span class="n">templates</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Create the customized PR info</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vim</span> <span class="n">templates</span><span class="o">/</span><span class="n">contributing</span><span class="o">.</span><span class="n">md</span>
+</pre></div>
+</div>
+<p>And place in this file the following content:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Contributing to test
+====================
+
+When creating a pull-request against test, there are couple of items to do
+that will speed up the review process:
+
+* Ensure the unit-tests are all passing (cf the ``runtests.py`` script at the
+  top level of the sources)
+* Check if your changes are [pep8](https://www.python.org/dev/peps/pep-0008/)
+  compliant for this you can install ``python-pep8`` and run the ``pep8`` CLI
+  tool
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Commit and push the changes to the git repo</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">add</span> <span class="n">templates</span>
+<span class="n">git</span> <span class="n">commit</span> <span class="o">-</span><span class="n">m</span> <span class="s2">&quot;Customize the PR page&quot;</span>
+<span class="n">git</span> <span class="n">push</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>And this is how it will look like</p></li>
+</ul>
+<a class="reference external image-reference" href="../_images/pagure_custom_pr.png"><img alt="../_images/pagure_custom_pr.png" src="../_images/pagure_custom_pr.png" /></a>
+<dl class="footnote brackets">
+<dt class="label" id="f1"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dd><p>All the URLs to the different git repositories can be found on the
+main page of the project, on the right-side menu, under the section
+<code class="docutils literal notranslate"><span class="pre">Source</span> <span class="pre">GIT</span> <span class="pre">URLs</span></code>, click on <code class="docutils literal notranslate"><span class="pre">more</span></code> to see them.</p>
+</dd>
+</dl>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><h1 class='pagure-logo'><span></span>Pagure</h1><div class="sphinx-toc sphinxlocaltoc">
+    <h3><a href="../index.html">Page contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Customize the PR page</a><ul>
+<li><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div class="sphinxprev">
+    <h4>Previous page</h4>
+    <p class="topless"><a href="ticket_templates.html"
+                          title="Previous page">&larr; Templates for ticket input</a></p>
+  </div>
+  <div class="sphinxnext">
+    <h4>Next page</h4>
+    <p class="topless"><a href="theming.html"
+                          title="Next page">&rarr; Theming Guide</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/usage/pr_custom_page.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="theming.html" title="Theming Guide"
+             >next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="ticket_templates.html" title="Templates for ticket input"
+             >previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">pagure  documentation</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Usage</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Customize the PR page</a></li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015, Red Hat Inc, Pierre-Yves Chibon &lt;pingou@pingoured.fr&gt;.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+  </body>
+</html>

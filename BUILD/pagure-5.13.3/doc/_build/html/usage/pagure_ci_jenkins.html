@@ -1,0 +1,267 @@
+
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jenkins with Pagure-ci &#8212; pagure  documentation</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/site.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/site.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+
+    
+    
+     
+        <script src="../_static/jquery.cookie.js"></script>
+    
+
+    
+     
+        <script src="../_static/cloud.base.js"></script>
+    
+
+    
+     
+        <script src="../_static/cloud.js"></script>
+    
+
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Quick replies" href="quick_replies.html" />
+    <link rel="prev" title="Pagure CI" href="pagure_ci.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head><body>
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="quick_replies.html" title="Quick replies"
+             accesskey="N">next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="pagure_ci.html" title="Pagure CI"
+             accesskey="P">previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">pagure  documentation</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Usage</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="pagure_ci.html" accesskey="U">Pagure CI</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Jenkins with Pagure-ci</a></li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="jenkins-with-pagure-ci">
+<h1>Jenkins with Pagure-ci<a class="headerlink" href="#jenkins-with-pagure-ci" title="Permalink to this headline">¶</a></h1>
+<p>Jenkins is a Continuous Integration service that can be configured to be
+integrated with pagure.</p>
+<p>This document describe the steps needed to make it work.</p>
+<div class="section" id="how-does-it-work">
+<h2>How does it work?<a class="headerlink" href="#how-does-it-work" title="Permalink to this headline">¶</a></h2>
+<p>The principal is:</p>
+<ul class="simple">
+<li><p>pagure will trigger a build on jenkins when a pull-request is created,
+updated or when someone explicitly asks pagure to do so or when a new commit
+is pushed (if pagure-ci is configured to trigger on commit).</p></li>
+<li><p>pagure will send a few information to jenkins when triggering a build:
+<code class="docutils literal notranslate"><span class="pre">REPO</span></code>, <code class="docutils literal notranslate"><span class="pre">BRANCH</span></code>, <code class="docutils literal notranslate"><span class="pre">BRANCH_TO</span></code>, <code class="docutils literal notranslate"><span class="pre">cause</span></code>.</p></li>
+<li><p>jenkins will do its work and, using webhook, report to pagure that it has
+finished its task</p></li>
+<li><p>pagure will query jenkins to know the outcome of the task and flag the PR
+accordingly</p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">REPO</span></code> corresponds to the url of the repository the pull-request originates
+from (so most often it will be a fork of the main repository).</p>
+<p><code class="docutils literal notranslate"><span class="pre">BRANCH</span></code> corresponds to the branch the pull-request originates from (the
+branch of the fork).</p>
+<p><code class="docutils literal notranslate"><span class="pre">BRANCH_TO</span></code> corresponds to the targeted branch in the main repository (the
+branch of the main project in which the PR is to be merged).</p>
+<p><code class="docutils literal notranslate"><span class="pre">cause</span></code> is the reason the build was triggered (ie: the pull-request id or the
+commit hash).</p>
+</div>
+<div class="section" id="how-to-enable-pagure-ci">
+<h2>How to enable Pagure CI<a class="headerlink" href="#how-to-enable-pagure-ci" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Visit the settings page of your project</p></li>
+<li><p>Scroll down to the <cite>Hooks</cite> section and click on <cite>Pagure CI</cite></p></li>
+<li><p>Select the type of CI service you want</p></li>
+<li><p>Enter the URL of the CI service. For example <cite>http://jenkins.fedoraproject.org</cite></p></li>
+<li><p>Enter the name of the job the CI service will trigger. For example <cite>pagure-ci</cite></p></li>
+<li><p>Tick the checkbox activating the hook. Either trigger on every commits, trigger only
+on pull-requests or both every commits and pull-requests.</p></li>
+</ul>
+<p>These steps will activate the hook, after reloading the page or the tab, you
+will be given access to two important values: the token used to trigger the
+build on jenkins and the URL used by jenkins to report the status of the
+build.
+Keep these two available when configuring jenkins for your project.</p>
+</div>
+<div class="section" id="configure-jenkins">
+<h2>Configure Jenkins<a class="headerlink" href="#configure-jenkins" title="Permalink to this headline">¶</a></h2>
+<p>These steps can only be made by the admins of your jenkins instance, but
+they only need to be made once.</p>
+<ul class="simple">
+<li><p>Download the following plugins:</p>
+<ul>
+<li><p><a class="reference external" href="https://wiki.jenkins-ci.org/display/JENKINS/Git+Plugin">Git Plugin</a></p></li>
+<li><p><a class="reference external" href="https://wiki.jenkins-ci.org/display/JENKINS/Notification+Plugin">Notification Plugin</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="configure-your-project-on-jenkins">
+<h2>Configure your project on Jenkins<a class="headerlink" href="#configure-your-project-on-jenkins" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Go to the <cite>Configure</cite> page of your project</p></li>
+<li><p>Under <cite>Job Notification</cite>  click <cite>Add Endpoint</cite></p></li>
+<li><p>Fields in Endpoint will be :</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">FORMAT</span><span class="p">:</span> <span class="n">JSON</span>
+<span class="n">PROTOCOL</span><span class="p">:</span> <span class="n">HTTP</span>
+<span class="n">EVENT</span><span class="p">:</span> <span class="n">All</span> <span class="n">Events</span>
+<span class="n">URL</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">The</span> <span class="n">URL</span> <span class="n">provided</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">Pagure</span> <span class="n">CI</span> <span class="n">hook</span> <span class="n">on</span> <span class="n">pagure</span><span class="o">&gt;</span>
+<span class="n">TIMEOUT</span><span class="p">:</span> <span class="mi">3000</span>
+<span class="n">LOG</span><span class="p">:</span> <span class="mi">1</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Tick the checkbox <cite>This build is parameterized</cite></p></li>
+<li><p>Add two <cite>String Parameters</cite> named REPO and BRANCH</p></li>
+<li><p>Source Code Management select Git  and give the URL of the pagure project</p></li>
+<li><p>Under Build Trigger click on Trigger build remotely and specify the token
+given by pagure.</p></li>
+<li><p>Under Build -&gt; Add build step -&gt; Execute Shell</p></li>
+<li><p>In the box given  enter the shell steps you want for testing your project.</p></li>
+</ul>
+<p>Example Script</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Script specific for Pull-Request build</span>
+<span class="k">if</span> <span class="p">[</span> <span class="o">-</span><span class="n">n</span> <span class="s2">&quot;$REPO&quot;</span> <span class="o">-</span><span class="n">a</span> <span class="o">-</span><span class="n">n</span> <span class="s2">&quot;$BRANCH&quot;</span> <span class="p">];</span> <span class="n">then</span>
+<span class="n">git</span> <span class="n">remote</span> <span class="n">rm</span> <span class="n">proposed</span> <span class="o">||</span> <span class="n">true</span>
+<span class="n">git</span> <span class="n">remote</span> <span class="n">add</span> <span class="n">proposed</span> <span class="s2">&quot;$REPO&quot;</span>
+<span class="n">git</span> <span class="n">fetch</span> <span class="n">proposed</span>
+<span class="n">git</span> <span class="n">checkout</span> <span class="n">origin</span><span class="o">/</span><span class="n">master</span>
+<span class="n">git</span> <span class="n">config</span> <span class="o">--</span><span class="k">global</span> <span class="n">user</span><span class="o">.</span><span class="n">email</span> <span class="s2">&quot;you@example.com&quot;</span>
+<span class="n">git</span> <span class="n">config</span> <span class="o">--</span><span class="k">global</span> <span class="n">user</span><span class="o">.</span><span class="n">name</span> <span class="s2">&quot;Your Name&quot;</span>
+<span class="n">git</span> <span class="n">merge</span> <span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">ff</span> <span class="s2">&quot;proposed/$BRANCH&quot;</span> <span class="o">-</span><span class="n">m</span> <span class="s2">&quot;Merge PR&quot;</span>
+<span class="n">fi</span>
+
+<span class="c1"># Part of the script specific to how you run the tests on your project</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><h1 class='pagure-logo'><span></span>Pagure</h1><div class="sphinx-toc sphinxlocaltoc">
+    <h3><a href="../index.html">Page contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Jenkins with Pagure-ci</a><ul>
+<li><a class="reference internal" href="#how-does-it-work">How does it work?</a></li>
+<li><a class="reference internal" href="#how-to-enable-pagure-ci">How to enable Pagure CI</a></li>
+<li><a class="reference internal" href="#configure-jenkins">Configure Jenkins</a></li>
+<li><a class="reference internal" href="#configure-your-project-on-jenkins">Configure your project on Jenkins</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div class="sphinxprev">
+    <h4>Previous page</h4>
+    <p class="topless"><a href="pagure_ci.html"
+                          title="Previous page">&larr; Pagure CI</a></p>
+  </div>
+  <div class="sphinxnext">
+    <h4>Next page</h4>
+    <p class="topless"><a href="quick_replies.html"
+                          title="Next page">&rarr; Quick replies</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/usage/pagure_ci_jenkins.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="quick_replies.html" title="Quick replies"
+             >next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="pagure_ci.html" title="Pagure CI"
+             >previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">pagure  documentation</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Usage</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="pagure_ci.html" >Pagure CI</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Jenkins with Pagure-ci</a></li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015, Red Hat Inc, Pierre-Yves Chibon &lt;pingou@pingoured.fr&gt;.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+  </body>
+</html>

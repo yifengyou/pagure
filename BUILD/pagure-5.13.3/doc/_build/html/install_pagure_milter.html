@@ -1,0 +1,246 @@
+
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Installing pagure’s milter &#8212; pagure  documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/site.css" type="text/css" />
+    <link rel="stylesheet" href="_static/site.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+
+    
+    
+     
+        <script src="_static/jquery.cookie.js"></script>
+    
+
+    
+     
+        <script src="_static/cloud.base.js"></script>
+    
+
+    
+     
+        <script src="_static/cloud.js"></script>
+    
+
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installing pagure’s EventSource server" href="install_pagure_ev.html" />
+    <link rel="prev" title="Installing pagure" href="install.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head><body>
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="install_pagure_ev.html" title="Installing pagure’s EventSource server"
+             accesskey="N">next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="install.html" title="Installing pagure"
+             accesskey="P">previous</a> &nbsp; &nbsp;</li>
+    <li><a href="index.html">pagure  documentation</a> &#187;</li>
+
+        <li class="nav-item nav-item-this"><a href="">Installing pagure’s milter</a></li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="installing-pagure-s-milter">
+<h1>Installing pagure’s milter<a class="headerlink" href="#installing-pagure-s-milter" title="Permalink to this headline">¶</a></h1>
+<p>A milter is a script that is ran by a Mail Transfer Agent (<a class="reference external" href="https://en.wikipedia.org/wiki/Message_transfer_agent">MTA</a>)
+upon receiving an email via either a network or an unix socket.</p>
+<p>If you want more information feel free to check out the corresponding page
+on wikipedia: <a class="reference external" href="https://en.wikipedia.org/wiki/Milter">https://en.wikipedia.org/wiki/Milter</a>.</p>
+<div class="section" id="configure-your-system">
+<h2>Configure your system<a class="headerlink" href="#configure-your-system" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Install the required dependencies</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span><span class="o">-</span><span class="n">pymilter</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>We ship a systemd unit file for pagure_milter but we welcome patches
+for scripts for other init systems.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It also requires a MTA, we used postfix.</p>
+</div>
+<ul class="simple">
+<li><p>Create an alias <code class="docutils literal notranslate"><span class="pre">reply</span></code></p></li>
+</ul>
+<p>This can be done in <code class="docutils literal notranslate"><span class="pre">/etc/aliases</span></code>, for example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">reply</span><span class="p">:</span>      <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">null</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Activate the ability of your MTA, to split users based on the character <code class="docutils literal notranslate"><span class="pre">+</span></code>.
+This way all the emails sent to <code class="docutils literal notranslate"><span class="pre">reply+...&#64;example.com</span></code> will be forwarded
+to your alias for <code class="docutils literal notranslate"><span class="pre">reply</span></code>.</p></li>
+</ul>
+<p>In postfix this is done via:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">recipient_delimiter</span> <span class="o">=</span> <span class="o">+</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Hook the milter in the MTA</p></li>
+</ul>
+<p>In postfix this is done via:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">non_smtpd_milters</span> <span class="o">=</span> <span class="n">unix</span><span class="p">:</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">run</span><span class="o">/</span><span class="n">pagure</span><span class="o">/</span><span class="n">paguresock</span>
+<span class="n">smtpd_milters</span> <span class="o">=</span> <span class="n">unix</span><span class="p">:</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">run</span><span class="o">/</span><span class="n">pagure</span><span class="o">/</span><span class="n">paguresock</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Install the files of the milter as follow:</p></li>
+</ul>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 47%" />
+<col style="width: 53%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Source</p></th>
+<th class="head"><p>Destination</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pagure-milters/comment_email_milter.py</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">/usr/share/pagure/comment_email_milter.py</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pagure-milters/milter_tempfile.conf</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">/usr/lib/tmpfiles.d/pagure-milter.conf</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pagure-milters/pagure_milter.service</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">/etc/systemd/system/pagure_milter.service</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>The first file is the script of the milter itself.</p>
+<p>The second file is a file specific for systemd and ensuring the temporary
+folders needed by the milter are re-created if needed at each boot.</p>
+<p>The third file is the systemd service file.</p>
+<ul class="simple">
+<li><p>Activate the service and ensure it’s started upon boot:</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">systemctl</span> <span class="n">enable</span> <span class="n">pagure_milter</span>
+<span class="n">systemctl</span> <span class="n">start</span> <span class="n">pagure_milter</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><h1 class='pagure-logo'><span></span>Pagure</h1><div class="sphinx-toc sphinxlocaltoc">
+    <h3><a href="index.html">Page contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Installing pagure’s milter</a><ul>
+<li><a class="reference internal" href="#configure-your-system">Configure your system</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div class="sphinxprev">
+    <h4>Previous page</h4>
+    <p class="topless"><a href="install.html"
+                          title="Previous page">&larr; Installing pagure</a></p>
+  </div>
+  <div class="sphinxnext">
+    <h4>Next page</h4>
+    <p class="topless"><a href="install_pagure_ev.html"
+                          title="Next page">&rarr; Installing pagure’s EventSource server</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/install_pagure_milter.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="install_pagure_ev.html" title="Installing pagure’s EventSource server"
+             >next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="install.html" title="Installing pagure"
+             >previous</a> &nbsp; &nbsp;</li>
+    <li><a href="index.html">pagure  documentation</a> &#187;</li>
+
+        <li class="nav-item nav-item-this"><a href="">Installing pagure’s milter</a></li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015, Red Hat Inc, Pierre-Yves Chibon &lt;pingou@pingoured.fr&gt;.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+  </body>
+</html>

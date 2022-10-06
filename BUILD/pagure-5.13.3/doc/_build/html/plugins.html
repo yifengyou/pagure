@@ -1,0 +1,199 @@
+
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Plugins &#8212; pagure  documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/site.css" type="text/css" />
+    <link rel="stylesheet" href="_static/site.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+
+    
+    
+     
+        <script src="_static/jquery.cookie.js"></script>
+    
+
+    
+     
+        <script src="_static/cloud.base.js"></script>
+    
+
+    
+     
+        <script src="_static/cloud.js"></script>
+    
+
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Customize the gitolite configuration" href="custom_gitolite_conf.html" />
+    <link rel="prev" title="Configuration" href="configuration.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head><body>
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="custom_gitolite_conf.html" title="Customize the gitolite configuration"
+             accesskey="N">next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="configuration.html" title="Configuration"
+             accesskey="P">previous</a> &nbsp; &nbsp;</li>
+    <li><a href="index.html">pagure  documentation</a> &#187;</li>
+
+        <li class="nav-item nav-item-this"><a href="">Plugins</a></li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="plugins">
+<span id="id1"></span><h1>Plugins<a class="headerlink" href="#plugins" title="Permalink to this headline">¶</a></h1>
+<p>Pagure provides a mechanism for loading 3rd party plugins in the form of Flask
+Blueprints. The plugins are loaded from a separate configuration file that is
+specified using the PAGURE_PLUGINS_CONFIG option. There are at least two
+reasons for keeping plugins initialization outside the main pagure
+configuration file:</p>
+<ol class="arabic simple">
+<li><p>avoid circular dependencies errors. For example if the pagure configuration
+imports a plugin, which in turn imports the pagure configuration, the plugin
+could try to read a configuration option that has not been imported yet and
+thus raise an error</p></li>
+<li><p>the pagure configuration is also loaded by other processes such as Celery
+workers. The Celery tasks might only be interested in reading the
+configuration settings without having to load any external plugin</p></li>
+</ol>
+<div class="section" id="loading-the-configuration">
+<h2>Loading the configuration<a class="headerlink" href="#loading-the-configuration" title="Permalink to this headline">¶</a></h2>
+<p>The configuration file can be loaded by setting the variable
+<code class="docutils literal notranslate"><span class="pre">PAGURE_PLUGINS_CONFIG</span></code> inside the pagure main configuration file, for
+example inside <code class="docutils literal notranslate"><span class="pre">/etc/pagure/pagure.cfg</span></code>. Alternatively, it is also possible
+to set the environment variable <code class="docutils literal notranslate"><span class="pre">PAGURE_PLUGINS_CONFIG</span></code> before starting the
+pagure server. If both variables are set, the environment variable takes
+precedence over the configuration file.</p>
+</div>
+<div class="section" id="the-configuration-file">
+<h2>The configuration file<a class="headerlink" href="#the-configuration-file" title="Permalink to this headline">¶</a></h2>
+<p>After Pagure has imported the configuration file defined in
+PAGURE_PLUGINS_CONFIG it will look for Flask Blueprints in a variable called
+<code class="docutils literal notranslate"><span class="pre">PLUGINS</span></code> defined in the same file, for example
+<code class="docutils literal notranslate"><span class="pre">PLUGINS</span> <span class="pre">=</span> <span class="pre">[</span> <span class="pre">plugin1.blueprint,</span> <span class="pre">plugin2.blueprint,</span> <span class="pre">...</span> <span class="pre">]</span></code>. Pagure will then
+proceed to register any Blueprint into the main Flask app, in the same order as
+they are listed in <code class="docutils literal notranslate"><span class="pre">PLUGINS</span></code>.</p>
+<p>An example configuration can be seen in <code class="docutils literal notranslate"><span class="pre">files/plugins.cfg.sample</span></code> inside
+the Pagure repository.</p>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><h1 class='pagure-logo'><span></span>Pagure</h1><div class="sphinx-toc sphinxlocaltoc">
+    <h3><a href="index.html">Page contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Plugins</a><ul>
+<li><a class="reference internal" href="#loading-the-configuration">Loading the configuration</a></li>
+<li><a class="reference internal" href="#the-configuration-file">The configuration file</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div class="sphinxprev">
+    <h4>Previous page</h4>
+    <p class="topless"><a href="configuration.html"
+                          title="Previous page">&larr; Configuration</a></p>
+  </div>
+  <div class="sphinxnext">
+    <h4>Next page</h4>
+    <p class="topless"><a href="custom_gitolite_conf.html"
+                          title="Next page">&rarr; Customize the gitolite configuration</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/plugins.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="custom_gitolite_conf.html" title="Customize the gitolite configuration"
+             >next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="configuration.html" title="Configuration"
+             >previous</a> &nbsp; &nbsp;</li>
+    <li><a href="index.html">pagure  documentation</a> &#187;</li>
+
+        <li class="nav-item nav-item-this"><a href="">Plugins</a></li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015, Red Hat Inc, Pierre-Yves Chibon &lt;pingou@pingoured.fr&gt;.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+  </body>
+</html>

@@ -1,0 +1,285 @@
+
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Overview &#8212; pagure  documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/site.css" type="text/css" />
+    <link rel="stylesheet" href="_static/site.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+
+    
+    
+     
+        <script src="_static/jquery.cookie.js"></script>
+    
+
+    
+     
+        <script src="_static/cloud.base.js"></script>
+    
+
+    
+     
+        <script src="_static/cloud.js"></script>
+    
+
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Usage" href="usage/index.html" />
+    <link rel="prev" title="Pagure" href="index.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head><body>
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="usage/index.html" title="Usage"
+             accesskey="N">next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="index.html" title="Pagure"
+             accesskey="P">previous</a> &nbsp; &nbsp;</li>
+    <li><a href="index.html">pagure  documentation</a> &#187;</li>
+
+        <li class="nav-item nav-item-this"><a href="">Overview</a></li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="overview">
+<h1><a class="toc-backref" href="#id3">Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
+<p>Pagure is split over multiple components, each having their purpose and all
+but two (the core web application and its workers) being optional.</p>
+<p>These components are:</p>
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#overview" id="id3">Overview</a></p>
+<ul>
+<li><p><a class="reference internal" href="#pagure-core-application" id="id4">Pagure core application</a></p></li>
+<li><p><a class="reference internal" href="#pagure-workers" id="id5">Pagure workers</a></p></li>
+<li><p><a class="reference internal" href="#gitolite" id="id6">Gitolite</a></p></li>
+<li><p><a class="reference internal" href="#pagure-doc-server" id="id7">Pagure doc server</a></p></li>
+<li><p><a class="reference internal" href="#pagure-milter" id="id8">Pagure milter</a></p></li>
+<li><p><a class="reference internal" href="#pagure-eventsource-server" id="id9">Pagure EventSource Server</a></p></li>
+<li><p><a class="reference internal" href="#pagure-web-hook-server" id="id10">Pagure web-hook Server</a></p></li>
+<li><p><a class="reference internal" href="#pagure-load-json-service" id="id11">Pagure load JSON service</a></p></li>
+<li><p><a class="reference internal" href="#pagure-log-com-service" id="id12">Pagure log com service</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Before going into the overall picture, one should realize that most of the
+components listed above are optional.</p>
+<p>Here is a diagram representing pagure without all the optional components:</p>
+<a class="reference external image-reference" href="_images/overview_simple.png"><img alt="_images/overview_simple.png" src="_images/overview_simple.png" /></a>
+<p>And here is a diagram of all the components together:</p>
+<a class="reference external image-reference" href="_images/overview.png"><img alt="_images/overview.png" src="_images/overview.png" /></a>
+<div class="section" id="pagure-core-application">
+<h2><a class="toc-backref" href="#id4">Pagure core application</a><a class="headerlink" href="#pagure-core-application" title="Permalink to this headline">¶</a></h2>
+<p>The core application is the flask application interacting with gitolite to
+provide a web UI to the git repositories as well as tickets and pull-requests.
+This is the main application for the forge.</p>
+</div>
+<div class="section" id="pagure-workers">
+<h2><a class="toc-backref" href="#id5">Pagure workers</a><a class="headerlink" href="#pagure-workers" title="Permalink to this headline">¶</a></h2>
+<p>Interacting with git repos can be a long process, it varies depending on the
+size of the repository itself but also based on hardware performances or
+simply the load on the system.
+To make pagure capable of handling more load, since pagure 3.0 the interactions
+with the git repositories from the web UI is performed by dedicated workers,
+allowing async processing of the different tasks.</p>
+<p>The communication between the core application and its worker is based on
+<a class="reference external" href="http://www.celeryproject.org/">celery</a> and defaults to using <a class="reference external" href="https://redis.org">redis</a> but any of the queueing system supported by <a class="reference external" href="http://www.celeryproject.org/">celery</a> could be used instead.</p>
+</div>
+<div class="section" id="gitolite">
+<h2><a class="toc-backref" href="#id6">Gitolite</a><a class="headerlink" href="#gitolite" title="Permalink to this headline">¶</a></h2>
+<p>Currently pagure uses <a class="reference external" href="http://gitolite.com/gitolite/index.html">gitolite</a>
+to grant or deny <a class="reference external" href="https://en.wikipedia.org/wiki/Secure_Shell">ssh</a> access
+to the git repositories, in other words to grant or deny read and/or write
+access to the git repositories.</p>
+<p>Pagure supports cloning over both ssh and http, but writing can only be done
+via ssh, through gitolite.</p>
+</div>
+<div class="section" id="pagure-doc-server">
+<h2><a class="toc-backref" href="#id7">Pagure doc server</a><a class="headerlink" href="#pagure-doc-server" title="Permalink to this headline">¶</a></h2>
+<p>While integrated into the main application at first, it has been split out
+for security concern, displaying information directly provided by the user
+without a clear/safe way of filtering for unsafe script or hacks is a
+security hole.
+For this reason we also strongly encourage anyone wanting to deploy their
+own instance of pagure with the doc server, to run this application on a
+completely different domain name (not just a sub-domain) in order to reduce
+the cross-site forgery risks.</p>
+<p>Pagure can be run just fine without the doc server, all you need to do is to
+<strong>not</strong> define the variable <code class="docutils literal notranslate"><span class="pre">DOC_APP_URL</span></code> in the configuration file.</p>
+</div>
+<div class="section" id="pagure-milter">
+<h2><a class="toc-backref" href="#id8">Pagure milter</a><a class="headerlink" href="#pagure-milter" title="Permalink to this headline">¶</a></h2>
+<p>The milter is a script, receiving an email as input and performing an action
+with it.</p>
+<p>In the case of pagure, the milter is used to allow replying on a comment
+of a ticket or a pull-request by directly replying to the notification sent.
+No need to go to the page anymore to reply to a comment someone made.</p>
+<p>The milter integrates with a MTA such as postfix or sendmail that you will
+have running and have access to in order to change its configuration.</p>
+</div>
+<div class="section" id="pagure-eventsource-server">
+<h2><a class="toc-backref" href="#id9">Pagure EventSource Server</a><a class="headerlink" href="#pagure-eventsource-server" title="Permalink to this headline">¶</a></h2>
+<p>Eventsource or Server Sent Events are messages sent from a server to a browser.</p>
+<p>For pagure this technology is used to allow live-refreshing of a page when
+someone is viewing it. For example, while you are reading a ticket if someone
+comments on it, the comment will automatically show up on the page without
+the need for you to reload the entire page.</p>
+<p>The flow is: the main pagure server does an action, sends a message over
+redis, the eventsource server picks it up and send it to the browsers waiting
+for it, then javascript code is executed to refresh the page based on the
+information received.</p>
+</div>
+<div class="section" id="pagure-web-hook-server">
+<h2><a class="toc-backref" href="#id10">Pagure web-hook Server</a><a class="headerlink" href="#pagure-web-hook-server" title="Permalink to this headline">¶</a></h2>
+<p>Sends notifications to third party services using POST http requests.</p>
+<p>This is the second notifications system in pagure with <a class="reference external" href="https://fedmsg.readthedocs.io/">fedmsg</a>.
+These notifications are running on their own service to prevent blocking the
+main web application in case the third part service is timing-out or just
+being slow.</p>
+<p>The flow is: the main pagure server does an action, sends a message over
+redis, the web-hook server picks it up, build the query and performs the
+POST request to the specified URLs.</p>
+</div>
+<div class="section" id="pagure-load-json-service">
+<h2><a class="toc-backref" href="#id11">Pagure load JSON service</a><a class="headerlink" href="#pagure-load-json-service" title="Permalink to this headline">¶</a></h2>
+<p>The load JSON service is an async service updating the database based on
+information pushed to the ticket or pull-request git repositories.
+This allows updating the database with information pushed to the git
+repositories without keeping the connection open with the client.</p>
+</div>
+<div class="section" id="pagure-log-com-service">
+<h2><a class="toc-backref" href="#id12">Pagure log com service</a><a class="headerlink" href="#pagure-log-com-service" title="Permalink to this headline">¶</a></h2>
+<p>The log com (for log commit) service is an async service updating the log
+table of the database on every pushed made to any repository allowing to
+build the data for the calendar heatmap graph displayed on every user’s
+page.</p>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><h1 class='pagure-logo'><span></span>Pagure</h1><div class="sphinx-toc sphinxlocaltoc">
+    <h3><a href="index.html">Page contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Overview</a><ul>
+<li><a class="reference internal" href="#pagure-core-application">Pagure core application</a></li>
+<li><a class="reference internal" href="#pagure-workers">Pagure workers</a></li>
+<li><a class="reference internal" href="#gitolite">Gitolite</a></li>
+<li><a class="reference internal" href="#pagure-doc-server">Pagure doc server</a></li>
+<li><a class="reference internal" href="#pagure-milter">Pagure milter</a></li>
+<li><a class="reference internal" href="#pagure-eventsource-server">Pagure EventSource Server</a></li>
+<li><a class="reference internal" href="#pagure-web-hook-server">Pagure web-hook Server</a></li>
+<li><a class="reference internal" href="#pagure-load-json-service">Pagure load JSON service</a></li>
+<li><a class="reference internal" href="#pagure-log-com-service">Pagure log com service</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div class="sphinxprev">
+    <h4>Previous page</h4>
+    <p class="topless"><a href="index.html"
+                          title="Previous page">&larr; Pagure</a></p>
+  </div>
+  <div class="sphinxnext">
+    <h4>Next page</h4>
+    <p class="topless"><a href="usage/index.html"
+                          title="Next page">&rarr; Usage</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/overview.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="usage/index.html" title="Usage"
+             >next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="index.html" title="Pagure"
+             >previous</a> &nbsp; &nbsp;</li>
+    <li><a href="index.html">pagure  documentation</a> &#187;</li>
+
+        <li class="nav-item nav-item-this"><a href="">Overview</a></li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015, Red Hat Inc, Pierre-Yves Chibon &lt;pingou@pingoured.fr&gt;.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+  </body>
+</html>

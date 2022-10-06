@@ -1,0 +1,177 @@
+{% extends "repo_master.html" %}
+
+{% block title %}{{ select.capitalize() }} - {{
+    g.repo.namespace + '/' if g.repo.namespace }}{{ g.repo.name }}{% endblock %}
+{% set tag = "home" %}
+
+
+{% block repo %}
+
+  <div class="row">
+    <div class="col">
+      <nav class="nav nav-tabs nav-sidetabs flex-column">
+        <a class="nav-link stats_btn" name="authors" href="#authors"
+          title="Number of commits per person having contributed to the project">
+          Authors
+        </a>
+        <a class="nav-link stats_btn" name="commits" href="#commits"
+          title="Evolution of the commits over time">
+          Commits
+        </a>
+      {% if config.get('ENABLE_TICKETS', True) %}
+        <a class="nav-link stats_btn" name="issues" href="#issues"
+          title="Evolution of the number of issues opened over a year">
+          Issues
+        </a>
+      {% endif %}
+      </nav>
+    </div>
+    <div class="col-10">
+      <section id="stats">
+        <section id="data_stats_spinner" class="hidden"></section>
+        <span id="commiter_list" class="hidden"></span>
+        <canvas nonce="{{ g.nonce }}" id="commit_trend_graph" class="hidden commit_trend"></canvas>
+        <canvas nonce="{{ g.nonce }}" id="issue_trend_graph" class="hidden issue_trend"></canvas>
+        <canvas nonce="{{ g.nonce }}" id="total_issue_trend_graph" class="hidden issue_trend"></canvas>
+      </section>
+    </div>
+  </div>
+{% endblock %}
+
+{% block jscripts %}
+{{ super() }}
+<script type="text/javascript" nonce="{{ g.nonce }}" src="{{
+  url_for('static', filename='vendor/chartjs/chartjs-2.9.3.min.js') }}?version={{ g.version}}"></script>
+<script type="text/javascript" nonce="{{ g.nonce }}" src="{{
+  url_for('static', filename='issues_stats.js') }}?version={{ g.version}}"></script>
+
+<script type="text/javascript" nonce="{{ g.nonce }}">
+
+{% if g.repo_obj and g.repo_obj.is_empty %}
+var repo_exists = false;
+{% else %}
+var repo_exists = true;
+{% endif%}
+
+var view_commits_url = "{{ url_for('ui_ns.view_commits',
+                    repo=repo.name,
+                    username=username,
+                    namespace=repo.namespace,
+                    author='---') }}";
+
+{% if g.issues_enabled %}
+nweeks = 53;
+issues_history_stats_plot_call = function() {
+  $("#commiter_list").hide();
+  $(".commit_trend").hide();
+  var _stats_url = "{{ url_for(
+    'api_ns.api_view_issues_history_detailed_stats',
+    repo=g.repo.name,
+    username=username,
+    namespace=g.repo.namespace) }}?weeks_range=" + nweeks;
+  var _s = $("#data_stats_spinner");
+  _s.html(
+    "<img id='spinnergif' src='{{ url_for('static', filename='images/spinner.gif') }}?version={{ g.version}}'>"
+  )
+  _s.show();
+  $.get(_stats_url)
+  .done(function(data){
+    issues_history_stats_plot(data);
+  });
+};
+{% endif %}
+
+commits_authors_call = function() {
+  if (repo_exists){
+    $(".commit_trend").hide();
+    $(".issue_trend").hide();
+    var _stats_url = "{{ url_for('internal_ns.get_stats_commits') }}";
+    var _b = $("#data_list");
+    var _s = $("#data_stats_spinner");
+    _s.html(
+      "<img id='spinnergif' src='{{ url_for('static', filename='images/spinner.gif') }}?version={{ g.version}}'>"
+    )
+    _s.show();
+    var data = {
+      csrf_token: "{{ g.confirmationform.csrf_token.current_token }}",
+      repo: "{{ g.repo.name }}",
+      username: "{{ username or '' }}",
+      namespace: "{{ g.repo.namespace or '' }}",
+    }
+    process_async(_stats_url, data, show_commits_authors);
+  } else {
+    var _b = $("#data_list");
+    var html = '<h2>Authors stats</h2>'
+    html += '<div class="alert alert-info">This project\'s repo is empty. No stats available.</div>';
+  _b.html(html);
+  _b.show();
+  }
+};
+
+commits_history_call = function() {
+  if (repo_exists){
+    $("#commiter_list").hide();
+    $(".issue_trend").hide();
+    var _stats_url = "{{ url_for('internal_ns.get_stats_commits_trend') }}";
+    var _b = $("#data_stats");
+    var _s = $("#data_stats_spinner");
+    _s.html(
+      "<img id='spinnergif' src='{{ url_for('static', filename='images/spinner.gif') }}'>"
+    )
+    _s.show();
+    _b.html(
+      "<h2>Commits stats</h2><p>Evolution of the number of commits over the last year</p>"
+      + "<svg width=\"100%\" height=\"250\"></svg>"
+    );
+    var data = {
+      csrf_token: "{{ g.confirmationform.csrf_token.current_token }}",
+      repo: "{{ g.repo.name }}",
+      username: "{{ username or '' }}",
+      namespace: "{{ g.repo.namespace or '' }}",
+    }
+    process_async(_stats_url, data, show_commits_history);
+  } else {
+    var _b = $("#commiter_list");
+    var html = '<h2>Commits stats</h2>'
+    html += '<div class="alert alert-info">This project\'s repo is empty. No stats available.</div>';
+    _b.html(html);
+    _b.show();
+  }
+};
+
+
+$(document).ready(function() {
+  $('.stats_btn').click(function(ev){
+    ev.preventDefault();
+    $('.stats_btn').removeClass('active');
+    if ($(this).attr('name') == 'issues') {
+      {% if g.issues_enabled %}
+      issues_history_stats_plot_call();
+      $(this).addClass('active');
+      window.location.hash = 'issues'
+      {% endif %}
+    } else if ($(this).attr('name') == 'authors') {
+      commits_authors_call();
+      $(this).addClass('active');
+      window.location.hash = 'authors'
+    } else if ($(this).attr('name') == 'commits') {
+      commits_history_call();
+      $(this).addClass('active');
+      window.location.hash = 'commits'
+    }
+  });
+  window.onhashchange = function () {
+      if (window.location.hash == 'issues') {
+        {% if g.issues_enabled %}
+        issues_history_stats_plot_call();
+        {% endif %}
+      } else if (window.location.hash == 'authors') {
+        commits_authors_call();
+      } else if (window.location.hash == 'commits') {
+        commits_history_call();
+      }
+    }
+  $('.stats_btn[name="authors"]').trigger("click");
+});
+</script>
+{% endblock %}

@@ -1,0 +1,291 @@
+
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tips and tricks &#8212; pagure  documentation</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/site.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/site.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+
+    
+    
+     
+        <script src="../_static/jquery.cookie.js"></script>
+    
+
+    
+     
+        <script src="../_static/cloud.base.js"></script>
+    
+
+    
+     
+        <script src="../_static/cloud.js"></script>
+    
+
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Installing pagure" href="../install.html" />
+    <link rel="prev" title="Inaccessible pull-requests" href="trouble/inaccessible_pr.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head><body>
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../install.html" title="Installing pagure"
+             accesskey="N">next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="trouble/inaccessible_pr.html" title="Inaccessible pull-requests"
+             accesskey="P">previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">pagure  documentation</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Usage</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Tips and tricks</a></li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="tips-and-tricks">
+<h1>Tips and tricks<a class="headerlink" href="#tips-and-tricks" title="Permalink to this headline">¶</a></h1>
+<p>This page contains some tips and tricks on how to use pagure. These do not
+fit in their own page but are worth mentioning.</p>
+<div class="section" id="place-image-onto-your-overview-page">
+<h2>Place image onto your overview page<a class="headerlink" href="#place-image-onto-your-overview-page" title="Permalink to this headline">¶</a></h2>
+<p>You can only use images that come from the Pagure host itself.</p>
+<div class="section" id="example">
+<h3>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>![See Copr workflow](/copr/copr/raw/master/f/doc/img/copr-workflow.png)
+</pre></div>
+</div>
+<p>Text in the square brackets will be used as an alt description.</p>
+</div>
+</div>
+<div class="section" id="pre-fill-issue-using-the-url">
+<h2>Pre-fill issue using the URL<a class="headerlink" href="#pre-fill-issue-using-the-url" title="Permalink to this headline">¶</a></h2>
+<p>When creating issues for a project pagure supports pre-filling the title
+and description input text using URL parameters.</p>
+<div class="section" id="id1">
+<h3>Example:<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference external" href="https://pagure.io/pagure/new_issue/">https://pagure.io/pagure/new_issue/</a>?title=&lt;Issue&gt;&amp;content=&lt;Issue Content&gt;</p>
+<p>The above URL will autofill the text boxes for Title and Description field
+with Title set to &lt;Issue&gt; and Description set to &lt;Issue Content&gt;.</p>
+</div>
+</div>
+<div class="section" id="pre-fill-issue-template-using-the-url">
+<h2>Pre-fill issue template using the URL<a class="headerlink" href="#pre-fill-issue-template-using-the-url" title="Permalink to this headline">¶</a></h2>
+<p>When creating issues for a project pagure supports pre-filling the title
+and description input text using URL parameters.</p>
+<div class="section" id="id2">
+<h3>Example:<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference external" href="https://pagure.io/pagure/new_issue/">https://pagure.io/pagure/new_issue/</a>?template=&lt;TemplateName&gt;</p>
+<p>The above URL will autofill the ticket with the specified template. The
+TemplateName should be the name of the template file on disk (in the
+<code class="docutils literal notranslate"><span class="pre">templates</span></code> directory of the ticket git repository).</p>
+</div>
+</div>
+<div class="section" id="filter-for-issues-not-having-a-certain-tag">
+<h2>Filter for issues <em>not</em> having a certain tag<a class="headerlink" href="#filter-for-issues-not-having-a-certain-tag" title="Permalink to this headline">¶</a></h2>
+<p>Very much in the same way pagure allows you to filter for issues having a
+certain tag, pagure allows one to filter for issues <em>not</em> having a certain tag.
+To do this, simply prepend a <code class="docutils literal notranslate"><span class="pre">!</span></code> in front of the tag.</p>
+<div class="section" id="id3">
+<h3>Example:<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference external" href="https://pagure.io/pagure/issues?tags=!easyfix">https://pagure.io/pagure/issues?tags=!easyfix</a></p>
+</div>
+</div>
+<div class="section" id="local-user-creation-without-email-verification">
+<h2>Local user creation without email verification<a class="headerlink" href="#local-user-creation-without-email-verification" title="Permalink to this headline">¶</a></h2>
+<p>If you set <code class="docutils literal notranslate"><span class="pre">EMAIL_SEND</span></code> to <code class="docutils literal notranslate"><span class="pre">`False`</span></code> from the configuration file, you
+will get the emails printed to the console instead of being sent. The admin
+of the instance can then access the URL to manually validate the account from
+there. This is generally used for development where we don’t need to send
+any emails.</p>
+</div>
+<div class="section" id="filter-an-user-s-projects-by-their-access">
+<h2>Filter an user’s projects by their access<a class="headerlink" href="#filter-an-user-s-projects-by-their-access" title="Permalink to this headline">¶</a></h2>
+<p>When watching a user’s page, the list of all the project that user is
+involved in is presented regardless of whether the user has ticket, commit,
+admin access or is the main admin of the project.</p>
+<p>You can specify an <code class="docutils literal notranslate"><span class="pre">acl=</span></code> argument to the URL to filter the list of
+projects by access.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This also works for your home page when you are logged in.</p>
+</div>
+<div class="section" id="examples">
+<h3>Examples:<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference external" href="https://pagure.io/user/pingou?acl=main">https://pagure.io/user/pingou?acl=main</a> admin
+<a class="reference external" href="https://pagure.io/user/pingou?acl=admin">https://pagure.io/user/pingou?acl=admin</a>
+<a class="reference external" href="https://pagure.io/user/pingou?acl=commit">https://pagure.io/user/pingou?acl=commit</a></p>
+</div>
+</div>
+<div class="section" id="filter-issues-by-custom-fields">
+<h2>Filter issues by (custom) fields<a class="headerlink" href="#filter-issues-by-custom-fields" title="Permalink to this headline">¶</a></h2>
+<p>Via the project’s settings page, admins can set custom keys to be used in
+issues. You can search them using the URL via the arguments <code class="docutils literal notranslate"><span class="pre">ckeys</span></code> and
+<code class="docutils literal notranslate"><span class="pre">cvalue</span></code> or simpler, using the search field at the top of the issue page.</p>
+<p>This also works for the following regular fields: <code class="docutils literal notranslate"><span class="pre">tags</span></code>, <code class="docutils literal notranslate"><span class="pre">milestones</span></code>,
+<code class="docutils literal notranslate"><span class="pre">author</span></code>, <code class="docutils literal notranslate"><span class="pre">assignee</span></code>, <code class="docutils literal notranslate"><span class="pre">status</span></code>, <code class="docutils literal notranslate"><span class="pre">priority</span></code> (but tags and milestones
+despite their name only support a single value).</p>
+<div class="section" id="id4">
+<h3>Examples:<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference external" href="https://pagure.io/SSSD/sssd/issues?status=Open&amp;search_pattern=review%3ATrue">https://pagure.io/SSSD/sssd/issues?status=Open&amp;search_pattern=review%3ATrue</a>
+<a class="reference external" href="https://pagure.io/pagure/issues?status=Open&amp;search_pattern=tags%3Aeasyfix">https://pagure.io/pagure/issues?status=Open&amp;search_pattern=tags%3Aeasyfix</a></p>
+</div>
+</div>
+<div class="section" id="search-the-comments-of-issues">
+<h2>Search the comments of issues<a class="headerlink" href="#search-the-comments-of-issues" title="Permalink to this headline">¶</a></h2>
+<p>One can search all the comments made on an issue tracker using
+<code class="docutils literal notranslate"><span class="pre">content:&lt;keyword&gt;</span></code> in the search field. This is going to search all the
+comments (including the descriptions) of all the tickets and thus can be quite
+slow on large project. This is why this feature isn’t being pushed much forward.</p>
+<div class="section" id="id5">
+<h3>Examples:<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference external" href="https://pagure.io/pagure/issues?status=Open&amp;search_pattern=content%3Aeasyfix">https://pagure.io/pagure/issues?status=Open&amp;search_pattern=content%3Aeasyfix</a></p>
+</div>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><h1 class='pagure-logo'><span></span>Pagure</h1><div class="sphinx-toc sphinxlocaltoc">
+    <h3><a href="../index.html">Page contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Tips and tricks</a><ul>
+<li><a class="reference internal" href="#place-image-onto-your-overview-page">Place image onto your overview page</a><ul>
+<li><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#pre-fill-issue-using-the-url">Pre-fill issue using the URL</a><ul>
+<li><a class="reference internal" href="#id1">Example:</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#pre-fill-issue-template-using-the-url">Pre-fill issue template using the URL</a><ul>
+<li><a class="reference internal" href="#id2">Example:</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#filter-for-issues-not-having-a-certain-tag">Filter for issues <em>not</em> having a certain tag</a><ul>
+<li><a class="reference internal" href="#id3">Example:</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#local-user-creation-without-email-verification">Local user creation without email verification</a></li>
+<li><a class="reference internal" href="#filter-an-user-s-projects-by-their-access">Filter an user’s projects by their access</a><ul>
+<li><a class="reference internal" href="#examples">Examples:</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#filter-issues-by-custom-fields">Filter issues by (custom) fields</a><ul>
+<li><a class="reference internal" href="#id4">Examples:</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#search-the-comments-of-issues">Search the comments of issues</a><ul>
+<li><a class="reference internal" href="#id5">Examples:</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div class="sphinxprev">
+    <h4>Previous page</h4>
+    <p class="topless"><a href="trouble/inaccessible_pr.html"
+                          title="Previous page">&larr; Inaccessible pull-requests</a></p>
+  </div>
+  <div class="sphinxnext">
+    <h4>Next page</h4>
+    <p class="topless"><a href="../install.html"
+                          title="Next page">&rarr; Installing pagure</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/usage/tips_tricks.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../install.html" title="Installing pagure"
+             >next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="trouble/inaccessible_pr.html" title="Inaccessible pull-requests"
+             >previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">pagure  documentation</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Usage</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Tips and tricks</a></li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015, Red Hat Inc, Pierre-Yves Chibon &lt;pingou@pingoured.fr&gt;.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+  </body>
+</html>

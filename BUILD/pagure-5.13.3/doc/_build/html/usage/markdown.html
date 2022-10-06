@@ -1,0 +1,436 @@
+
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Using Markdown in Pagure &#8212; pagure  documentation</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/site.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/site.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+
+    
+    
+     
+        <script src="../_static/jquery.cookie.js"></script>
+    
+
+    
+     
+        <script src="../_static/cloud.base.js"></script>
+    
+
+    
+     
+        <script src="../_static/cloud.js"></script>
+    
+
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Project settings" href="project_settings.html" />
+    <link rel="prev" title="Pull Requests" href="pull_requests.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head><body>
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="project_settings.html" title="Project settings"
+             accesskey="N">next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="pull_requests.html" title="Pull Requests"
+             accesskey="P">previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">pagure  documentation</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Usage</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Using Markdown in Pagure</a></li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="using-markdown-in-pagure">
+<h1>Using Markdown in Pagure<a class="headerlink" href="#using-markdown-in-pagure" title="Permalink to this headline">¶</a></h1>
+<p>Pagure uses <a class="reference external" href="https://daringfireball.net/projects/markdown/syntax">Markdown syntax highlighting</a> as the base for
+formatting comments in issues, pull requests, and in Markdown files in
+repositories. For basic formatting, Pagure follows common Markdown
+formatting, but it also has some unique syntax for more advanced
+formatting. This help page helps demonstrate how to use Markdown in Pagure.</p>
+<p>Pagure relies on the <a class="reference external" href="https://python-markdown.github.io/">Markdown</a> python
+module to do the conversion.
+It has enabled a few extensions:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://python-markdown.github.io/extensions/definition_lists/">Definition Lists</a></p></li>
+<li><p><a class="reference external" href="https://python-markdown.github.io/extensions/fenced_code_blocks/">Fenced Code Blocks</a></p></li>
+<li><p><a class="reference external" href="https://python-markdown.github.io/extensions/tables/">Tables</a></p></li>
+<li><p><a class="reference external" href="https://python-markdown.github.io/extensions/smart_strong/">Smart Strong</a></p></li>
+<li><p><a class="reference external" href="https://python-markdown.github.io/extensions/admonition/">Admonition</a></p></li>
+<li><p><a class="reference external" href="https://python-markdown.github.io/extensions/code_hilite/">CodeHilite</a></p></li>
+<li><p><a class="reference external" href="https://python-markdown.github.io/extensions/sane_lists/">Sane lists</a></p></li>
+</ul>
+<p>README files can also rely on:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://python-markdown.github.io/extensions/abbreviations/">Abbreviations</a></p></li>
+<li><p><a class="reference external" href="https://python-markdown.github.io/extensions/footnotes/">Footnotes</a></p></li>
+<li><p><a class="reference external" href="https://python-markdown.github.io/extensions/toc/">Table of Contents</a></p></li>
+</ul>
+<p>While comments use:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://python-markdown.github.io/extensions/nl2br/">New Line to Break</a></p></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Pagure does not support linking to remote images, if you want
+to link to an image on a ticket, you will have to upload it to pagure.</p>
+</div>
+<div class="section" id="styling">
+<h2>Styling<a class="headerlink" href="#styling" title="Permalink to this headline">¶</a></h2>
+<p>You can mark up text with bold, italics, or strikethrough.</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><strong>Style</strong>: Bold</dt><dd><ul>
+<li><p>Syntax: <cite>** **</cite> or <cite>__ __</cite></p></li>
+<li><p>Example: <cite>**This is bold text**</cite></p></li>
+<li><p>Output: <strong>This is bold text</strong></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>Style</strong>: Italics</dt><dd><ul>
+<li><p>Syntax: <cite>* *</cite> or <cite>_ _</cite></p></li>
+<li><p>Example: <cite>_This is italicized text_</cite></p></li>
+<li><p>Output: <em>This is italicized text</em></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>Style</strong>: Strikethrough</dt><dd><ul>
+<li><p>Syntax: <cite>~~ ~~</cite></p></li>
+<li><p>Example: <cite>~~This text is no longer relevant~~</cite></p></li>
+<li><p>Output: <span class="strike">This text is no longer relevant</span></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>Style</strong>: Bold and italics</dt><dd><ul>
+<li><p>Syntax: <cite>** **</cite> and <cite>_ _</cite></p></li>
+<li><p>Example: <cite>** This text is the _most important thing ever_ **</cite></p></li>
+<li><p>Output: ** This text is the <em>most important thing ever</em> **</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+<div class="section" id="quoting">
+<h2>Quoting<a class="headerlink" href="#quoting" title="Permalink to this headline">¶</a></h2>
+<p>You can show text as being quoted with the <cite>&gt;</cite> character.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Before</span> <span class="n">merging</span> <span class="n">this</span> <span class="n">pull</span> <span class="n">request</span><span class="p">,</span> <span class="n">remember</span> <span class="n">Clark</span> <span class="n">Kent</span> <span class="n">mentioned</span> <span class="n">this</span><span class="p">:</span>
+<span class="o">&gt;</span> <span class="n">Double</span><span class="o">-</span><span class="n">check</span> <span class="n">there</span><span class="s1">&#39;s no reference to the Kryptonite library in the program since we removed that a few versions ago.</span>
+</pre></div>
+</div>
+<p>Before merging this pull request, remember Clark Kent mentioned this:</p>
+<blockquote>
+<div><p>Double-check there’s no reference to the Kryptonite library in the program since we removed that a few versions ago.</p>
+</div></blockquote>
+<p>You can also make a line-wrapping blockquote using &lt;br/&gt;.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Remember</span> <span class="n">what</span> <span class="n">Solomon</span> <span class="n">said</span><span class="p">:</span>
+<span class="o">&gt;</span> <span class="n">I</span> <span class="n">don</span><span class="s1">&#39;t want to survive. &lt;br/&gt; I want to live.</span>
+</pre></div>
+</div>
+<p>Remember what Solomon said:</p>
+<blockquote>
+<div><p>I don’t want to survive.</p>
+<p>I want to live.</p>
+</div></blockquote>
+<p>For more details regarding Blockquote, refer
+<a class="reference external" href="https://daringfireball.net/projects/markdown/syntax#blockquote">Blockquote</a>.</p>
+</div>
+<div class="section" id="code">
+<h2>Code<a class="headerlink" href="#code" title="Permalink to this headline">¶</a></h2>
+<p>You can highlight parts of a line as code or create entire code blocks in
+your Markdown documents. You can do this with the backtick character (`).
+Text inside of backticks will not be formatted.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>When running the program for the first time, use `superman --initialize`.
+</pre></div>
+</div>
+<p>When running the program for the first time, use <code class="docutils literal notranslate"><span class="pre">superman</span> <span class="pre">--initialize</span></code>.</p>
+<p>To format multiple lines of code into its own block, you can wrap the text
+block with four tilde (~) characters</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Install the needed system libraries:
+`~~~~`
+sudo dnf install git python-virtualenv libgit2-devel \
+                libjpeg-devel gcc libffi-devel redhat-rpm-config
+`~~~~`
+</pre></div>
+</div>
+<p>Install the needed system libraries:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">dnf</span> <span class="n">install</span> <span class="n">git</span> <span class="n">python</span><span class="o">-</span><span class="n">virtualenv</span> <span class="n">libgit2</span><span class="o">-</span><span class="n">devel</span> \
+             <span class="n">libjpeg</span><span class="o">-</span><span class="n">devel</span> <span class="n">gcc</span> <span class="n">libffi</span><span class="o">-</span><span class="n">devel</span> <span class="n">redhat</span><span class="o">-</span><span class="n">rpm</span><span class="o">-</span><span class="n">config</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="hyperlinks">
+<h2>Hyperlinks<a class="headerlink" href="#hyperlinks" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="regular-links">
+<h3>Regular links<a class="headerlink" href="#regular-links" title="Permalink to this headline">¶</a></h3>
+<p>Need to embed a link to somewhere else? No problem! You can create an
+in-line link by wrapping the text in <cite>[ ]</cite> and appending the URL in
+parentheses <cite>( )</cite> immediately after.</p>
+<p><cite>Pagure is used by the [Fedora Project](https://fedoraproject.org).</cite></p>
+<p>Pagure is used by the <a class="reference external" href="https://fedoraproject.org">Fedora Project</a>.</p>
+</div>
+<div class="section" id="links-to-ticket-pr-of-the-same-project">
+<h3>Links to ticket/PR of the same project<a class="headerlink" href="#links-to-ticket-pr-of-the-same-project" title="Permalink to this headline">¶</a></h3>
+<p>You want to link to a ticket or a pull-request in the current project? Easy
+just use <cite>#</cite> immediately followed by the identifier of the ticket or
+pull-request.</p>
+<p><cite>This is an example for #2921</cite></p>
+<p>This is an example for <a class="reference external" href="https://pagure.io/pagure/issue/2921">#2921</a></p>
+</div>
+<div class="section" id="links-to-ticket-pr-of-another-project">
+<h3>Links to ticket/PR of another project<a class="headerlink" href="#links-to-ticket-pr-of-another-project" title="Permalink to this headline">¶</a></h3>
+<p>You want to link to a ticket or a pull-request of a different project? Simply
+add the project name in front of the <cite>#</cite> and immediately followed by the
+identifier of the ticket or pull-request.</p>
+<p><cite>This is an example for pagure#2921</cite></p>
+<p>This is an example for <a class="reference external" href="https://pagure.io/pagure/issue/2921">pagure#2921</a></p>
+</div>
+</div>
+<div class="section" id="lists">
+<h2>Lists<a class="headerlink" href="#lists" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="unordered-lists">
+<h3>Unordered lists<a class="headerlink" href="#unordered-lists" title="Permalink to this headline">¶</a></h3>
+<p>You can make unordered lists spanning multiple lines with either <cite>-</cite> or <cite>*</cite>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>* Superman
+* Batman
+    * Protector of Gotham City!
+* Superwoman
+* Harley Quinn
+    * Something on this list is unlike the others...
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Superman</p></li>
+<li><dl class="simple">
+<dt>Batman</dt><dd><ul>
+<li><p>Protector of Gotham City!</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Superwoman</p></li>
+<li><dl class="simple">
+<dt>Harley Quinn</dt><dd><ul>
+<li><p>Something on this list is unlike the others…</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+<div class="section" id="ordered-lists">
+<h3>Ordered lists<a class="headerlink" href="#ordered-lists" title="Permalink to this headline">¶</a></h3>
+<p>You can make ordered lists by preceding each line with a number.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>1. Superman
+2. Batman
+    1. Protector of Gotham City!
+    2. He drives the Batmobile!
+3. Superwoman
+4. Harley Quinn
+    1. Something on this list is unlike the others...
+    2. Somebody evil lurks on this list!
+</pre></div>
+</div>
+<ol class="arabic simple">
+<li><p>Superman</p></li>
+<li><dl class="simple">
+<dt>Batman</dt><dd><ol class="arabic simple">
+<li><p>Protector of Gotham City!</p></li>
+<li><p>He drives the Batmobile!</p></li>
+</ol>
+</dd>
+</dl>
+</li>
+<li><p>Superwoman</p></li>
+<li><dl class="simple">
+<dt>Harley Quinn</dt><dd><ol class="arabic simple">
+<li><p>Something on this list is unlike the others…</p></li>
+<li><p>Somebody evil lurks on this list!</p></li>
+</ol>
+</dd>
+</dl>
+</li>
+</ol>
+</div>
+</div>
+<div class="section" id="tagging-users">
+<h2>Tagging users<a class="headerlink" href="#tagging-users" title="Permalink to this headline">¶</a></h2>
+<p>You can tag other users on Pagure to send them a notification about an issue
+or pull request. To tag a user, use the <cite>&#64;</cite> symbol followed by their username.
+Typing the <cite>&#64;</cite> symbol in a comment will bring up a list of users that match
+the username. The list searches as you type. Once you see the name of the
+person you are looking for, you can click their name to automatically
+complete the tag.</p>
+<p><cite>&#64;jflory7, could you please review this pull request and leave feedback?</cite></p>
+<p><a class="reference external" href="https://pagure.io/user/jflory7">&#64;jflory7</a>, could you please review this pull request and leave feedback?</p>
+</div>
+<div class="section" id="tagging-issues-or-pull-requests">
+<h2>Tagging issues or pull requests<a class="headerlink" href="#tagging-issues-or-pull-requests" title="Permalink to this headline">¶</a></h2>
+<p>In a comment, you can automatically link a pull request or issue by its number.
+To link it, use the <cite>#</cite> character followed by its number. Like with tagging
+users, Pagure will provide suggestions for issues or pull requests as you
+type the number. You can select the issue in the drop-down to automatically
+tag the issue or pull request.</p>
+<p>If you need to tag an issue or pull request that is outside of the current
+project, you are also able to do this. For cross-projects links, you can tag
+them by typing <cite>&lt;project name&gt;#id</cite> or <cite>&lt;username&gt;/&lt;project name&gt;#id</cite>.</p>
+</div>
+<div class="section" id="emoji">
+<h2>Emoji<a class="headerlink" href="#emoji" title="Permalink to this headline">¶</a></h2>
+<p>Pagure natively supports emoji characters. To use emoji, you can use two
+colons wrapped around the emoji keyword (<cite>:emoji:</cite>). Typing a colon by itself
+will bring up a list of suggested emoji with a small preview. If you see the
+one you are looking for, you can click it to automatically complete the emoji.</p>
+<p><cite>I reviewed the PR and it looks good to me. :+1: Good to merge! :clapper:</cite></p>
+<p>I reviewed the PR and it looks good to me. 👍 Good to merge! 🎬</p>
+</div>
+<div class="section" id="improve-this-documentation">
+<h2>Improve this documentation!<a class="headerlink" href="#improve-this-documentation" title="Permalink to this headline">¶</a></h2>
+<p>Notice anything that can be improved in this documentation? Find a mistake?
+You can improve this page! Find it in the official
+<a class="reference external" href="https://pagure.io/pagure/blob/master/f/doc/usage/markdown.rst">Pagure repository</a>.</p>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><h1 class='pagure-logo'><span></span>Pagure</h1><div class="sphinx-toc sphinxlocaltoc">
+    <h3><a href="../index.html">Page contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Using Markdown in Pagure</a><ul>
+<li><a class="reference internal" href="#styling">Styling</a></li>
+<li><a class="reference internal" href="#quoting">Quoting</a></li>
+<li><a class="reference internal" href="#code">Code</a></li>
+<li><a class="reference internal" href="#hyperlinks">Hyperlinks</a><ul>
+<li><a class="reference internal" href="#regular-links">Regular links</a></li>
+<li><a class="reference internal" href="#links-to-ticket-pr-of-the-same-project">Links to ticket/PR of the same project</a></li>
+<li><a class="reference internal" href="#links-to-ticket-pr-of-another-project">Links to ticket/PR of another project</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#lists">Lists</a><ul>
+<li><a class="reference internal" href="#unordered-lists">Unordered lists</a></li>
+<li><a class="reference internal" href="#ordered-lists">Ordered lists</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#tagging-users">Tagging users</a></li>
+<li><a class="reference internal" href="#tagging-issues-or-pull-requests">Tagging issues or pull requests</a></li>
+<li><a class="reference internal" href="#emoji">Emoji</a></li>
+<li><a class="reference internal" href="#improve-this-documentation">Improve this documentation!</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div class="sphinxprev">
+    <h4>Previous page</h4>
+    <p class="topless"><a href="pull_requests.html"
+                          title="Previous page">&larr; Pull Requests</a></p>
+  </div>
+  <div class="sphinxnext">
+    <h4>Next page</h4>
+    <p class="topless"><a href="project_settings.html"
+                          title="Next page">&rarr; Project settings</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/usage/markdown.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="project_settings.html" title="Project settings"
+             >next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="pull_requests.html" title="Pull Requests"
+             >previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">pagure  documentation</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Usage</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Using Markdown in Pagure</a></li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015, Red Hat Inc, Pierre-Yves Chibon &lt;pingou@pingoured.fr&gt;.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+  </body>
+</html>

@@ -1,0 +1,457 @@
+{% extends "master.html" %}
+{% from "_projectstring.html" import projectstring, projecticon %}
+
+{% macro print_ssh_url(repo, end_url_ssh, current_user) %}
+  {% if not (current_user |user_can_clone_ssh) %}
+    <a href="{{ url_for('ui_ns.user_settings') + '#nav-ssh-tab' }}">
+      You need to upload SSH key to be able to clone over SSH
+    </a>
+  {% elif not (current_user | user_group_can_ssh_commit) %}
+    Only members of the {{ config["SSH_ACCESS_GROUPS"] | join(", ") }} group(s) can clone via ssh
+  {% elif repo.read_only %}
+     The permissions on this repository are being updated.
+     Cloning over SSH is disabled.
+  {% else %}
+    <div class="form-group">
+      <div class="input-group input-group-sm">
+        <div class="input-group-prepend"><span class="input-group-text">SSH</span></div>
+        <input class="form-control bg-white select-on-focus" type="text" value="{{
+          end_url_ssh | git_url_ssh }}{{ repo.fullname }}.git" readonly>
+      </div>
+    </div>
+  {% endif %}
+{% endmacro %}
+
+{% block title %}{{
+    repo.namespace + '/' if repo.namespace }}{{ repo.name }}{% endblock %}
+{% set tag = "home" %}
+
+{% block content %}
+<div class="bg-light border border-bottom pt-3">
+  <div class="container">
+    <div class="row mb-3">
+      <div class="col-6">
+        <div class="row">
+        <div class="col-auto pr-0">
+            <h3>
+            {% if repo.is_fork -%}
+            <i class="fa fa-code-fork text-muted"></i>
+            {% elif repo.mirrored_from -%}
+            <i class="fa fa-cloud-download text-muted" title="Mirrored from {{
+                repo.mirrored_from }}"></i>
+            {%- else -%}
+            <i class="fa {{projecticon()}} text-muted"></i>
+            {%- endif -%}
+            </h3>
+        </div>
+        <div class="col-auto pl-2">
+            <h3 class="mb-0">
+                {% if repo.is_fork -%}
+                 <a href="{{ url_for(
+                    'ui_ns.view_user', username=repo.user.user)
+                    }}">{{ repo.user.user }}</a><span class="mt-1 text-muted">&nbsp;/&nbsp;</span>
+                {%- endif -%}
+                {%- if repo.namespace -%}
+                    <a href="{{ url_for(
+                        'ui_ns.view_projects', namespace=repo.namespace, pattern='*')
+                    }}">{{ repo.namespace }}</a>&nbsp;/&nbsp;
+                {%- endif -%}<a href="{{ url_for('ui_ns.view_repo',
+                    repo=repo.name,
+                    username=username,
+                    namespace=repo.namespace)
+                  }}"><strong>{{ repo.name }}</strong></a>
+                  {% if repo.private %}
+                  <span class="fa fa-lock text-danger fa-fw" title="Private project"></span>
+                  {% endif %}
+            </h3>
+            {% if repo.is_fork and repo.parent %}
+            <span class="text-muted">
+              Forked from
+              <a href="{{ url_for(
+                'ui_ns.view_repo',
+                repo=repo.parent.name,
+                username=repo.parent.user.user if repo.parent.is_fork else None,
+                namespace=repo.parent.namespace)}}">
+                {{ repo.parent.fullname }}
+              </a>
+              {{repo.date_created|humanize_tooltip | safe}}
+            </span>
+            {% elif repo.is_fork and not repo.parent %}
+            <span class="text-muted">
+                Forked from a deleted repository {{repo.date_created|humanize_tooltip | safe}}
+            </span>
+            {% endif %}
+        </div>
+        </div>
+      </div>
+      <div class="col-6 text-right">
+        <div class="btn-group">
+        {% if g.authenticated %}
+          {% if g.issues_enabled
+                and not repo.settings.get('issue_tracker_read_only', False) %}
+            <a href="{{ url_for('ui_ns.new_issue',
+                repo=g.repo.name,
+                username=g.repo.user.user if g.repo.is_fork else none,
+                namespace=g.repo.namespace) }}"
+              class="btn btn-outline-primary btn-sm">
+              <i class="fa fa-exclamation-circle fa-fw"></i> New issue</a>
+            {% endif %}
+            {% if g.authenticated %}
+            <div class="btn-group">
+              <a class="btn btn-outline-primary btn-sm dropdown-toggle pointer"
+                data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false" id="pr-button">
+                <i class="fa fa-arrow-circle-down fa-fw"></i> Open PR
+              </a>
+              <div class="dropdown-menu dropdown-menu-right pointer" id="PR-dropdown">
+                {% if g.repo_forked %}
+                <span id="pr-dropdown-forklist">
+                  <div class="dropdown-header font-size-1">
+                    From <span><i class="fa fa-code-fork fa-fw"></i><strong>{{ g.fas_user.username }}</strong> / {{ repo.name }}</span>
+                  </div>
+                  <div class="dropdown-item pr-dropdown-spinner"><i class="fa fa-circle-o-notch fa-spin fa-1x fa-fw"></i></div>
+                </span>
+                <div class="dropdown-divider"></div>
+                {% endif %}
+                <span id="pr-dropdown-mainlist">
+                    <div class="dropdown-header font-size-1">
+                      From <span><i class="fa fa-calendar-o fa-rotate-270 fa-fw"></i><strong>{{ repo.name }}</strong></span>
+                    </div>
+                  <div class="dropdown-item pr-dropdown-spinner"><i class="fa fa-circle-o-notch fa-spin fa-1x fa-fw"></i></div>
+                </span>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item"
+                   href="{{ url_for('ui_ns.new_request_pull',
+                            repo=repo.name,
+                            username=username,
+                            namespace=repo.namespace,
+                            branch_to=head or 'master',
+                            branch_from=branchname or 'master') }}">
+                  New Pull Request
+                </a>
+                {% if not config.get('DISABLE_REMOTE_PR', True) %}
+                <a class="dropdown-item"
+                   href="{{ url_for(
+                            'ui_ns.new_remote_request_pull',
+                            repo=repo.name,
+                            username=username,
+                            namespace=repo.namespace) }}">
+                  New Remote Pull Request
+                </a>
+                {% endif %}
+              </div>
+            </div>
+          {%endif%}
+
+          <div class="btn-group">
+            {% if g.repo_forked %}
+              {% if g.fas_user.username == username %}
+              <a href="{{ url_for(
+                'ui_ns.view_repo',
+                repo=repo.name,
+                namespace=repo.namespace) }}" class="btn btn-sm btn-outline-primary">
+
+              <i class="fa fa-code-fork fa-fw"></i> View Upstream
+              </a>
+              {% else %}
+              <a href="{{ url_for(
+                'ui_ns.view_repo',
+                repo=repo.name,
+                username=g.fas_user.username,
+                namespace=repo.namespace) }}" class="btn btn-sm btn-outline-primary">
+
+              <i class="fa fa-code-fork fa-fw"></i> View fork
+              </a>
+              {% endif %}
+            {% else %}
+            <form method="POST" name="fork_project" id="fork_project"
+              action="{{ url_for(
+                'ui_ns.fork_project',
+                repo=repo.name,
+                username=username,
+                namespace=repo.namespace) }}">
+              {{ g.forkbuttonform.csrf_token }}
+            </form>
+              <button class="btn btn-sm btn-outline-primary fork_project_btn">
+              <i class="fa fa-code-fork fa-fw"></i> Fork</button>
+            {% endif %}
+          </div>
+        {% endif %}
+        <div class="btn-group">
+        <a href="#"
+            class="btn btn-sm dropdown-toggle btn-outline-primary"
+            data-toggle="dropdown" id="watch-button">
+          <i class="fa fa-clone fa-fw"></i>
+          <span>Clone</span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right">
+          <div class="m-3" id="source-dropdown">
+            <div>
+              <h5><strong>Source Code</strong></h5>
+              {% if g.authenticated and g.repo_committer %}
+                {{ print_ssh_url(repo, "", g.fas_user.username) }}
+              {% endif %}
+
+              <div class="form-group">
+                <div class="input-group input-group-sm">
+                  <div class="input-group-prepend"><span class="input-group-text">GIT</span></div>
+                  <input class="form-control bg-white select-on-focus" type="text" value="{{
+                    config.get('GIT_URL_GIT') }}{{ repo.path }}" readonly>
+                </div>
+              </div>
+              {% if (config['DOC_APP_URL']
+                     and repo
+                     and repo.settings.get('project_documentation', True)
+                     )
+                     or
+                     (g.authenticated and g.repo_committer) %}
+
+                <div id="giturl-more" class="hidden">
+                {% if config['DOC_APP_URL']
+                    and repo
+                    and repo.settings.get('project_documentation', True) %}
+                  <h5><strong>Documentation</strong></h5>
+                  {% if g.authenticated and g.repo_committer %}
+                    {{ print_ssh_url(repo, "docs/", g.fas_user.username) }}
+                  {% endif %}
+                  <div class="form-group">
+                    <div class="input-group input-group-sm">
+                      <div class="input-group-prepend"><span class="input-group-text">GIT</span></div>
+                      <input class="form-control bg-white select-on-focus" type="text" value="{{
+                        config.get('GIT_URL_GIT') }}docs/{{ repo.path }}" readonly>
+                    </div>
+                  </div>
+                {% endif %}
+
+                {% if g.authenticated and g.repo_committer %}
+                  {% if g.issues_enabled %}
+                    <h5><strong>Issues</strong></h5>
+                    {{ print_ssh_url(repo, "tickets/", g.fas_user.username) }}
+                  {% endif %}
+                  <h5><strong>Pull Requests</strong></h5>
+                  {{ print_ssh_url(repo, "requests/", g.fas_user.username) }}
+                {% endif %}
+
+                <hr />
+                <p>
+                  <a href="https://docs.pagure.org/pagure/usage/" target="_blank" rel="noopener noreferrer">
+                    Learn more about these different git repos.
+                  </a>
+                </p>
+              </div>
+              <p class="text-right">
+                <a id="giturl-toggle" class="pointer">
+                  Other Git URLs <i class="fa fa-angle-down" aria-hidden="true"></i>
+                </a>
+              </p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+    {% include 'repo_master_navbar.html' %}
+
+  </div>
+</div>
+
+<div class="container pt-5 repo-body-container">
+    {% if repo.read_only %}
+    <div class="container pt-2">
+        <div class="alert alert-danger alert-dismissible" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            <span class="sr-only">Close</span>
+          </button>
+          The permissions on this repository are being updated. This may take a while.
+          During this time, you or some of the project's contributors may not be able
+          to push to this repository.
+        </div>
+    </div>
+    {% endif %}
+    {% if g.authenticated and repo.settings.get('pull_request_access_only') %}
+    <div class="container pt-2">
+        <div class="alert alert-info alert-dismissible" role="alert">
+          <button type="button" class="close" data-dismiss="info" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            <span class="sr-only">Close</span>
+          </button>
+          <span class="oi blue-icon" data-glyph="file" title="PR Only"></span>
+          This project does not support direct push to its git repo, all changes
+          must be done via pull-requests from forks.
+        </div>
+    </div>
+    {% endif %}
+{% block repo %}
+{% endblock %}
+</div>
+{% block widerepo %}
+{% endblock %}
+{% endblock %}
+
+{% block jscripts %}
+{{ super() }}
+<script type="text/javascript"  nonce="{{ g.nonce }}" src="{{
+  url_for('static', filename='vendor/lazyload/lazyload.min.js') }}?version={{ g.version}}"></script>
+
+<script type="text/javascript" nonce="{{ g.nonce }}">
+window.addEventListener("load", function(event) {
+    lazyload();
+});
+</script>
+
+<script type="text/javascript" nonce="{{ g.nonce }}">
+$("#giturl-toggle").on('click', function(event){
+  event.stopPropagation();
+  $("#giturl-more").toggle();
+  $("#giturl-toggle").hide();
+})
+
+$(".fork_project_btn").click(function() {
+  $('#fork_project').submit();
+});
+
+$(".select-on-focus").on("focus", function() {
+  $(this).select();
+});
+
+{% if g.authenticated and not g.repo_obj.is_empty %}
+
+{% if g.repo_committer or g.repo_forked %}
+var _cnt = 0;
+
+function process_task_results(_data, callback) {
+  var _url = '{{ url_for("internal_ns.task_info", taskid='') }}' + _data.task;
+  $.ajax({
+    url: _url ,
+    type: 'GET',
+    data: {
+      js: 1,
+      count: _cnt,
+    },
+    dataType: 'JSON',
+    success: function(res) {
+      callback(res.results);
+      $("#spinnergif").hide();
+    },
+    error: function(res) {
+      _cnt += 1;
+      if (_cnt < 600) {
+        window.setTimeout(process_task_results, 1000, _data, callback);
+      }
+    }
+  });
+}
+
+function generate_branch_list(data) {
+   var _b = $("#pr-dropdown-mainlist");
+   for (branch in data.new_branch){
+     var url = "{{ url_for(
+       'ui_ns.new_request_pull',
+       repo=repo.name,
+       username=None,
+       namespace=repo.namespace,
+       branch_to='-',
+       branch_from='-') }}";
+     url = url.slice(0, -4) + data.new_branch[branch]['target_branch'] + '..' + branch;
+     html = '<a class="dropdown-item " href="' + url + '">'
+       + '<span class="badge badge-secondary border border-secondary badge-pill font-size-1">'
+         + '<span class="fa fa-random fa-fw"> </span> '
+         + branch
+       + '</span></a> ';
+     _b.append(html);
+   }
+   _b.show();
+   $("#pr-dropdown-mainlist .pr-dropdown-spinner").hide();
+}
+
+function generate_branch_list_fork(data) {
+   var _b = $("#pr-dropdown-forklist");
+   for (branch in data.new_branch){
+     var url = "{{ url_for(
+       'ui_ns.new_request_pull',
+       repo=repo.name,
+       username=g.fas_user.username,
+       namespace=repo.namespace,
+       branch_to='-',
+       branch_from='-') }}";
+     url = url.slice(0, -4) + data.new_branch[branch]['target_branch'] + '..' + branch;
+     html = '<a class="dropdown-item " href="' + url + '">'
+       + '<span class="badge badge-secondary border border-secondary badge-pill font-size-1">'
+         + '<span class="fa fa-random fa-fw"> </span> '
+         + branch
+       + '</span></a> ';
+     _b.append(html);
+   }
+   _b.show();
+   $("#pr-dropdown-forklist .pr-dropdown-spinner").hide();
+}
+{% endif %}
+
+$("#pr-button").one("click",
+  function() {
+  var _pr_url = "{{ url_for('internal_ns.get_pull_request_ready_branch') }}";
+
+  {% if g.repo_committer %}
+  var data = {
+        repo: "{{ repo.name }}",
+        namespace: "{{ repo.namespace if repo.namespace }}",
+        repouser: "",
+        csrf_token: "{{ g.confirmationform.csrf_token.current_token }}",
+      };
+  $.post(_pr_url, data, null, dataType='json').done(
+    function(data) {
+      process_task_results(data, generate_branch_list);
+  }).fail(
+    function(data) {
+      var _b = $("#pr-dropdown-mainlist");
+      html = '<span class="badge-pill font-size-1">'
+         + '<span class="fa fa-ban fa-fw"> </span> '
+         + data.responseJSON.message
+       + '</span>';
+      _b.append(html);
+      _b.show();
+      $("#pr-dropdown-mainlist .pr-dropdown-spinner").hide();
+  })
+  {% else %}
+  $("#pr-dropdown-mainlist .pr-dropdown-spinner").hide();
+  {% endif %}
+
+  var data = {
+        repo: "{{ repo.name }}",
+        namespace: "{{ repo.namespace if repo.namespace }}",
+        repouser: "{{ g.fas_user.username }}",
+        csrf_token: "{{ g.confirmationform.csrf_token.current_token }}",
+      };
+  $.post(_pr_url, data, null, dataType='json').done(
+    function(data) {
+      process_task_results(data, generate_branch_list_fork);
+  }).fail(
+    function(data) {
+      var _b = $("#pr-dropdown-forklist");
+      html = '<span class="badge-pill font-size-1">'
+         + '<span class="fa fa-ban fa-fw"> </span> '
+         + data.responseJSON.message
+       + '</span>';
+      _b.append(html);
+      _b.show();
+      $("#pr-dropdown-forklist .pr-dropdown-spinner").hide();
+  })
+  }
+);
+
+$('.pr_comment_form').submit(function() {
+  return try_async_comment($(this), null);
+});
+
+{% endif %}
+</script>
+{% endblock %}
+
+{% block overviewtabs %}
+{% include 'repo_master_sidebar.html' %}
+{% endblock %}

@@ -1,0 +1,430 @@
+
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Installing pagure &#8212; pagure  documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/site.css" type="text/css" />
+    <link rel="stylesheet" href="_static/site.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+
+    
+    
+     
+        <script src="_static/jquery.cookie.js"></script>
+    
+
+    
+     
+        <script src="_static/cloud.base.js"></script>
+    
+
+    
+     
+        <script src="_static/cloud.js"></script>
+    
+
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installing pagure’s milter" href="install_pagure_milter.html" />
+    <link rel="prev" title="Tips and tricks" href="usage/tips_tricks.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head><body>
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="install_pagure_milter.html" title="Installing pagure’s milter"
+             accesskey="N">next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="usage/tips_tricks.html" title="Tips and tricks"
+             accesskey="P">previous</a> &nbsp; &nbsp;</li>
+    <li><a href="index.html">pagure  documentation</a> &#187;</li>
+
+        <li class="nav-item nav-item-this"><a href="">Installing pagure</a></li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="installing-pagure">
+<h1>Installing pagure<a class="headerlink" href="#installing-pagure" title="Permalink to this headline">¶</a></h1>
+<p>There are two ways to install pagure:</p>
+<ul class="simple">
+<li><p>via the RPM package (recommended if you are using a RPM-based GNU/Linux distribution)</p></li>
+<li><p>via the setup.py</p></li>
+</ul>
+<div class="section" id="installing-pagure-via-rpm">
+<h2>Installing pagure via RPM<a class="headerlink" href="#installing-pagure-via-rpm" title="Permalink to this headline">¶</a></h2>
+<p>Here as well there are two ways of obtaining the RPM:</p>
+<ul class="simple">
+<li><p>From the main repositories</p></li>
+</ul>
+<p>Pagure is packaged for Fedora since Fedora 21 and is available for RHEL and
+its derivative via the <cite>EPEL repository &lt;https://fedoraproject.org/wiki/EPEL&gt;</cite>.
+So installing it is as easy as:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dnf</span> <span class="n">install</span> <span class="n">pagure</span> <span class="n">pagure</span><span class="o">-</span><span class="n">milters</span> <span class="n">pagure</span><span class="o">-</span><span class="n">ev</span> <span class="n">pagure</span><span class="o">-</span><span class="n">webhook</span>
+</pre></div>
+</div>
+<p>or</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">yum</span> <span class="n">install</span> <span class="n">pagure</span> <span class="n">pagure</span><span class="o">-</span><span class="n">milters</span> <span class="n">pagure</span><span class="o">-</span><span class="n">ev</span> <span class="n">pagure</span><span class="o">-</span><span class="n">webhook</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">pagure</span></code> package contains the core of the application and the doc server.
+(See the <code class="docutils literal notranslate"><span class="pre">Overview</span></code> page for a global overview of the structure of the
+project).</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">pagure-milters</span></code> package contains, as the name says, the milter (a
+mail filter to hook into a MTA).</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">pagure-ev</span></code> package contains the eventsource server.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">pagure-webhook</span></code> package contains the web-hook server.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The last three packages are optional, pagure would work fine without
+them but the live-update, the webhook and the comment by email
+services will not work.</p>
+</div>
+<ul class="simple">
+<li><p>From the sources</p></li>
+</ul>
+<p>If you wish to run a newer version of pagure than what is in the repositories
+you can easily rebuild it as RPM.</p>
+<p>Simply follow these steps:
+# Clone the sources:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">pagure</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">pagure</span><span class="o">.</span><span class="n">git</span>
+</pre></div>
+</div>
+<p># Go to the folder:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">pagure</span>
+</pre></div>
+</div>
+<p># Build a tarball of the latest version of pagure:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">sdist</span>
+</pre></div>
+</div>
+<p># Build the RPM:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">rpmbuild</span> <span class="o">-</span><span class="n">ta</span> <span class="n">dist</span><span class="o">/</span><span class="n">pagure</span><span class="o">*.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+</pre></div>
+</div>
+<p>This will build pagure from the version present in your clone.</p>
+<p>Once, the RPM is installed the services <code class="docutils literal notranslate"><span class="pre">pagure_milter</span></code> and <code class="docutils literal notranslate"><span class="pre">pagure_ev</span></code>
+are ready to be used but the database and the web-application parts still
+need to be configured.</p>
+</div>
+<div class="section" id="installing-pagure-via-setup-py">
+<h2>Installing pagure via setup.py<a class="headerlink" href="#installing-pagure-via-setup-py" title="Permalink to this headline">¶</a></h2>
+<p>Pagure includes in its sources a <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> automating the installation
+of the web applications of pagure (ie: the core + the doc server).</p>
+<p>To install pagure via this mechanism simply follow these steps:
+# Clone the sources:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">pagure</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">pagure</span><span class="o">.</span><span class="n">git</span>
+</pre></div>
+</div>
+<p># Go to the folder:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">pagure</span>
+</pre></div>
+</div>
+<p># Install the latest version of pagure:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">build</span>
+<span class="n">sudo</span> <span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">install</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>To install the eventsource server or the milter, refer to their
+respective documentations.</p>
+</div>
+<p># Install the additional files as follow:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 41%" />
+<col style="width: 0%" />
+<col style="width: 59%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head" colspan="3"><p>Source               |             Destination</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td colspan="3"><p><code class="docutils literal notranslate"><span class="pre">files/pagure.cfg.sample</span></code>  | <code class="docutils literal notranslate"><span class="pre">/etc/pagure/pagure.cfg</span></code></p></td>
+</tr>
+<tr class="row-odd"><td colspan="2"><p><code class="docutils literal notranslate"><span class="pre">files/alembic.ini</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">/etc/pagure/alembic.ini</span></code></p></td>
+</tr>
+<tr class="row-even"><td colspan="2"><p><code class="docutils literal notranslate"><span class="pre">files/pagure.conf</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">/etc/httpd/conf.d/pagure.conf</span></code></p></td>
+</tr>
+<tr class="row-odd"><td colspan="2"><p><code class="docutils literal notranslate"><span class="pre">files/pagure.wsgi</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">/usr/share/pagure/pagure.wsgi</span></code></p></td>
+</tr>
+<tr class="row-even"><td colspan="2"><p><code class="docutils literal notranslate"><span class="pre">createdb.py</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">/usr/share/pagure/pagure_createdb.py</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="set-up-pagure">
+<h2>Set-up pagure<a class="headerlink" href="#set-up-pagure" title="Permalink to this headline">¶</a></h2>
+<p>Once pagure’s files are installed, you still need to set up some things.</p>
+<ul class="simple">
+<li><p>Create the folder release</p></li>
+</ul>
+<p>This folder is used by project maintainers to upload the tarball of the
+releases of their project.</p>
+<p>This folder must be accessible by the user under which the application is
+running (in our case: <code class="docutils literal notranslate"><span class="pre">git</span></code>).</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">releases</span>
+<span class="n">chown</span> <span class="n">git</span><span class="p">:</span><span class="n">git</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">releases</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Create the folders where the repos, forks and checkouts will be stored</p></li>
+</ul>
+<p>Pagure stores the sources of a project in a git repo, offers a place to
+store the project’s documentation in another repo, stores a JSON dump of all
+issues and of all pull-requests in another two repos, and keeps a local
+checkout of remote projects when asked to do remote pull-requests.
+All these repositories are stored in different folders that must be
+created manually.</p>
+<p>For example you can place them under <code class="docutils literal notranslate"><span class="pre">/srv/git/repositories/</span></code> which would
+make <code class="docutils literal notranslate"><span class="pre">/srv/git</span></code> the home of your gitolite user.</p>
+<p>You would then create the folders with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mkdir</span> <span class="o">/</span><span class="n">srv</span><span class="o">/</span><span class="n">git</span><span class="o">/</span><span class="n">repositories</span><span class="o">/</span><span class="p">{</span><span class="n">docs</span><span class="p">,</span><span class="n">forks</span><span class="p">,</span><span class="n">tickets</span><span class="p">,</span><span class="n">requests</span><span class="p">,</span><span class="n">remotes</span><span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Configure apache</p></li>
+</ul>
+<p>If installed by RPM, you will find an example apache configuration file
+at: <code class="docutils literal notranslate"><span class="pre">/etc/httpd/conf.d/pagure.conf</span></code>.</p>
+<p>If not installed by RPM, the example file is present in the sources at:
+<code class="docutils literal notranslate"><span class="pre">files/pagure.conf</span></code>.</p>
+<p>Adjust it for your needs.</p>
+<ul class="simple">
+<li><p>Configure the WSGI file</p></li>
+</ul>
+<p>If you installed by RPM, you will find example WSGI files at:
+<code class="docutils literal notranslate"><span class="pre">/usr/share/pagure/pagure.wsgi</span></code> for the core server and
+<code class="docutils literal notranslate"><span class="pre">/usr/share/pagure/doc_pagure.wsgi</span></code> for the doc server.</p>
+<p>If you did not install by RPM, these files are present in the sources at:
+<code class="docutils literal notranslate"><span class="pre">files/pagure.wsgi</span></code> and <code class="docutils literal notranslate"><span class="pre">files/doc_pagure.wsgi</span></code>.</p>
+<p>Adjust them for your needs</p>
+<ul class="simple">
+<li><p>Give apache permission to read the repositories owned by the <code class="docutils literal notranslate"><span class="pre">git</span></code> user.</p></li>
+</ul>
+<p>For the sake of this document, we assume that the web application runs under
+the <code class="docutils literal notranslate"><span class="pre">git</span></code> user, the same user as your gitolite user, but apache itself
+runs under the <code class="docutils literal notranslate"><span class="pre">httpd</span></code> (or <code class="docutils literal notranslate"><span class="pre">apache2</span></code>) user. So by default, apache
+will not be allowed to read git repositories created and managed by gitolite.</p>
+<p>To give apache this permission (required to make git clone via http work),
+we use file access control lists (aka FACL):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">setfacl</span> <span class="o">-</span><span class="n">m</span> <span class="n">user</span><span class="p">:</span><span class="n">apache</span><span class="p">:</span><span class="n">rx</span> <span class="o">--</span><span class="n">default</span>
+<span class="n">setfacl</span> <span class="o">-</span><span class="n">Rdm</span> <span class="n">user</span><span class="p">:</span><span class="n">apache</span><span class="p">:</span><span class="n">rx</span> <span class="o">/</span><span class="n">srv</span><span class="o">/</span><span class="n">git</span>
+<span class="n">setfacl</span> <span class="o">-</span><span class="n">Rm</span> <span class="n">user</span><span class="p">:</span><span class="n">apache</span><span class="p">:</span><span class="n">rx</span> <span class="o">/</span><span class="n">srv</span><span class="o">/</span><span class="n">git</span>
+</pre></div>
+</div>
+<p>Where <code class="docutils literal notranslate"><span class="pre">/srv/git</span></code> is the home of your gitolite user (which will thus need
+to be adjusted for your configuration).</p>
+<ul class="simple">
+<li><p>Set up the configuration file of pagure</p></li>
+</ul>
+<p>This is an important step which concerns the file <code class="docutils literal notranslate"><span class="pre">/etc/pagure/pagure.cfg</span></code>.
+If you have installed pagure by RPM, this file is already there, otherwise
+you can find an example one in the sources at: <code class="docutils literal notranslate"><span class="pre">files/pagure.cfg.sample</span></code>
+that you will have to copy to the right location.</p>
+<p>Confer the <code class="docutils literal notranslate"><span class="pre">Configuration</span></code> section of this documentation for a full
+explanation of all the options of pagure.</p>
+<ul class="simple">
+<li><p>Create the database</p></li>
+</ul>
+<p>You first need to create the database itself. For this, since pagure can
+work with: <a class="reference external" href="http://www.postgresql.org/">PostgreSQL</a>,
+<a class="reference external" href="http://www.mysql.com/">MySQL</a> or <a class="reference external" href="http://mariadb.org/">MariaDB</a>, we
+would like to invite you to consult the documentation of your database system
+for this operation.</p>
+<p>Once you have specified in the configuration file the to url used to connect
+to the database, and create the database itself, you can now create the
+tables, the database scheme.</p>
+<p>For changes to existing tables, we rely on <a class="reference external" href="http://alembic.readthedocs.org/">Alembic</a>.
+It uses <cite>revisions</cite> to perform the upgrades, but to know which upgrades are
+needed and which are already done, the current revision needs to be saved
+in the database. This will allow alembic to know and apply the new revision
+when running it.</p>
+<p>In the <code class="docutils literal notranslate"><span class="pre">alembic.ini</span></code> file, one of the configuration key is most important:
+<code class="docutils literal notranslate"><span class="pre">script_location</span></code> which is the path to the <code class="docutils literal notranslate"><span class="pre">versions</span></code> folder containing
+all the alembic migration files. The <code class="docutils literal notranslate"><span class="pre">sqlalchemy.url</span></code> configuration key if
+missing will be replaced by the url filled in the configuration file of
+pagure.</p>
+<p>To create the database tables, you need to run the script
+<code class="docutils literal notranslate"><span class="pre">/usr/share/pagure/pagure_createdb.py</span></code> and specify the configuration
+to use for pagure and for alembic.</p>
+<p>For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">pagure</span><span class="o">/</span><span class="n">pagure_createdb</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">c</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">pagure</span><span class="o">/</span><span class="n">pagure</span><span class="o">.</span><span class="n">cfg</span> <span class="o">-</span><span class="n">i</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">pagure</span><span class="o">/</span><span class="n">alembic</span><span class="o">.</span><span class="n">ini</span>
+</pre></div>
+</div>
+<p>This will tell <code class="docutils literal notranslate"><span class="pre">/usr/share/pagure/pagure_createdb.py</span></code> to use the database
+information specified in the file <code class="docutils literal notranslate"><span class="pre">/etc/pagure/pagure.cfg</span></code> and to stamp
+the database at the last alembic revision.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Pagure’s default configuration is using sqlite. This is fine
+for development purpose but not for production use as sqlite does
+not support all the operations needed when updating the database
+schema. Do use PostgreSQL, MySQL or MariaDB in production.</p>
+</div>
+<p>For changes to existing tables, we rely on <a class="reference external" href="http://alembic.readthedocs.org/">Alembic</a>.
+It uses <cite>revisions</cite> to perform the upgrades, but to know which upgrades are
+needed and which are already done, the current revision needs to be saved
+in the database. This will allow alembic to know apply the new revision when
+running it.</p>
+<p>In the <code class="docutils literal notranslate"><span class="pre">alembic.ini</span></code> file, one of the configuration key is most important:
+<code class="docutils literal notranslate"><span class="pre">script_location</span></code> which is the path to the <code class="docutils literal notranslate"><span class="pre">versions</span></code> folder containing
+all the alembic migration files. The <code class="docutils literal notranslate"><span class="pre">sqlalchemy.url</span></code> configuration key if
+missing will be replaced by the url filled in the configuration file of
+pagure.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Calling <code class="docutils literal notranslate"><span class="pre">pagure_createdb.py</span></code> is asked regularly in the
+UPGRADING.rst documentation, especially to handle database schema
+changes upon upgrades, but the <code class="docutils literal notranslate"><span class="pre">--initial</span></code> argument should only
+be used the first time as it will otherwise break upgrading the
+database schema via alembic.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When install from source the script is called <code class="docutils literal notranslate"><span class="pre">createdb.py</span></code> and
+not <code class="docutils literal notranslate"><span class="pre">pagure_createdb.py</span></code>.</p>
+</div>
+<p>If you installed by RPM, then enable and start the worker services</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">systemctl</span> <span class="n">enable</span> <span class="o">--</span><span class="n">now</span> <span class="n">pagure_worker</span><span class="o">.</span><span class="n">service</span> <span class="n">pagure_gitolite_worker</span><span class="o">.</span><span class="n">service</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="set-up-virus-scanning">
+<h2>Set up virus scanning<a class="headerlink" href="#set-up-virus-scanning" title="Permalink to this headline">¶</a></h2>
+<p>Pagure can automatically scan uploaded attachments for viruses using Clam.
+To set this up, first install clamav-data-empty, clamav-server,
+clamav-server-systemd and clamav-update.</p>
+<p>Then edit /etc/freshclam.conf, removing the Example line and run freshclam once
+to get an up to date database.</p>
+<p>Copy /usr/share/doc/clamav-server/clamd.conf to /etc/clamd.conf and edit that
+too, again making sure to remove the Example line. Make sure to set LocalSocket
+to a file in a directory that exists, and set User to an existing system user.</p>
+<p>Then start the clamd service and set VIRUS_SCAN_ATTACHMENTS = True in the
+Pagure configuration.</p>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><h1 class='pagure-logo'><span></span>Pagure</h1><div class="sphinx-toc sphinxlocaltoc">
+    <h3><a href="index.html">Page contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Installing pagure</a><ul>
+<li><a class="reference internal" href="#installing-pagure-via-rpm">Installing pagure via RPM</a></li>
+<li><a class="reference internal" href="#installing-pagure-via-setup-py">Installing pagure via setup.py</a></li>
+<li><a class="reference internal" href="#set-up-pagure">Set-up pagure</a></li>
+<li><a class="reference internal" href="#set-up-virus-scanning">Set up virus scanning</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div class="sphinxprev">
+    <h4>Previous page</h4>
+    <p class="topless"><a href="usage/tips_tricks.html"
+                          title="Previous page">&larr; Tips and tricks</a></p>
+  </div>
+  <div class="sphinxnext">
+    <h4>Next page</h4>
+    <p class="topless"><a href="install_pagure_milter.html"
+                          title="Next page">&rarr; Installing pagure’s milter</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/install.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="install_pagure_milter.html" title="Installing pagure’s milter"
+             >next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="usage/tips_tricks.html" title="Tips and tricks"
+             >previous</a> &nbsp; &nbsp;</li>
+    <li><a href="index.html">pagure  documentation</a> &#187;</li>
+
+        <li class="nav-item nav-item-this"><a href="">Installing pagure</a></li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015, Red Hat Inc, Pierre-Yves Chibon &lt;pingou@pingoured.fr&gt;.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+  </body>
+</html>

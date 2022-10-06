@@ -1,0 +1,223 @@
+
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HTTP PUSH &#8212; pagure  documentation</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/site.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/site.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+
+    
+    
+     
+        <script src="../_static/jquery.cookie.js"></script>
+    
+
+    
+     
+        <script src="../_static/cloud.base.js"></script>
+    
+
+    
+     
+        <script src="../_static/cloud.js"></script>
+    
+
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Pull Requests" href="pull_requests.html" />
+    <link rel="prev" title="Understanding Read Only Mode of projects" href="read_only.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head><body>
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="pull_requests.html" title="Pull Requests"
+             accesskey="N">next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="read_only.html" title="Understanding Read Only Mode of projects"
+             accesskey="P">previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">pagure  documentation</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Usage</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">HTTP PUSH</a></li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="http-push">
+<h1>HTTP PUSH<a class="headerlink" href="#http-push" title="Permalink to this headline">¶</a></h1>
+<p>When using git push over http against a pagure instance, there are two
+situations to distinguish.</p>
+<div class="section" id="git-push-over-http-with-api-token">
+<h2>Git push over http with API token<a class="headerlink" href="#git-push-over-http-with-api-token" title="Permalink to this headline">¶</a></h2>
+<p>This is going to be the most supported approach. Any user can generate API
+tokens with the <code class="docutils literal notranslate"><span class="pre">commit</span></code> ACL which reads in the UI as: <cite>Commit to a git
+repository via http(s)</cite>.
+These API tokens can be specific to a project if generated in the settings
+page of the project, or generic to all projects if generated in the
+user’s settings page.
+In either case, they will no work if the user does not have at commit access
+to the project.</p>
+<p>Once the API token has been generate, the user needs to enter it with git
+prompts for a password (instead of their actual password).</p>
+<p>For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git push
+username: pingou
+password: ABC123...
+</pre></div>
+</div>
+</div>
+<div class="section" id="git-push-over-http-with-username-password">
+<h2>Git push over http with Username &amp; Password<a class="headerlink" href="#git-push-over-http-with-username-password" title="Permalink to this headline">¶</a></h2>
+<p>This is only supported on pagure instance that are using the <code class="docutils literal notranslate"><span class="pre">local</span></code>
+authentication system (ie: where pagure manages the registration of the
+user accounts, email confirmation, etc).</p>
+<p>For these pagure instances and for these only, when being prompted by git
+for an username and password the user can choose to enter either their
+username and actual password or their username and an API token.</p>
+</div>
+<div class="section" id="storing-the-password-token">
+<h2>Storing the password/token<a class="headerlink" href="#storing-the-password-token" title="Permalink to this headline">¶</a></h2>
+<p>If you interact with git regularly, typing you password or API token will
+quickly become tiring.
+Thanksfully, git has a built-in mechanism named <a class="reference external" href="https://git-scm.com/docs/git-credential-store">git credential store</a> which can take care of this
+for you.</p>
+<p>You can use two modes for the store, either <code class="docutils literal notranslate"><span class="pre">cache</span></code> or <code class="docutils literal notranslate"><span class="pre">store</span></code>.
+- <cite>cache</cite> will cache your credential in memory for 15 minutes (by default)
+- <cite>store</cite> will actually store your credentials in <strong>plain text</strong> on disk</p>
+<p>You can set this using either:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git config credential.helper store
+$ git config credential.helper cache
+</pre></div>
+</div>
+<p>The timeout of the cache can be configured using:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git config credential.helper &#39;cache --timeout=3600&#39;
+</pre></div>
+</div>
+<p>Where the timeout value is a number of seconds (so here the cache is extended
+to one hour).</p>
+<p>Finally, if you wish to use this configuration on multiple project, you can
+add the <code class="docutils literal notranslate"><span class="pre">--global</span></code> argument to these commands which will make the
+configuration work for all your git repo instead of just the one in which
+you run the command.</p>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><h1 class='pagure-logo'><span></span>Pagure</h1><div class="sphinx-toc sphinxlocaltoc">
+    <h3><a href="../index.html">Page contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">HTTP PUSH</a><ul>
+<li><a class="reference internal" href="#git-push-over-http-with-api-token">Git push over http with API token</a></li>
+<li><a class="reference internal" href="#git-push-over-http-with-username-password">Git push over http with Username &amp; Password</a></li>
+<li><a class="reference internal" href="#storing-the-password-token">Storing the password/token</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div class="sphinxprev">
+    <h4>Previous page</h4>
+    <p class="topless"><a href="read_only.html"
+                          title="Previous page">&larr; Understanding Read Only Mode of projects</a></p>
+  </div>
+  <div class="sphinxnext">
+    <h4>Next page</h4>
+    <p class="topless"><a href="pull_requests.html"
+                          title="Next page">&rarr; Pull Requests</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/usage/http_push.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="pull_requests.html" title="Pull Requests"
+             >next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="read_only.html" title="Understanding Read Only Mode of projects"
+             >previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">pagure  documentation</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Usage</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">HTTP PUSH</a></li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015, Red Hat Inc, Pierre-Yves Chibon &lt;pingou@pingoured.fr&gt;.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+  </body>
+</html>
