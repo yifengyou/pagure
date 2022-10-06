@@ -1,0 +1,48 @@
+From 512f23f5cd1f965276969747792edeb1215cba68 Mon Sep 17 00:00:00 2001
+From: Pierre-Yves Chibon <pingou@pingoured.fr>
+Date: Wed, 24 Nov 2021 09:23:03 +0100
+Subject: [PATCH] Drop the ssh key from the information stored in the cookie
+
+Some ssh keys can be very long or some users can have multiple ssh keys,
+either can result in a significant amount of data stored in the cookie
+and in some cases too much information. If it goes above the limit for
+cookie size, the browser will not store the cookie leading to pagure
+considering the user is not authenticated.
+This then becomes really confusing. The user goes to a page that
+requires authentication, they are redirected to the authentication
+server, there they log in, they're sent back to pagure that set-ups the
+user, they are then redirected to the page they were trying to access in
+the first place, but since the cookie didn't stick, pagure considers
+them not authenticated and sends them back to the authentication server
+and we're entering a loop of redirects between pagure and the
+authentication server, neither of which are producing an
+error/stacktrace that would give some clues to the admins.
+
+However, it turns out that pagure only uses the ssh key information to
+set-up the user on the pagure side right after authentication. So there
+is absolutely no need to keep that information in memory or in the
+cookie. We can thus, safely, drop that information frome the cookie
+which in turns, breaks the issue described above.
+
+Signed-off-by: Pierre-Yves Chibon <pingou@pingoured.fr>
+---
+ pagure/ui/fas_login.py | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/pagure/ui/fas_login.py b/pagure/ui/fas_login.py
+index 4689fd1d..8d6ef43a 100644
+--- a/pagure/ui/fas_login.py
++++ b/pagure/ui/fas_login.py
+@@ -152,4 +152,9 @@ def set_user(return_url):
+     except pagure.exceptions.PagureException as err:
+         flask.flash(str(err), "error")
+ 
++    if flask.g.fas_user.get("ssh_key"):
++        del(flask.g.fas_user.ssh_key)
++    if flask.session.get("FLASK_FAS_OPENID_USER").get("ssh_key"):
++        del(flask.session["FLASK_FAS_OPENID_USER"]["ssh_key"])
++
+     return flask.redirect(return_url)
+-- 
+2.33.1
+

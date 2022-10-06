@@ -1,0 +1,171 @@
+# Basic quick setup of pagure on Fedora (using PostgreSQL or MariaDB database)
+
+Note that for CentOS/RHEL deployments, you'll need to substitute 'dnf' for 'yum'.
+
+1. Install and set up a database
+
+Option A: PostgreSQL
+
+Note: If your PostgreSQL server is not on the same machine, just install 'python3-psycopg2'
+on the pagure host machine and follow the installation and database creation steps below
+on the designated database server. This also requires the database port opened on the
+database server's firewall. On CentOS 7 deployments, the 'python-psycopg2' package
+must be manually installed in either case.
+
+$ sudo dnf install postgresql-server
+$ sudo systemctl start postgresql
+
+A1. Edit /var/lib/pgsql/data/pg_hba.conf and change auth method from `ident` to `md5` for localhost
+
+A2. Create the pagure database
+
+$ sudo -u postgres psql
+
+CREATE DATABASE pagure;
+CREATE USER pagure;
+ALTER USER pagure WITH ENCRYPTED PASSWORD '--PagureDBUserPW--';
+GRANT ALL PRIVILEGES ON DATABASE pagure to pagure;
+GRANT ALL PRIVILEGES ON ALL tables IN SCHEMA public TO pagure;
+GRANT ALL PRIVILEGES ON ALL sequences IN SCHEMA public TO pagure;
+\q
+
+A3. Enable and restart PostgreSQL
+
+$ sudo systemctl stop postgresql
+$ sudo systemctl enable --now postgresql
+
+Option B: MariaDB
+
+Note: If your MariaDB server is not on the same machine, just install 'python3-mysql'
+on the pagure host machine and follow the installation and database creation steps below
+on the designated database server. This also requires the database port opened on the
+database server's firewall. On CentOS 7 deployments, the 'python-mysql' package
+must be manually installed in either case.
+
+$ sudo dnf install mariadb mariadb-client
+$ sudo systemctl enable --now mysqld
+$ sudo mysql_secure_installation
+
+B1. Create the pagure database
+
+$ sudo mysql -u root -p
+
+mysql> create database pagure;
+mysql> grant all privileges on pagure.* to pagure identified by '--PagureDBUserPW--';
+mysql> flush privileges;
+mysql> exit
+
+2. Install Redis
+
+$ sudo dnf install redis
+$ sudo systemctl enable --now redis
+
+3. Edit /etc/pagure/pagure.cfg and /etc/pagure/alembic.ini to set up pagure settings as appropriate.
+
+As we set up a database earlier using PostgreSQL or MariaDB, comment out the DB_URL for SQLite and
+uncomment the correct one. Change the URL to match your database server location.
+
+You'll also want to change email address and domain used for this instance to something real, especially if
+you're using with HTTPS or having it public facing.
+
+Note that here, you need to set the file paths you intend to use for your data storage, which would
+be owned by the "git" user.
+
+For example, if you want to have it all in "/srv/git", then you'd do the following:
+* Set GIT_FOLDER to "/srv/git/repositories"
+* Set REMOTE_GIT_FOLDER to "/srv/git/remotes"
+* Set GITOLITE_CONFIG to "/srv/git/.gitolite/conf/gitolite.conf"
+* Set GITOLITE_HOME to "/srv/git"
+* Set GITOLITE_KEYDIR to "/srv/git/.gitolite/keydir"
+
+While currently Pagure defaults to the somewhat brittle legacy Gitolite backend, you should use
+the more reliable and performant internal backend.
+
+This is done by setting the following in /etc/pagure/pagure.cfg:
+
+SSH_FOLDER = "/srv/git/.ssh"
+GIT_AUTH_BACKEND = "pagure_authorized_keys"
+HTTP_REPO_ACCESS_GITOLITE = None
+
+SSH_COMMAND_NON_REPOSPANNER = ([
+    "/usr/bin/%(cmd)s",
+    "/srv/git/repositories/%(reponame)s",
+], {"GL_USER": "%(username)s"})
+
+
+If you _do not_ intend to set up HTTPS, then change references to https to http for Pagure URLs.
+
+For details on all the options in pagure.cfg, see https://docs.pagure.org/pagure/configuration.html
+
+4. Create the git user and directory structure per pagure.cfg settings
+
+$ sudo useradd -r -d "/srv/git" -m -c "git repository hosting" git
+$ sudo mkdir -p /var/www/releases
+$ sudo chown git:git /var/www/releases
+$ sudo mkdir -p /srv/git/repositories/{,docs,forks,requests,tickets}
+$ sudo mkdir -p /srv/git/remotes
+$ sudo mkdir -p /srv/git/.gitolite/{conf,keydir,logs}
+$ sudo mkdir -p /srv/git/.ssh
+$ sudo chmod 700 /srv/git/.ssh
+$ sudo touch /srv/git/.gitolite/conf/gitolite.conf
+$ sudo cp /usr/share/doc/pagure/gitolite3.rc /srv/git/.gitolite.rc
+$ sudo chown -R git:git /srv/git
+
+5. Populate the database
+
+$ python3 /usr/share/pagure/pagure_createdb.py -c /etc/pagure/pagure.cfg -i /etc/pagure/alembic.ini
+
+IMPORTANT: For CentOS 7 deployments, use 'python2' instead of 'python3'.
+
+Note: On upgrades, just drop the "-i /etc/pagure/alembic.ini", and the script will do the correct
+thing to upgrade the database.
+
+6. Install either Apache HTTPD or Nginx web server and set up web configuration
+
+Option A: Apache HTTPD
+
+$ sudo dnf install pagure-web-apache-httpd
+
+A1. Edit /etc/httpd/conf.d/pagure.conf to set up web settings as appropriate.
+
+Most of the settings just need to be uncommented to work. However, you may need to tweak based
+on whether or not you're using HTTPS and if you are using HTTPS, where your certs are and what your domain(s) are.
+
+Note that "/path/to/git/repositories" needs to be replaced with the path to your git repositories,
+which in this guide, is "/srv/git/repositories".
+
+Option B: Nginx
+
+$ sudo dnf install pagure-web-nginx
+$ sudo systemctl enable --now pagure_web.service pagure_docs_web.service
+
+B1. Edit /etc/nginx/conf.d/pagure.conf to set up web settings as appropriate.
+
+Most of the settings just need to be uncommented to work. However, you may need to tweak based
+on whether or not you're using HTTPS and if you are using HTTPS, where your certs are and what your domain(s) are.
+
+7. Optional: Set up Let's Encrypt for HTTPS (skip if you aren't using HTTPS or have your own certs).
+
+$ sudo dnf install certbot
+$ certbot --text --email email@example.org \
+    --domains pagure.example.org \
+    --agree-tos --renew-by-default --manual certonly
+
+Edit the web server configuration file for your webserver as noted in step 6 to point to your new certificates.
+
+8. Open ports in the firewall as appropriate
+
+$ sudo firewall-cmd --add-service=ssh
+$ sudo firewall-cmd --add-service=http
+$ sudo firewall-cmd --add-service=https
+$ sudo firewall-cmd --add-service=redis
+$ sudo firewall-cmd --runtime-to-permanent
+
+9. Enable and start pagure services and timers
+
+$ sudo systemctl enable --now pagure_worker.service pagure_authorized_keys_worker.service pagure_api_key_expire_mail.timer pagure_mirror_project_in.timer
+
+10. Enable and start your webserver, or restart if it's already running
+
+For more details on setup (including setting up the extra components), take a look at the official Pagure documentation: https://docs.pagure.org/pagure/
+
