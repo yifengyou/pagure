@@ -1,6 +1,7 @@
-# learn-pagure
+# pagure项目解析
 
-fedora pagure project study
+![20221006_090229_87](image/20221006_090229_87.png)
+
 
 ## 本仓库说明
 
@@ -16,6 +17,7 @@ Something I hope you know before go into the coding~
 
 * [pagure介绍](docs/pagure介绍.md)
 * [pagure部署](docs/pagure部署.md)
+* [pagure容器化部署](docs/pagure容器化部署.md)
 * [pagure源码分析](docs/pagure源码分析.md)
     * [镜像站点流程](docs/pagure源码分析/镜像站点流程.md)
     * [pygit2如何调用libgit2](docs/pagure源码分析/pygit2如何调用libgit2.md)
@@ -33,13 +35,13 @@ Something I hope you know before go into the coding~
 * fedora、centos开源软件托管仓库
 
 
-## 参考文档
+## 相关站点
 
-* 官方文档：<https://docs.pagure.org/pagure/index.html>
 * 官方地址：<https://pagure.io/pagure>
+* 官方文档：<https://docs.pagure.org/pagure/index.html>
 * GitHub加速地址：<https://hub.fastgit.org/yifengyou/learn-pagure.git>
 
-## 经典图示
+## 图示
 
 ![20210626_223010_17](image/20210626_223010_17.png)
 
