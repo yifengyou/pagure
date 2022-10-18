@@ -1,0 +1,8 @@
+redis
+nginx
+pagure_worker
+pagure_gitolite_worker
+pagure_docs_web
+pagure_web
+pagure_mirror
+pagure_mirror_project_in.timer

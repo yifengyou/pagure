@@ -1,0 +1,10 @@
+#!/bin/bash
+
+netstat -anpt |grep 8880
+
+for srv in `cat /etc/pagure/service`
+do
+    systemctl restart $srv
+done
+
+echo "All done! All ok! Enjoy~~"

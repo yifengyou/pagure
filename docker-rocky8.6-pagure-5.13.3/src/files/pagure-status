@@ -1,0 +1,16 @@
+#!/bin/bash
+
+function status () {
+    for name in $@; do \
+      echo ${name} $(systemctl is-active ${name}) $(systemctl is-enabled ${name}); \
+      done | column -t | grep --color=always '\(disabled\|inactive\|$\)'
+}
+
+netstat -anpt |grep 8880
+
+for srv in `cat /etc/pagure/service`
+do
+    status $srv
+done
+
+echo "All done! All ok! Enjoy~~"
