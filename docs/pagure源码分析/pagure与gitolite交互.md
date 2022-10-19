@@ -50,17 +50,35 @@ GL_BINDIR = None
 
 
 
-
+````
 ssh-keygen -f gitolite_rsa -t rsa -N ''
 HOME=/data/pagure/ gitolite setup -pk gitolite_rsa.pub
 
 HOME=/data/pagure/ gitolite compile && HOME=/data/pagure/ gitolite trigger POST_COMPILE
+````
 
 
 
 
+测试代码片段
 
+```
+HOME=/home/git/ gitolite compile && HOME=/home/git/ gitolite trigger POST_COMPILE
+cd
+ssh-agent bash
+ssh-add .ssh/admin
+ssh-add -l
+git clone git@localhost:gitolite-admin.git $RANDOM.git
+git clone git@localhost:src-openeuler/python-apipkg.git $RANDOM.git
+exit
 
+HOME=/home/git/ gitolite compile && HOME=/home/git/ gitolite trigger POST_COMPILE
+ssh-agent bash
+ssh-add youyifeng
+ssh-add -l
+git clone git@localhost:src-openeuler/python-apipkg.git $RANDOM.git
+
+```
 
 
 
