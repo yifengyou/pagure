@@ -33,7 +33,7 @@ COPY files/systemd/*.service /usr/lib/systemd/system/
 COPY files/pagure.conf /etc/nginx/conf.d/pagure.conf
 COPY files/pagure.cfg /etc/pagure/pagure.cfg
 COPY files/pagure-* /usr/bin/
-COPY files/service //etc/pagure/
+COPY files/service /etc/pagure/
 RUN chmod +x /usr/bin/pagure-*
 RUN useradd git && \
     mkdir -p /home/git/releases && \
@@ -43,4 +43,3 @@ RUN useradd git && \
     mkdir -p /home/git/db && \
     chown git:git -R /var/log/pagure && \
     chown git:git -R /home/git
-
