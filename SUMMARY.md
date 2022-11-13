@@ -12,4 +12,5 @@
     * [pygit2如何调用libgit2](docs/pagure源码分析/pygit2如何调用libgit2.md)
     * [API](docs/pagure源码分析/API.md)
         * [获取仓库分支信息](docs/pagure源码分析/API/获取仓库分支信息.md)
+        * [创建仓库](docs/pagure源码分析/API/创建仓库.md)
 
