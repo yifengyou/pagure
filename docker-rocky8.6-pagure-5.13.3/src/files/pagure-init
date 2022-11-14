@@ -34,10 +34,18 @@ then
     #su git -c "cd /home/git ; gitolite compile && HOME=/home/git/ gitolite trigger POST_COMPILE"
 fi
 
-if [ ! -f /home/git/db/pagure_dev.sqlite ]
-then
-    su git -c "python3 /usr/share/pagure/pagure_createdb.py  -c /etc/pagure/pagure.cfg -i /etc/pagure/alembic.ini"
-fi
+systemctl start mysqld
+mysql --user=root <<_EOF_
+USE mysql;
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password by 'paguremysql';
+DELETE FROM mysql.user WHERE User='';
+DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');
+DROP DATABASE IF EXISTS test;
+DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%';
+FLUSH PRIVILEGES;
+CREATE DATABASE pagure;
+_EOF_
+su git -c "python3 /usr/share/pagure/pagure_createdb.py  -c /etc/pagure/pagure.cfg -i /etc/pagure/alembic.ini"
 
 systemctl daemon-reload
 systemctl enable --now pagure_worker.service pagure_gitolite_worker.service pagure_docs_web pagure_web pagure_mirror

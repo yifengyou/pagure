@@ -20,7 +20,8 @@ RUN dnf install -y epel-release && cat /etc/yum.repos.d/*.repo && dnf makecache 
                    python3-straight-plugin python3-trololio \
                    python3-wtforms which passwd \
                    python3-email-validator \
-                   python3-whitenoise openssh-server \
+                   python3-mysql \
+                   python3-whitenoise openssh-server mysql-server \
                    && \
     dnf install -y pagure pagure-milters \
     pagure-mirror \
@@ -32,6 +33,7 @@ COPY files/systemd/*.timer /usr/lib/systemd/system/
 COPY files/systemd/*.service /usr/lib/systemd/system/
 COPY files/pagure.conf /etc/nginx/conf.d/pagure.conf
 COPY files/pagure.cfg /etc/pagure/pagure.cfg
+COPY files/alembic.ini /etc/pagure/alembic.ini
 COPY files/pagure-* /usr/bin/
 COPY files/service /etc/pagure/
 RUN chmod +x /usr/bin/pagure-*
