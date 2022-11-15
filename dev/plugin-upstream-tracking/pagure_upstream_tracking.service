@@ -8,3 +8,7 @@ Environment="PAGURE_CONFIG=/etc/pagure/pagure.cfg"
 Type=simple
 User=git
 Group=git
+
+
+[Install]
+WantedBy=multi-user.target
