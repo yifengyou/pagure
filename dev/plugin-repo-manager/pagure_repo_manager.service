@@ -1,0 +1,10 @@
+[Unit]
+Description=Pagure quick mirroring
+Documentation=https://pagure.io/pagure
+
+[Service]
+ExecStart=/usr/bin/python3 /usr/share/pagure/quick_mirroring.py --debug
+Environment="PAGURE_CONFIG=/etc/pagure/pagure.cfg"
+Type=simple
+User=git
+Group=git
