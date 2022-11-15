@@ -1,0 +1,12 @@
+[Unit]
+Description=Upstream tracking
+
+[Timer]
+OnCalendar=minutely
+Persistent=true
+AccuracySec=5hour
+RandomizedDelaySec=60
+
+[Install]
+WantedBy=timers.target
+

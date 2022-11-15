@@ -1,0 +1,10 @@
+[Unit]
+Description=Pagure service to watching upstream repositories.
+Documentation=https://pagure.io/pagure
+
+[Service]
+ExecStart=/usr/bin/python3 /usr/share/pagure/upstream_tracking.py --debug
+Environment="PAGURE_CONFIG=/etc/pagure/pagure.cfg"
+Type=simple
+User=git
+Group=git
