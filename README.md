@@ -34,6 +34,14 @@ Something I hope you know before go into the coding~
     * [pygit2如何调用libgit2](docs/pagure源码分析/pygit2如何调用libgit2.md)
     * [API](docs/pagure源码分析/API.md)
         * [获取仓库分支信息](docs/pagure源码分析/API/获取仓库分支信息.md)
+        * [创建仓库](docs/pagure源码分析/API/创建仓库.md)
+
+
+## 扩展功能
+
+* 容器化部署，**All in one**
+* 新增上游仓库周期镜像插件
+* 新增仓库批量创建（基于yum源source repodata）插件
 
 
 ## 图示
@@ -42,7 +50,15 @@ Something I hope you know before go into the coding~
 
 ![20210626_223026_66](image/20210626_223026_66.png)
 
-![20221018_111301_19](image/20221018_111301_19.png)
+![20221115_213016_56](image/20221115_213016_56.png)
+
+![20221115_213030_81](image/20221115_213030_81.png)
+
+![20221115_213101_47](image/20221115_213101_47.png)
+
+![20221115_213123_67](image/20221115_213123_67.png)
+
+![20221115_213140_50](image/20221115_213140_50.png)
 
 
 ---
