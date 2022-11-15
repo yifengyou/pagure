@@ -4,7 +4,7 @@ Description=Update in mirrored project
 [Timer]
 OnCalendar=minutely
 Persistent=true
-AccuracySec=1min
+AccuracySec=6hour
 RandomizedDelaySec=15
 
 [Install]

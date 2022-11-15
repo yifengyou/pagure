@@ -6,6 +6,8 @@ function status () {
       done | column -t | grep --color=always '\(disabled\|inactive\|$\)'
 }
 
+timedatectl set-timezone Asia/Shanghai
+
 mount -t tmpfs -o size=8G tmpfs /tmp || true
 
 mkdir -p /etc/pagure || true
@@ -34,7 +36,37 @@ then
     #su git -c "cd /home/git ; gitolite compile && HOME=/home/git/ gitolite trigger POST_COMPILE"
 fi
 
-systemctl start mysqld
+if [ -d /etc/my.cnf.d ]
+then
+	cat > /etc/my.cnf.d/mysql-server.cnf << EOF
+#
+# This group are read by MySQL server.
+# Use it for options that only the server (but not clients) should see
+#
+# For advice on how to change settings please see
+# http://dev.mysql.com/doc/refman/en/server-configuration-defaults.html
+
+# Settings user and group are ignored when systemd is used.
+# If you need to run mysqld under a different user or group,
+# customize your systemd unit file for mysqld according to the
+# instructions in http://fedoraproject.org/wiki/Systemd
+
+[mysqld]
+datadir=/var/lib/mysql
+socket=/var/lib/mysql/mysql.sock
+log-error=/var/log/mysql/mysqld.log
+pid-file=/run/mysqld/mysqld.pid
+
+max_connections=1024
+group_concat_max_len=10240
+mysqlx_max_connections=1024
+wait_timeout=2880000
+interactive_timeout=2880000
+EOF
+
+fi
+
+systemctl enable --now mysqld
 mysql --user=root <<_EOF_
 USE mysql;
 ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password by 'paguremysql';
@@ -46,6 +78,7 @@ FLUSH PRIVILEGES;
 CREATE DATABASE pagure;
 _EOF_
 su git -c "python3 /usr/share/pagure/pagure_createdb.py  -c /etc/pagure/pagure.cfg -i /etc/pagure/alembic.ini"
+# alter table projects change mirrored_from_last_log mirrored_from_last_log longtext;
 
 systemctl daemon-reload
 systemctl enable --now pagure_worker.service pagure_gitolite_worker.service pagure_docs_web pagure_web pagure_mirror
