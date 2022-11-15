@@ -40,8 +40,13 @@ Something I hope you know before go into the coding~
 ## 扩展功能
 
 * 容器化部署，**All in one**
-* 新增上游仓库周期镜像插件
+* 新增上游仓库并发/周期镜像插件
 * 新增仓库批量创建（基于yum源source repodata）插件
+
+未来规划
+
+* 新增基于repo的管理仓库，集群管理N个仓库元信息
+* 新增消息通知插件，及时播报仓库变更
 
 
 ## 图示
